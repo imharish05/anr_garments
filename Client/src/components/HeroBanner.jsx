@@ -1,32 +1,38 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
-import { fetchDynamicBanners } from '../services/api';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { fetchBanners } from '../services/api';
 
-// Fallback high-fidelity ANR brand slides
+// Curated default ANR banners if Admin API has no records or during server boot
 const DEFAULT_SLIDES = [
   {
+    id: 'default-1',
     src: '/anr-hero-banner.jpg',
     alt: 'ANR Hospital Garments - Designed for Care. Made to Perform.',
-    title: 'DESIGNED FOR CARE. MADE TO PERFORM.',
-    subtitle: 'Premium hospital garments for healthcare professionals who go above and beyond.',
     href: '#scrubs-collection',
-    ctaText: 'Explore Scrubs'
+    title: '',
+    subtitle: '',
+    badge: '',
+    ctaText: ''
   },
   {
+    id: 'default-2',
     src: '/anr-banner-2.jpg',
-    alt: 'ANR Doctor Lab Coats and Aprons',
-    title: 'COMFORT THAT CARES. QUALITY THAT LASTS.',
-    subtitle: 'Doctor Aprons, Lab Coats & Theatre Wear crafted with hospital-grade durability.',
+    alt: 'ANR Hospital Apparel Collections & Fabric Quality',
     href: '#aprons-collection',
-    ctaText: 'View Aprons'
+    title: '',
+    subtitle: '',
+    badge: '',
+    ctaText: ''
   },
   {
+    id: 'default-3',
     src: '/anr-banner-3.jpg',
     alt: 'ANR All Colours. Same Quality. Same Care.',
-    title: 'ALL COLOURS. SAME QUALITY. SAME CARE.',
-    subtitle: 'Full spectrum scrubs, underscrubs, and patient wear tailored for medical excellence.',
     href: '#patient-wear-collection',
-    ctaText: 'Explore Collection'
+    title: '',
+    subtitle: '',
+    badge: '',
+    ctaText: ''
   }
 ];
 
@@ -38,60 +44,76 @@ const HeroBanner = () => {
   const [paused, setPaused] = useState(false);
   const touchStartX = useRef(null);
 
-  // Fetch dynamic banners from Admin / Backend
+  // Fetch dynamic HERO banners from Admin backend
   useEffect(() => {
     let isMounted = true;
-    const loadBanners = async () => {
+
+    const loadDynamicBanners = async () => {
       try {
-        const dynamicBanners = await fetchDynamicBanners();
-        if (isMounted && dynamicBanners && dynamicBanners.length > 0) {
-          const mapped = dynamicBanners.map((b) => ({
-            src: b.image,
-            alt: b.alt || 'ANR Hospital Garments Banner',
-            title: b.title && b.title !== 'ANR HOSPITAL GARMENTS' ? b.title : '',
-            subtitle: b.subtitle || '',
-            href: b.href || '#scrubs-collection',
-            ctaText: b.ctaText || 'Explore Collections'
-          }));
-          setSlides(mapped);
-          setCurrent(0);
+        const dynamicList = await fetchBanners('HERO');
+        if (isMounted && dynamicList && dynamicList.length > 0) {
+          const formatted = dynamicList
+            .filter((b) => Boolean(b.image))
+            .map((b) => ({
+              id: b.id || `admin-hero-${b.position || Math.random()}`,
+              src: b.image,
+              alt: b.title || 'ANR Hospital Garments',
+              href: b.primaryHref || '#scrubs-collection',
+              title: b.title || '',
+              subtitle: b.subtitle || '',
+              badge: b.badge || '',
+              ctaText: b.primaryCta || ''
+            }));
+
+          if (formatted.length > 0) {
+            setSlides(formatted);
+            setCurrent(0);
+          }
         }
       } catch (err) {
-        console.warn('Failed to load dynamic banners, using default slides:', err);
+        console.warn('[HeroBanner] Using default slides fallback:', err);
       }
     };
 
-    loadBanners();
+    loadDynamicBanners();
     return () => {
       isMounted = false;
     };
   }, []);
 
   const count = slides.length;
+
   const goTo = (i) => setCurrent((i + count) % count);
   const next = () => goTo(current + 1);
   const prev = () => goTo(current - 1);
 
+  // Autoplay
   useEffect(() => {
     if (paused || count < 2) return;
     const id = setInterval(() => setCurrent((c) => (c + 1) % count), AUTOPLAY_MS);
     return () => clearInterval(id);
   }, [paused, count]);
 
-  const onTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; };
+  // Touch Swipe
+  const onTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
   const onTouchEnd = (e) => {
     if (touchStartX.current === null) return;
     const diff = e.changedTouches[0].clientX - touchStartX.current;
-    if (Math.abs(diff) > 50) (diff < 0 ? next : prev)();
+    if (Math.abs(diff) > 50) {
+      if (diff < 0) next();
+      else prev();
+    }
     touchStartX.current = null;
   };
 
   const arrowBtn =
-    "absolute top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#1A175A]/80 hover:bg-[#1A175A] text-white border border-white/20 flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400";
+    'absolute top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#1A175A]/80 hover:bg-[#1A175A] text-white border border-white/20 flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 shadow-md';
 
   return (
     <section
-      className="relative bg-[#1A175A] border-b border-white/10"
+      className="relative bg-[#1A175A] border-b border-white/10 overflow-hidden"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       aria-roledescription="carousel"
@@ -102,113 +124,111 @@ const HeroBanner = () => {
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
-        {/* Slides */}
+        {/* Slides Track */}
         <div
           className="flex h-full transition-transform duration-700 ease-out"
           style={{ transform: `translateX(-${current * 100}%)` }}
         >
           {slides.map((slide, i) => {
-            const hasOverlayText = Boolean(slide.title || slide.subtitle);
+            const hasTextOverlay = Boolean(slide.title || slide.subtitle);
+
+            const slideContent = (
+              <div className="relative w-full h-full">
+                <img
+                  src={slide.src}
+                  alt={slide.alt || 'ANR Hospital Garments'}
+                  className="w-full h-full object-cover"
+                  loading={i === 0 ? 'eager' : 'lazy'}
+                  draggable={false}
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = '/anr-hero-banner.jpg';
+                  }}
+                />
+
+                {/* Optional overlay when title / subtitle are set in Admin */}
+                {hasTextOverlay && (
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#141247]/90 via-[#1A175A]/50 to-transparent flex items-center">
+                    <div className="max-w-7xl mx-auto px-6 sm:px-12 lg:px-16 w-full">
+                      <div className="max-w-xl text-white">
+                        {slide.badge && (
+                          <span className="inline-block px-3 py-1 rounded-full text-[11px] sm:text-xs font-semibold bg-amber-400 text-[#1A175A] mb-3 uppercase tracking-wider shadow">
+                            {slide.badge}
+                          </span>
+                        )}
+                        {slide.title && (
+                          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight mb-2 drop-shadow-md">
+                            {slide.title}
+                          </h2>
+                        )}
+                        {slide.subtitle && (
+                          <p className="text-xs sm:text-base lg:text-lg text-blue-100 font-medium mb-4 line-clamp-2 drop-shadow">
+                            {slide.subtitle}
+                          </p>
+                        )}
+                        {slide.ctaText && (
+                          <span className="inline-flex items-center gap-1.5 px-4 py-2 sm:px-5 sm:py-2.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-[#1A175A] font-bold text-xs sm:text-sm shadow-md transition-all">
+                            {slide.ctaText}
+                            <ChevronRight className="w-4 h-4" />
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
 
             return (
               <div
-                key={`${slide.src}-${i}`}
-                className="relative w-full h-full flex-shrink-0"
+                key={slide.id || slide.src}
+                className="w-full h-full flex-shrink-0"
                 aria-hidden={i !== current}
                 role="group"
                 aria-roledescription="slide"
                 aria-label={`${i + 1} of ${count}`}
               >
                 {slide.href ? (
-                  <a href={slide.href} tabIndex={i === current ? 0 : -1} className="block w-full h-full relative group">
-                    <img
-                      src={slide.src}
-                      alt={slide.alt}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.01]"
-                      loading={i === 0 ? 'eager' : 'lazy'}
-                      draggable={false}
-                      onError={(e) => {
-                        // Safe fallback if an uploaded backend image is not found
-                        if (e.currentTarget.src !== window.location.origin + '/anr-hero-banner.jpg') {
-                          e.currentTarget.src = '/anr-hero-banner.jpg';
-                        }
-                      }}
-                    />
-                    {hasOverlayText && (
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#141247]/90 via-[#1A175A]/30 to-transparent flex items-end p-6 sm:p-10 lg:p-16">
-                        <div className="max-w-2xl text-white space-y-2 sm:space-y-3">
-                          {slide.title && (
-                            <h2 className="text-xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight drop-shadow-md">
-                              {slide.title}
-                            </h2>
-                          )}
-                          {slide.subtitle && (
-                            <p className="text-xs sm:text-sm lg:text-base text-blue-100 max-w-xl line-clamp-2">
-                              {slide.subtitle}
-                            </p>
-                          )}
-                          {slide.ctaText && (
-                            <span className="inline-flex items-center gap-2 mt-2 px-4 py-2 rounded-lg bg-amber-400 text-[#1A175A] font-bold text-xs sm:text-sm hover:bg-amber-300 transition-colors shadow-lg">
-                              {slide.ctaText}
-                              <ArrowRight className="w-4 h-4" />
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    )}
+                  <a
+                    href={slide.href}
+                    tabIndex={i === current ? 0 : -1}
+                    className="block w-full h-full focus:outline-none"
+                  >
+                    {slideContent}
                   </a>
                 ) : (
-                  <div className="relative w-full h-full">
-                    <img
-                      src={slide.src}
-                      alt={slide.alt}
-                      className="w-full h-full object-cover"
-                      loading={i === 0 ? 'eager' : 'lazy'}
-                      draggable={false}
-                      onError={(e) => {
-                        if (e.currentTarget.src !== window.location.origin + '/anr-hero-banner.jpg') {
-                          e.currentTarget.src = '/anr-hero-banner.jpg';
-                        }
-                      }}
-                    />
-                    {hasOverlayText && (
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#141247]/90 via-[#1A175A]/30 to-transparent flex items-end p-6 sm:p-10 lg:p-16">
-                        <div className="max-w-2xl text-white space-y-2 sm:space-y-3">
-                          {slide.title && (
-                            <h2 className="text-xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight drop-shadow-md">
-                              {slide.title}
-                            </h2>
-                          )}
-                          {slide.subtitle && (
-                            <p className="text-xs sm:text-sm lg:text-base text-blue-100 max-w-xl line-clamp-2">
-                              {slide.subtitle}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                  slideContent
                 )}
               </div>
             );
           })}
         </div>
 
-        {/* Arrows */}
+        {/* Navigation Arrows */}
         {count > 1 && (
           <>
-            <button type="button" onClick={prev} className={`${arrowBtn} left-3 sm:left-5`} aria-label="Previous slide">
+            <button
+              type="button"
+              onClick={prev}
+              className={`${arrowBtn} left-3 sm:left-5`}
+              aria-label="Previous slide"
+            >
               <ChevronLeft className="w-5 h-5" />
             </button>
-            <button type="button" onClick={next} className={`${arrowBtn} right-3 sm:right-5`} aria-label="Next slide">
+            <button
+              type="button"
+              onClick={next}
+              className={`${arrowBtn} right-3 sm:right-5`}
+              aria-label="Next slide"
+            >
               <ChevronRight className="w-5 h-5" />
             </button>
           </>
         )}
 
-        {/* Dots */}
+        {/* Indicators Dots */}
         {count > 1 && (
-          <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#1A175A]/70 backdrop-blur-sm">
+          <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#1A175A]/70 backdrop-blur-sm border border-white/10">
             {slides.map((_, i) => (
               <button
                 key={i}

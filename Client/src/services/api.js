@@ -1,102 +1,117 @@
-const SERVER_URL = (import.meta.env.VITE_SERVER_URL || 'http://localhost:5000').replace(/\/$/, '');
-const API_BASE = (import.meta.env.VITE_API_BASE_URL || `${SERVER_URL}/api`).replace(/\/$/, '');
+/**
+ * ANR Hospital Garments - API Service
+ * Handles fetching dynamic announcements and banners from Admin backend
+ */
 
-// Utility to safely resolve image URLs coming from Admin/Server
-export const resolveImageUrl = (path, fallback = '/anr-hero-banner.jpg') => {
-  if (!path || typeof path !== 'string' || !path.trim()) return fallback;
-  const trimmed = path.trim();
-  if (/^(https?:)?\/\//i.test(trimmed) || /^(data:|blob:)/i.test(trimmed)) {
-    return trimmed;
+const SERVER_URL = (import.meta.env.VITE_SERVER_URL || 'http://localhost:5000').replace(/\/$/, '');
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || `${SERVER_URL}/api`).replace(/\/$/, '');
+
+/**
+ * Resolves image URL from backend uploads or public folder
+ */
+export const getImageUrl = (imagePath) => {
+  if (!imagePath) return '';
+  if (
+    imagePath.startsWith('http://') ||
+    imagePath.startsWith('https://') ||
+    imagePath.startsWith('data:') ||
+    imagePath.startsWith('blob:')
+  ) {
+    return imagePath;
   }
-  const cleanPath = trimmed.replace(/^\/+/, '');
-  // If path already starts with api/, don't double it
-  if (cleanPath.startsWith('api/')) {
+  // If it's a backend upload path (e.g., uploads/banners/...)
+  if (imagePath.includes('uploads/')) {
+    const cleanPath = imagePath.replace(/^\/+/, '');
     return `${SERVER_URL}/${cleanPath}`;
   }
-  return `${SERVER_URL}/${cleanPath}`;
+  // Otherwise it's a client static asset
+  return imagePath.startsWith('/') ? imagePath : `/${imagePath}`;
 };
 
-// Fetch Dynamic Announcements / Promo Messages from Admin
-export const fetchDynamicAnnouncements = async () => {
+/**
+ * Fetch dynamic marketing / slider announcement messages from Admin
+ */
+export const fetchAnnouncements = async () => {
   try {
-    const endpoints = [
-      `${API_BASE}/promo-bar/active`,
-      `${API_BASE}/promo-bar`,
-      `${API_BASE}/marketing-messages`,
-      `${API_BASE}/slider-messages`,
-      `${API_BASE}/announcements`
-    ];
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 4000);
 
-    for (const url of endpoints) {
-      try {
-        const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
-        if (res.ok) {
-          const data = await res.json();
-          const list = data?.messages || data?.value || (Array.isArray(data) ? data : []);
-          const activeList = list
-            .filter((m) => m && (m.isActive !== false) && (m.status !== 'Inactive'))
-            .map((m) => typeof m === 'string' ? m : m.message || m.title || m.text)
-            .filter(Boolean);
+    const res = await fetch(`${API_BASE_URL}/marketing-messages`, {
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
 
-          if (activeList.length > 0) {
-            return activeList;
-          }
-        }
-      } catch (err) {
-        // Continue to next endpoint attempt
-      }
+    if (!res.ok) {
+      console.warn(`[API] marketing-messages returned status ${res.status}`);
+      return [];
     }
-    return null;
-  } catch (error) {
-    console.warn('[Announcements API] Fallback to default announcements:', error);
-    return null;
+
+    const data = await res.json();
+    const rawList = Array.isArray(data) ? data : data.messages || [];
+
+    // Filter active and sort by position
+    return rawList
+      .filter((m) => m.isActive !== false)
+      .sort((a, b) => (a.position || 0) - (b.position || 0))
+      .map((m) => ({
+        id: m.id,
+        text: m.message || m.text || '',
+        link: m.link || null,
+        position: m.position || 0
+      }))
+      .filter((m) => Boolean(m.text.trim()));
+  } catch (err) {
+    console.warn('[API] Failed to fetch dynamic announcements, using fallback:', err.message);
+    return [];
   }
 };
 
-// Fetch Dynamic Hero Banners from Admin
-export const fetchDynamicBanners = async () => {
+/**
+ * Fetch dynamic banners from Admin (Hero, Promo, etc.)
+ */
+export const fetchBanners = async (type = 'HERO') => {
   try {
-    const endpoints = [
-      `${API_BASE}/banners?type=HERO`,
-      `${API_BASE}/banners?section=hero`,
-      `${API_BASE}/banners`
-    ];
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 4000);
 
-    for (const url of endpoints) {
-      try {
-        const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
-        if (res.ok) {
-          const data = await res.json();
-          const list = data?.banners || data?.value || (Array.isArray(data) ? data : []);
+    // Try type-filtered first, otherwise all banners
+    const res = await fetch(`${API_BASE_URL}/banners?type=${type}`, {
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
 
-          // Filter active hero banners
-          const activeList = list.filter((b) => {
-            if (!b) return false;
-            if (b.isActive === false || b.status === 'Inactive') return false;
-            if (b.type && b.type !== 'HERO') return false;
-            if (b.section && b.section.toLowerCase() !== 'hero') return false;
-            return true;
-          });
-
-          if (activeList.length > 0) {
-            return activeList.map((b) => ({
-              id: b.id,
-              title: b.title || "ANR HOSPITAL GARMENTS",
-              subtitle: b.subtitle || b.content || "Designed for Care. Made to Perform.",
-              alt: b.title || b.content || "ANR Hospital Garments Banner",
-              image: resolveImageUrl(b.image, '/anr-hero-banner.jpg'),
-              href: b.link || b.ctaLink || '#scrubs-collection',
-              ctaText: b.ctaText || "Explore Collection"
-            }));
-          }
-        }
-      } catch (err) {
-        // Continue to next endpoint attempt
-      }
+    if (!res.ok) {
+      console.warn(`[API] banners returned status ${res.status}`);
+      return [];
     }
-    return null;
-  } catch (error) {
-    console.warn('[Banners API] Fallback to default hero banner slides:', error);
-    return null;
+
+    const data = await res.json();
+    const rawList = Array.isArray(data) ? data : data.banners || [];
+
+    // Match type or section
+    return rawList
+      .filter((b) => {
+        const isActive = b.isActive !== false && b.status !== 'Inactive';
+        const matchesType =
+          !type ||
+          b.type?.toUpperCase() === type.toUpperCase() ||
+          b.section?.toLowerCase() === type.toLowerCase();
+        return isActive && matchesType;
+      })
+      .sort((a, b) => (a.position || a.sortOrder || 0) - (b.position || b.sortOrder || 0))
+      .map((b) => ({
+        id: b.id,
+        title: b.title || '',
+        subtitle: b.subtitle || b.description || b.content || '',
+        badge: b.badgeText || 'Bangalore Factory Direct',
+        primaryCta: b.ctaText || 'View Collection',
+        primaryHref: b.ctaLink || b.link || '#scrubs-collection',
+        secondaryCta: 'Hospital Bulk Quote',
+        secondaryHref: '#bulk-inquiry',
+        image: getImageUrl(b.image)
+      }));
+  } catch (err) {
+    console.warn('[API] Failed to fetch dynamic banners, using fallback:', err.message);
+    return [];
   }
 };
