@@ -1,0 +1,50 @@
+# Dependencies
+node_modules/
+*/node_modules/
+*/*/node_modules/
+.pnp
+.pnp.js
+
+# Production build outputs
+dist/
+*/dist/
+build/
+*/build/
+
+# Environment files & secrets
+.env
+.env.*
+!.env.example
+*.env
+
+# Large reference directory (>100MB exceeds GitHub file limit)
+Reference/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+*.log
+
+# Editor & OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Temporary test screenshots & cache
+.playwright-mcp/
+homepage_*.png
+categories_*.png
+colors_*.png
+products_*.png
+embroidery_*.png
+bulk_*.png
+footer_*.png
+mobile_*.png
+anr_*.png
+test_color.ps1
