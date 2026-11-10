@@ -227,13 +227,13 @@ const HeroBanner = () => {
         )}
 
         {/* Quick jump to Shop by Category */}
-        <a
+        {/* <a
           href="#shop-categories"
           className="absolute bottom-3 sm:bottom-4 right-4 sm:right-8 z-10 hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/90 hover:bg-white text-[#1A175A] text-xs font-bold shadow-lg backdrop-blur-sm transition-all hover:scale-105"
         >
           <span>Shop by Category</span>
           <ChevronRight className="w-3.5 h-3.5 text-amber-500 rotate-90" />
-        </a>
+        </a> */}
 
         {/* Indicators Dots */}
         {count > 1 && (
