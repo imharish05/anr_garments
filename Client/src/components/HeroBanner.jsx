@@ -113,14 +113,14 @@ const HeroBanner = () => {
 
   return (
     <section
-      className="relative bg-[#1A175A] border-b border-white/10 overflow-hidden"
+      className="relative bg-[#1A175A] overflow-hidden"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       aria-roledescription="carousel"
       aria-label="Featured banners"
     >
       <div
-        className="relative w-full overflow-hidden aspect-[16/9] sm:aspect-[16/7] lg:aspect-[16/6]"
+        className="relative w-full overflow-hidden aspect-[16/9]"
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
