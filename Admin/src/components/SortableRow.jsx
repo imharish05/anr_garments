@@ -28,7 +28,7 @@ const SortableRow = ({ id, children }) => {
           type="button"
           {...attributes}
           {...listeners}
-          className="cursor-grab active:cursor-grabbing text-brand-grey/40 hover:text-brand-gold transition-colors touch-none"
+          className="cursor-grab active:cursor-grabbing text-brand-grey/40 hover:text-[#1a175a] transition-colors touch-none"
           title="Drag to reorder"
         >
           <GripVertical size={16} />

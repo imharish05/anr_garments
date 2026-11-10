@@ -241,7 +241,7 @@ const SliderMessagesAdminPage = () => {
                   <tbody>
                     {messages.map((msg) => (
                       <SortableRow key={msg.id} id={msg.id}>
-                        <td className="px-5 py-4 font-mono text-brand-gold font-bold">{msg.position}</td>
+                        <td className="px-5 py-4 font-mono text-[#1a175a] font-bold">{msg.position}</td>
                         <td className="px-5 py-4 font-medium text-brand-text max-w-md truncate">{msg.message}</td>
                         <td className="px-5 py-4">
                           <div className="flex items-center gap-2">
@@ -262,7 +262,7 @@ const SliderMessagesAdminPage = () => {
                               {canAddMessage && (
                                 <button
                                   onClick={() => handleOpenEdit(msg)}
-                                  className="p-1.5 text-brand-grey hover:text-brand-gold hover:bg-brand-light rounded transition-all"
+                                  className="p-1.5 text-brand-grey hover:text-[#1a175a] hover:bg-brand-light rounded transition-all"
                                   aria-label="Edit message"
                                   id={`edit-btn-${msg.id}`}
                                 >
@@ -306,12 +306,12 @@ const SliderMessagesAdminPage = () => {
             >
               <div className="flex items-center justify-between px-6 py-4 border-b border-brand-light">
                 <h2 className="font-playfair text-lg font-semibold text-brand-text flex items-center gap-2">
-                  {/* <Sparkles size={18} className="text-brand-gold" /> */}
+                  {/* <Sparkles size={18} className="text-[#1a175a]" /> */}
                   {editingId ? 'Edit Slider Message' : 'Add Slider Message'}
                 </h2>
                 <button
                   onClick={() => setModalOpen(false)}
-                  className="p-1.5 text-brand-grey hover:text-brand-gold hover:bg-brand-light rounded-full transition-colors"
+                  className="p-1.5 text-brand-grey hover:text-[#1a175a] hover:bg-brand-light rounded-full transition-colors"
                 >
                   <X size={18} />
                 </button>
@@ -327,7 +327,7 @@ const SliderMessagesAdminPage = () => {
                     onChange={(e) => setForm((p) => ({ ...p, message: e.target.value }))}
                     required
                     rows={3}
-                    className="w-full border border-brand-light bg-white px-3 py-2 text-sm text-brand-text placeholder-brand-grey focus:outline-none focus:border-brand-gold transition-colors rounded-lg font-sans"
+                    className="w-full border border-brand-light bg-white px-3 py-2 text-sm text-brand-text placeholder-brand-grey focus:outline-none focus:border-[#1a175a] transition-colors rounded-lg font-sans"
                     placeholder="e.g. Free shipping on orders above ₹1499 · Use code WELCOME20 for 20% off"
                   />
                 </div>
@@ -343,7 +343,7 @@ const SliderMessagesAdminPage = () => {
                       onChange={(e) => setForm((p) => ({ ...p, position: parseInt(e.target.value, 10) || 1 }))}
                       required
                       min={1}
-                      className="w-full border border-brand-light bg-white px-3 py-2 text-sm text-brand-text focus:outline-none focus:border-brand-gold transition-colors rounded-lg font-mono"
+                      className="w-full border border-brand-light bg-white px-3 py-2 text-sm text-brand-text focus:outline-none focus:border-[#1a175a] transition-colors rounded-lg font-mono"
                     />
                     <p className="text-[11px] text-brand-grey mt-1">
                       Existing items at this position will automatically shift down.

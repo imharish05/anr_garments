@@ -101,7 +101,7 @@ const SettingsAdminPage = () => {
       <label className="block text-xs font-semibold text-neutral-800 mb-1.5">{label}</label>
       <input
         {...props}
-        className="w-full border border-neutral-300 rounded-lg p-2.5 text-xs text-neutral-900 focus:border-brand-gold focus:outline-none bg-white transition-colors"
+        className="w-full border border-neutral-300 rounded-lg p-2.5 text-xs text-neutral-900 focus:border-[#1a175a] focus:outline-none bg-white transition-colors"
       />
       {helpText && <p className="text-[11px] text-neutral-400 mt-1">{helpText}</p>}
     </div>
@@ -117,7 +117,7 @@ const SettingsAdminPage = () => {
             aria-selected={tab === t}
             onClick={() => setTab(t)}
             id={`settings-tab-${t.toLowerCase().replace(/[^a-z]/g, '')}`}
-            className={`px-5 py-3 text-sm font-medium border-b-2 transition-colors ${tab === t ? 'border-brand-gold text-brand-gold font-bold' : 'border-transparent text-neutral-500 hover:text-neutral-900'}`}
+            className={`px-5 py-3 text-sm font-medium border-b-2 transition-colors ${tab === t ? 'border-[#1a175a] text-[#1a175a] font-bold' : 'border-transparent text-neutral-500 hover:text-neutral-900'}`}
           >
             {t}
           </button>
@@ -128,7 +128,7 @@ const SettingsAdminPage = () => {
           {tab === 'Inventory Alerts' ? (
             <form onSubmit={handleSaveInventorySettings} className="space-y-6">
               <div className="flex items-center gap-2 pb-3 border-b border-neutral-100">
-                <Save className="text-brand-gold" size={20} />
+                <Save className="text-[#1a175a]" size={20} />
                 <div>
                   <h2 className="font-playfair text-lg sm:text-xl font-semibold text-neutral-900">Global Inventory Stock Alert Threshold</h2>
                   <p className="text-xs text-neutral-500">Global default limit to trigger low stock warnings in the top notification bell across all warehouses.</p>
@@ -136,7 +136,7 @@ const SettingsAdminPage = () => {
               </div>
               {loading ? (
                 <div className="py-8 text-center text-xs text-neutral-400 flex items-center justify-center gap-2">
-                  <RefreshCw size={16} className="animate-spin text-brand-gold" /> Loading inventory settings…
+                  <RefreshCw size={16} className="animate-spin text-[#1a175a]" /> Loading inventory settings…
                 </div>
               ) : (
                 <>
@@ -161,7 +161,7 @@ const SettingsAdminPage = () => {
           ) : (
             <form onSubmit={handleSaveOtpSettings} className="space-y-6">
               <div className="flex items-center gap-2 pb-3 border-b border-neutral-100">
-                <ShieldCheck className="text-brand-gold" size={20} />
+                <ShieldCheck className="text-[#1a175a]" size={20} />
                 <div>
                   <h2 className="font-playfair text-lg sm:text-xl font-semibold text-neutral-900">OTP Security Verification</h2>
                   <p className="text-xs text-neutral-500">Configure email OTP verification rules for Cash on Delivery (COD) and checkout orders.</p>
@@ -170,7 +170,7 @@ const SettingsAdminPage = () => {
 
               {loading ? (
                 <div className="py-8 text-center text-xs text-neutral-400 flex items-center justify-center gap-2">
-                  <RefreshCw size={16} className="animate-spin text-brand-gold" /> Loading security settings…
+                  <RefreshCw size={16} className="animate-spin text-[#1a175a]" /> Loading security settings…
                 </div>
               ) : (
                 <>
@@ -181,7 +181,7 @@ const SettingsAdminPage = () => {
                         type="checkbox"
                         checked={otpSettings.codOnly}
                         onChange={e => setOtpSettings(s => ({ ...s, codOnly: e.target.checked }))}
-                        className="w-4 h-4 accent-brand-gold rounded cursor-pointer"
+                        className="w-4 h-4 accent-[#1a175a] rounded cursor-pointer"
                         id="otp-cod-only-toggle"
                       />
                       <span>Require OTP verification ONLY for Cash on Delivery (COD)</span>
@@ -207,7 +207,7 @@ const SettingsAdminPage = () => {
                         type="checkbox"
                         checked={otpSettings.requireCodOtp}
                         onChange={e => setOtpSettings(s => ({ ...s, requireCodOtp: e.target.checked }))}
-                        className="w-4 h-4 accent-brand-gold rounded cursor-pointer"
+                        className="w-4 h-4 accent-[#1a175a] rounded cursor-pointer"
                         id="otp-cod-toggle"
                       />
                       Require OTP verification for Cash on Delivery (COD) orders

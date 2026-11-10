@@ -658,7 +658,7 @@ const BannersAdminPage = () => {
             id={`banners-tab-${tab.toLowerCase().replace(/\s+/g, '-')}`}
             className={`flex-shrink-0 px-4 py-2 text-xs font-medium rounded-lg border transition-all ${
               activeTab === tab
-                ? 'bg-brand-gold border-brand-gold text-white'
+                ? 'bg-[#1a175a] border-[#1a175a] text-white shadow-sm font-semibold'
                 : 'bg-white border-brand-light text-brand-grey hover:bg-brand-light'
             }`}
           >
@@ -702,7 +702,7 @@ const BannersAdminPage = () => {
                     <div className="w-full h-full flex items-center justify-center text-brand-grey text-xs">No image</div>
                   )}
                   <div className="absolute top-2 left-2 flex gap-1.5 flex-wrap">
-                    <span className="bg-brand-gold text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-2xs">
+                    <span className="bg-[#1a175a] text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-2xs">
                       {banner.type === 'EXCLUSIVE_DEAL' ? 'EXCLUSIVE DEAL' : banner.type === 'COUNTDOWN' ? 'OFFERS & COUNTDOWN' : banner.type}
                     </span>
                     <span className="bg-white/90 text-brand-text text-[10px] font-bold px-2 py-0.5 rounded border border-brand-light">Pos: {banner.position}</span>
@@ -750,7 +750,7 @@ const BannersAdminPage = () => {
                 </div>
                 <div className="flex gap-2">
                   {canAddBanner && (
-                    <button onClick={() => openModal(banner)} className="p-1.5 text-brand-grey hover:text-brand-gold transition-colors" title="Edit" id={`edit-banner-${banner.id}`}><Edit2 size={14} /></button>
+                    <button onClick={() => openModal(banner)} className="p-1.5 text-brand-grey hover:text-[#1a175a] transition-colors" title="Edit" id={`edit-banner-${banner.id}`}><Edit2 size={14} /></button>
                   )}
                   {canDeleteBanner && (
                     <button onClick={() => handleDelete(banner.id)} className="p-1.5 text-brand-grey hover:text-red-500 transition-colors" title="Delete" id={`del-banner-${banner.id}`}><Trash2 size={14} /></button>
@@ -800,7 +800,7 @@ const BannersAdminPage = () => {
                 </label>
                 <div
                   onClick={() => aboutFileInputRef.current?.click()}
-                  className="border-2 border-dashed border-brand-light hover:border-brand-gold rounded-xl p-5 text-center cursor-pointer transition-colors bg-neutral-50/50"
+                  className="border-2 border-dashed border-brand-light hover:border-[#1a175a] rounded-xl p-5 text-center cursor-pointer transition-colors bg-neutral-50/50"
                 >
                   {aboutImagePreview ? (
                     <div className="relative inline-block">
@@ -862,7 +862,7 @@ const BannersAdminPage = () => {
                     value={aboutForm.title}
                     onChange={(e) => setAboutForm(p => ({ ...p, title: e.target.value }))}
                     placeholder="e.g. ANR Hospitals"
-                    className="w-full border border-brand-light px-3.5 py-2.5 text-sm rounded-lg focus:outline-none focus:border-brand-gold"
+                    className="w-full border border-brand-light px-3.5 py-2.5 text-sm rounded-lg focus:outline-none focus:border-[#1a175a]"
                   />
                 </div>
                 <div>
@@ -875,7 +875,7 @@ const BannersAdminPage = () => {
                     value={aboutForm.subtitle}
                     onChange={(e) => setAboutForm(p => ({ ...p, subtitle: e.target.value }))}
                     placeholder="e.g. Our Story"
-                    className="w-full border border-brand-light px-3.5 py-2.5 text-sm rounded-lg focus:outline-none focus:border-brand-gold"
+                    className="w-full border border-brand-light px-3.5 py-2.5 text-sm rounded-lg focus:outline-none focus:border-[#1a175a]"
                   />
                 </div>
               </div>
@@ -890,7 +890,7 @@ const BannersAdminPage = () => {
                   value={aboutForm.badgeText}
                   onChange={(e) => setAboutForm(p => ({ ...p, badgeText: e.target.value }))}
                   placeholder="e.g. 15"
-                  className="w-full border border-brand-light px-3.5 py-2.5 text-sm rounded-lg focus:outline-none focus:border-brand-gold"
+                  className="w-full border border-brand-light px-3.5 py-2.5 text-sm rounded-lg focus:outline-none focus:border-[#1a175a]"
                 />
                 <p className="text-[11px] text-brand-grey mt-1">Displays as "+{aboutForm.badgeText || '15'} Years of Craftsmanship" on the curved badge.</p>
               </div>
@@ -905,7 +905,7 @@ const BannersAdminPage = () => {
                   value={aboutForm.description}
                   onChange={(e) => setAboutForm(p => ({ ...p, description: e.target.value }))}
                   placeholder="Enter story paragraphs. Separate multiple paragraphs with an empty line."
-                  className="w-full border border-brand-light px-3.5 py-2.5 text-sm rounded-lg focus:outline-none focus:border-brand-gold resize-y leading-relaxed"
+                  className="w-full border border-brand-light px-3.5 py-2.5 text-sm rounded-lg focus:outline-none focus:border-[#1a175a] resize-y leading-relaxed"
                 />
                 <p className="text-[11px] text-brand-grey mt-1">Tip: Use a blank line between paragraphs to separate them cleanly on the homepage.</p>
               </div>
@@ -919,14 +919,14 @@ const BannersAdminPage = () => {
                     </label>
                     <p className="text-[11px] text-brand-grey mt-0.5">Edit the 3 luxury craftsmanship percentage bars displayed on the homepage.</p>
                   </div>
-                  <span className="text-[10px] bg-brand-gold/15 text-brand-gold font-bold px-2 py-0.5 rounded">3 Bars</span>
+                  <span className="text-[10px] bg-blue-50 text-[#1a175a] border border-blue-200 font-bold px-2 py-0.5 rounded">3 Bars</span>
                 </div>
 
                 <div className="space-y-3">
                   {(aboutForm.metrics || []).map((metric, idx) => (
                     <div key={idx} className="bg-white p-3.5 rounded-lg border border-brand-light shadow-2xs space-y-2">
                       <div className="flex items-center justify-between text-xs">
-                        <span className="font-bold text-brand-gold uppercase tracking-wider text-[10px]">Quality Metric {idx + 1}</span>
+                        <span className="font-bold text-[#1a175a] uppercase tracking-wider text-[10px]">Quality Metric {idx + 1}</span>
                         <span className="font-bold text-neutral-900 tabular-nums">{metric.percentage}%</span>
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
@@ -943,7 +943,7 @@ const BannersAdminPage = () => {
                               });
                             }}
                             placeholder="e.g. Premium Fabric Quality"
-                            className="w-full border border-brand-light px-3 py-1.5 text-xs rounded-md focus:outline-none focus:border-brand-gold font-medium"
+                            className="w-full border border-brand-light px-3 py-1.5 text-xs rounded-md focus:outline-none focus:border-[#1a175a] font-medium"
                           />
                         </div>
                         <div className="sm:col-span-4 flex items-center gap-1.5">
@@ -960,7 +960,7 @@ const BannersAdminPage = () => {
                                 return { ...p, metrics: nextM };
                               });
                             }}
-                            className="w-20 border border-brand-light px-2.5 py-1.5 text-xs rounded-md focus:outline-none focus:border-brand-gold text-center font-bold text-brand-gold"
+                            className="w-20 border border-brand-light px-2.5 py-1.5 text-xs rounded-md focus:outline-none focus:border-[#1a175a] text-center font-bold text-[#1a175a]"
                           />
                           <span className="text-xs font-bold text-brand-grey">%</span>
                         </div>
@@ -987,7 +987,7 @@ const BannersAdminPage = () => {
                     value={aboutForm.ctaText}
                     onChange={(e) => setAboutForm(p => ({ ...p, ctaText: e.target.value }))}
                     placeholder="e.g. Discover Our Heritage"
-                    className="w-full border border-brand-light px-3.5 py-2.5 text-sm rounded-lg focus:outline-none focus:border-brand-gold"
+                    className="w-full border border-brand-light px-3.5 py-2.5 text-sm rounded-lg focus:outline-none focus:border-[#1a175a]"
                   />
                 </div>
                 <div>
@@ -1000,7 +1000,7 @@ const BannersAdminPage = () => {
                     value={aboutForm.ctaLink}
                     onChange={(e) => setAboutForm(p => ({ ...p, ctaLink: e.target.value }))}
                     placeholder="e.g. /about"
-                    className="w-full border border-brand-light px-3.5 py-2.5 text-sm rounded-lg focus:outline-none focus:border-brand-gold"
+                    className="w-full border border-brand-light px-3.5 py-2.5 text-sm rounded-lg focus:outline-none focus:border-[#1a175a]"
                   />
                 </div>
               </div>
@@ -1011,7 +1011,7 @@ const BannersAdminPage = () => {
               <div>
                 <div className="flex items-center justify-between pb-3 mb-4 border-b border-brand-light">
                   <span className="text-xs font-bold uppercase tracking-wider text-brand-grey">Live Preview</span>
-                  <span className="text-[10px] bg-brand-gold/15 text-brand-gold font-semibold px-2 py-0.5 rounded-full">Homepage Card</span>
+                  <span className="text-[10px] bg-blue-50 text-[#1a175a] border border-blue-200 font-semibold px-2 py-0.5 rounded-full">Homepage Card</span>
                 </div>
 
                 <div className="relative w-full h-80 rounded-[24px] overflow-hidden bg-neutral-900 shadow-sm">
@@ -1093,7 +1093,7 @@ const BannersAdminPage = () => {
             <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.96 }} className="bg-white rounded-xl w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl">
               <div className="flex items-center justify-between px-6 py-4 border-b border-brand-light sticky top-0 bg-white z-10">
                 <h2 className="font-playfair text-lg font-semibold">{editing ? 'Edit Banner' : 'Add Banner'}</h2>
-                <button onClick={() => setModalOpen(false)} className="p-1.5 hover:text-brand-gold"><X size={18} /></button>
+                <button onClick={() => setModalOpen(false)} className="p-1.5 hover:text-[#1a175a]"><X size={18} /></button>
               </div>
 
               <form onSubmit={handleSave} className="p-6 space-y-4">
@@ -1107,7 +1107,7 @@ const BannersAdminPage = () => {
                       id="ban-type"
                       value={form.type}
                       onChange={e => handleTypeChange(e.target.value)}
-                      className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-brand-gold bg-white rounded-sm font-medium text-brand-text"
+                      className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-[#1a175a] bg-white rounded-sm font-medium text-brand-text"
                     >
                       <option value="HERO">Hero Banner</option>
                       <option value="COUNTDOWN">Offers & Countdown</option>
@@ -1123,7 +1123,7 @@ const BannersAdminPage = () => {
                       min="1"
                       value={form.position}
                       onChange={e => setForm(p => ({ ...p, position: Number(e.target.value) }))}
-                      className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-brand-gold rounded-sm"
+                      className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-[#1a175a] rounded-sm"
                     />
                   </div>
                 </div>
@@ -1136,8 +1136,8 @@ const BannersAdminPage = () => {
                       !dimValidation.isValid
                         ? 'border-red-500 bg-red-50/20'
                         : isDragging
-                        ? 'border-brand-gold bg-brand-gold/5'
-                        : 'border-brand-light hover:border-brand-gold'
+                        ? 'border-[#1a175a] bg-blue-50/50'
+                        : 'border-brand-light hover:border-[#1a175a]'
                     }`}
                     onClick={() => fileInputRef.current?.click()}
                     onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(true); }}
@@ -1206,7 +1206,7 @@ const BannersAdminPage = () => {
                     maxLength={BANNER_LIMITS.title.maxChars}
                     value={form.title}
                     onChange={e => setForm(p => ({ ...p, title: e.target.value }))}
-                    className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-brand-gold rounded-sm"
+                    className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-[#1a175a] rounded-sm"
                     placeholder="e.g. Midnight Luxury Sale"
                   />
                 </div>
@@ -1224,7 +1224,7 @@ const BannersAdminPage = () => {
                     maxLength={BANNER_LIMITS.subtitle.maxChars}
                     value={form.subtitle}
                     onChange={e => setForm(p => ({ ...p, subtitle: e.target.value }))}
-                    className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-brand-gold rounded-sm"
+                    className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-[#1a175a] rounded-sm"
                     placeholder="e.g. Up to 50% Off Medical Scrubs & Hospital Garments"
                   />
                 </div>
@@ -1233,7 +1233,7 @@ const BannersAdminPage = () => {
                 {form.type === 'COUNTDOWN' && (
                   <div>
                     <label className="block text-xs font-semibold text-brand-grey mb-1.5" htmlFor="ban-countdown">Offer Ends At (Date & Time) *</label>
-                    <input id="ban-countdown" type="datetime-local" value={form.countdown} onChange={e => setForm(p => ({ ...p, countdown: e.target.value }))} required className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-brand-gold rounded-sm" />
+                    <input id="ban-countdown" type="datetime-local" value={form.countdown} onChange={e => setForm(p => ({ ...p, countdown: e.target.value }))} required className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-[#1a175a] rounded-sm" />
                   </div>
                 )}
 
@@ -1252,7 +1252,7 @@ const BannersAdminPage = () => {
                       maxLength={BANNER_LIMITS.ctaText.maxChars}
                       value={form.ctaText}
                       onChange={e => setForm(p => ({ ...p, ctaText: e.target.value }))}
-                      className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-brand-gold rounded-sm"
+                      className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-[#1a175a] rounded-sm"
                       placeholder="e.g. SHOP NOW"
                     />
                   </div>
@@ -1270,7 +1270,7 @@ const BannersAdminPage = () => {
                       value={form.ctaLink}
                       onChange={e => setForm(p => ({ ...p, ctaLink: e.target.value }))}
                       required
-                      className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-brand-gold rounded-sm"
+                      className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-[#1a175a] rounded-sm"
                       placeholder="e.g. /products"
                     />
                   </div>
@@ -1291,7 +1291,7 @@ const BannersAdminPage = () => {
                       maxLength={BANNER_LIMITS.badgeText.maxChars}
                       value={form.badgeText}
                       onChange={e => setForm(p => ({ ...p, badgeText: e.target.value }))}
-                      className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-brand-gold rounded-sm"
+                      className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-[#1a175a] rounded-sm"
                       placeholder="e.g. 50% OFF"
                     />
                   </div>

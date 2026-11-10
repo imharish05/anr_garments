@@ -236,7 +236,7 @@ const DashboardPage = () => {
           <button
             onClick={handleRefresh}
             disabled={isRefreshing}
-            className="flex items-center justify-center gap-2 px-4 py-2 bg-brand-gold hover:bg-brand-gold/90 text-white text-xs font-semibold rounded-lg shadow-sm transition-all duration-200 disabled:opacity-60 focus-visible:outline-brand-gold cursor-pointer"
+            className="flex items-center justify-center gap-2 px-4 py-2 bg-[#1a175a] hover:bg-[#120f40] text-white text-xs font-semibold rounded-lg shadow-sm transition-all duration-200 disabled:opacity-60 focus-visible:outline-[#1a175a] cursor-pointer"
             id="dashboard-refresh-btn"
             title="Refresh stock, orders, and stats"
           >
@@ -266,7 +266,7 @@ const DashboardPage = () => {
                   <select
                     value={revenueRange}
                     onChange={(e) => setRevenueRange(e.target.value)}
-                    className="bg-brand-light/50 text-neutral-800 text-xs rounded-lg px-3 py-1.5 border border-brand-light focus:outline-none focus:border-brand-gold font-medium"
+                    className="bg-brand-light/50 text-neutral-800 text-xs rounded-lg px-3 py-1.5 border border-brand-light focus:outline-none focus:border-[#1a175a] font-medium"
                     id="dashboard-period-select"
                   >
                     <option value="7_days">Last 7 Days</option>
@@ -348,7 +348,7 @@ const DashboardPage = () => {
               </div>
             </div>
 
-            <Link to="/variants" className="mt-4 text-xs text-brand-gold hover:underline flex items-center gap-1 font-semibold" id="low-stock-manage">
+            <Link to="/variants" className="mt-4 text-xs text-[#1a175a] hover:underline flex items-center gap-1 font-semibold" id="low-stock-manage">
               Manage Stock <ArrowRight size={12} />
             </Link>
           </div>
@@ -358,7 +358,7 @@ const DashboardPage = () => {
         <div className="bg-white rounded-xl shadow-sm overflow-hidden mb-6">
           <div className="flex items-center justify-between px-5 py-4 border-b border-brand-light">
             <h2 className="font-playfair text-xl sm:text-2xl font-semibold text-neutral-900">Recent Orders</h2>
-            <Link to="/orders" className="text-xs text-brand-gold hover:underline flex items-center gap-1 font-semibold" id="view-all-orders">
+            <Link to="/orders" className="text-xs text-[#1a175a] hover:underline flex items-center gap-1 font-semibold" id="view-all-orders">
               View All <ArrowRight size={12} />
             </Link>
           </div>
@@ -388,7 +388,7 @@ const DashboardPage = () => {
                 ) : (
                   orders.slice(0, 5).map(order => (
                     <tr key={order.id} className="border-b border-brand-light hover:bg-brand-light/30 transition-colors">
-                      <td className="px-4 py-3 font-medium text-brand-gold">{order.orderNumber || order.id}</td>
+                      <td className="px-4 py-3 font-medium text-[#1a175a]">{order.orderNumber || order.id}</td>
                       <td className="px-4 py-3 text-brand-grey">{order.customer?.name || 'Customer'}</td>
                       <td className="px-4 py-3 font-semibold">{fmtINR(order.totalAmount)}</td>
                       <td className="px-4 py-3">
@@ -407,7 +407,7 @@ const DashboardPage = () => {
                       <td className="px-4 py-3">
                         <button
                           onClick={() => setSelectedOrderModal(order)}
-                          className="p-1.5 bg-brand-gold/10 hover:bg-brand-gold hover:text-white text-brand-gold rounded-lg transition-all flex items-center gap-1 text-xs font-medium border border-brand-gold/20"
+                          className="p-1.5 bg-[#1a175a]/10 hover:bg-[#1a175a] hover:text-white text-[#1a175a] rounded-lg transition-all flex items-center gap-1 text-xs font-semibold border border-[#1a175a]/20 shadow-2xs"
                           title="View Order Details"
                           id={`dashboard-view-order-${order.id}`}
                         >
@@ -433,10 +433,10 @@ const DashboardPage = () => {
             <Link
               key={label}
               to={to}
-              className="bg-white rounded-xl p-4 flex items-center gap-3 shadow-sm hover:shadow-md transition-shadow text-sm font-medium hover:text-brand-gold"
+              className="bg-white rounded-xl p-4 flex items-center gap-3 shadow-sm hover:shadow-md transition-shadow text-sm font-medium hover:text-[#1a175a]"
               id={`quick-${label.toLowerCase().replace(/\s/g,'-')}`}
             >
-              <Icon size={18} className="text-brand-gold" strokeWidth={1.5} />
+              <Icon size={18} className="text-[#1a175a]" strokeWidth={1.5} />
               {label}
             </Link>
           ))}

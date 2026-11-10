@@ -148,7 +148,7 @@ const ReviewsAdminPage = () => {
         {/* Top Summary Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
           <div className="bg-white p-5 rounded-lg border border-neutral-200/80 shadow-sm flex items-center gap-4">
-            <div className="p-3 rounded-full bg-brand-gold/10 text-brand-gold">
+            <div className="p-3 rounded-full bg-[#1a175a]/10 text-[#1a175a]">
               <MessageSquare size={22} />
             </div>
             <div>
@@ -190,7 +190,7 @@ const ReviewsAdminPage = () => {
               <button
                 key={tab.key}
                 onClick={() => setStatusFilter(tab.key)}
-                className={`px-4 py-2 text-xs font-semibold rounded-lg transition-colors ${statusFilter === tab.key ? 'bg-brand-gold text-white shadow-sm' : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'}`}
+                className={`px-4 py-2 text-xs font-semibold rounded-lg transition-colors ${statusFilter === tab.key ? 'bg-[#1a175a] text-white shadow-sm font-semibold' : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'}`}
               >
                 {tab.label}
               </button>
@@ -206,7 +206,7 @@ const ReviewsAdminPage = () => {
                 placeholder="Search product, customer, title..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 border border-neutral-200 rounded-lg text-xs focus:border-brand-gold focus:outline-none"
+                className="w-full pl-9 pr-3 py-2 border border-neutral-200 rounded-lg text-xs focus:border-[#1a175a] focus:outline-none"
               />
             </div>
             <button type="submit" className="btn-primary text-xs py-2 px-4 flex items-center gap-1.5">
@@ -231,7 +231,7 @@ const ReviewsAdminPage = () => {
           />
           {loading ? (
             <div className="p-12 text-center">
-              <RefreshCw size={24} className="animate-spin text-brand-gold mx-auto mb-2" />
+              <RefreshCw size={24} className="animate-spin text-[#1a175a] mx-auto mb-2" />
               <p className="text-xs text-neutral-500">Loading reviews...</p>
             </div>
           ) : reviews.length === 0 ? (
@@ -288,7 +288,7 @@ const ReviewsAdminPage = () => {
                       <td className="py-4 px-4 whitespace-nowrap">
                         <div className="flex items-center gap-1">
                           {[1, 2, 3, 4, 5].map(s => (
-                            <Star key={s} size={13} className={s <= r.rating ? 'fill-brand-gold text-brand-gold' : 'fill-neutral-200 text-neutral-200'} />
+                            <Star key={s} size={13} className={s <= r.rating ? 'fill-amber-400 text-amber-400' : 'fill-neutral-200 text-neutral-200'} />
                           ))}
                           <span className="font-bold text-neutral-800 ml-1 text-xs">{r.rating}.0</span>
                         </div>
@@ -317,7 +317,7 @@ const ReviewsAdminPage = () => {
                         <div className="flex items-center justify-end gap-1.5">
                           <button
                             onClick={() => setViewingReview(r)}
-                            className="p-1.5 text-neutral-500 hover:text-brand-gold hover:bg-blue-50 border border-neutral-200 rounded transition-colors"
+                            className="p-1.5 text-neutral-500 hover:text-[#1a175a] hover:bg-blue-50 border border-neutral-200 rounded transition-colors"
                             title="View Full Details"
                           >
                             <Eye size={15} />
@@ -380,7 +380,7 @@ const ReviewsAdminPage = () => {
                 {/* Header */}
                 <div className="flex items-center justify-between pb-4 border-b border-neutral-100 mb-5">
                   <div className="flex items-center gap-2">
-                    <MessageSquare className="text-brand-gold" size={20} />
+                    <MessageSquare className="text-[#1a175a]" size={20} />
                     <h3 className="font-playfair font-semibold text-neutral-900 text-lg sm:text-xl">Review Details</h3>
                   </div>
                   <button
@@ -426,7 +426,7 @@ const ReviewsAdminPage = () => {
                       <div className="flex items-center gap-1.5 mt-1">
                         <div className="flex items-center gap-0.5">
                           {[1, 2, 3, 4, 5].map(s => (
-                            <Star key={s} size={15} className={s <= viewingReview.rating ? 'fill-brand-gold text-brand-gold' : 'fill-neutral-200 text-neutral-200'} />
+                            <Star key={s} size={15} className={s <= viewingReview.rating ? 'fill-amber-400 text-amber-400' : 'fill-neutral-200 text-neutral-200'} />
                           ))}
                         </div>
                         <span className="font-bold text-neutral-900 text-xs">{viewingReview.rating}.0 / 5</span>

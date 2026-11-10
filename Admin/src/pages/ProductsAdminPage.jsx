@@ -124,7 +124,7 @@ const OptionTypeSelect = ({ value, onChange, usedOptions = [] }) => {
       {/* Trigger Button matching reference UI */}
       <div
         onClick={() => setIsOpen(prev => !prev)}
-        className="w-full border border-neutral-300 px-3 py-2 text-xs rounded-lg bg-white flex items-center justify-between cursor-pointer hover:border-brand-gold focus:border-brand-gold transition-colors font-medium text-neutral-800 shadow-sm"
+        className="w-full border border-neutral-300 px-3 py-2 text-xs rounded-lg bg-white flex items-center justify-between cursor-pointer hover:border-[#1a175a] focus:border-[#1a175a] transition-colors font-medium text-neutral-800 shadow-sm"
       >
         <span className={value ? 'text-neutral-900 font-semibold' : 'text-neutral-400'}>
           {value || 'Select type...'}
@@ -148,7 +148,7 @@ const OptionTypeSelect = ({ value, onChange, usedOptions = [] }) => {
                 handleSelect(searchTerm.trim());
               }
             }}
-            className="w-full border border-neutral-300 px-3 py-1.5 text-xs rounded-md focus:outline-none focus:border-brand-gold bg-neutral-50 font-medium text-neutral-800"
+            className="w-full border border-neutral-300 px-3 py-1.5 text-xs rounded-md focus:outline-none focus:border-[#1a175a] bg-neutral-50 font-medium text-neutral-800"
           />
 
           {/* Options List */}
@@ -230,7 +230,7 @@ const ProductLivePreviewModal = ({ product, onClose }) => {
         {/* Header */}
         <div className="px-6 py-4 bg-neutral-900 text-white flex items-center justify-between border-b border-neutral-800">
           <div className="flex items-center gap-2">
-            <Eye size={18} className="text-brand-gold" />
+            <Eye size={18} className="text-[#1a175a]" />
             <div>
               <h2 className="font-playfair text-lg font-semibold">Storefront Live Preview</h2>
               <p className="text-[11px] text-neutral-400">Live Customer View Showcase</p>
@@ -246,7 +246,7 @@ const ProductLivePreviewModal = ({ product, onClose }) => {
           
           {/* Card View Preview */}
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-brand-gold mb-3">1. Product Card View (Listing Page)</h3>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#1a175a] mb-3">1. Product Card View (Listing Page)</h3>
             <div className="w-full max-w-xs bg-white rounded-xl border border-neutral-200 shadow-sm overflow-hidden group">
               <div className="relative aspect-[4/5] bg-neutral-100 overflow-hidden">
                 <img src={activeImg} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -272,7 +272,7 @@ const ProductLivePreviewModal = ({ product, onClose }) => {
 
           {/* Full Showcase View */}
           <div className="border-t border-neutral-200 pt-6">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-brand-gold mb-3">2. Product Details View (PDP)</h3>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#1a175a] mb-3">2. Product Details View (PDP)</h3>
             
             <div className="grid md:grid-cols-2 gap-8 bg-neutral-50 p-6 rounded-xl border border-neutral-200">
               
@@ -288,7 +288,7 @@ const ProductLivePreviewModal = ({ product, onClose }) => {
                         <button
                           key={i}
                           onClick={() => setActiveImg(img)}
-                          className={`w-14 h-14 rounded overflow-hidden border-2 flex-shrink-0 ${activeImg === img ? 'border-brand-gold' : 'border-neutral-200'}`}
+                          className={`w-14 h-14 rounded overflow-hidden border-2 flex-shrink-0 ${activeImg === img ? 'border-[#1a175a]' : 'border-neutral-200'}`}
                         >
                           <img src={img} alt={`Thumb ${i}`} className="w-full h-full object-cover" />
                         </button>
@@ -302,7 +302,7 @@ const ProductLivePreviewModal = ({ product, onClose }) => {
               {/* Details Section */}
               <div className="space-y-4">
                 <div>
-                  <span className="text-xs text-brand-gold font-bold uppercase tracking-wider">{product.category?.name || 'Category'}</span>
+                  <span className="text-xs text-[#1a175a] font-bold uppercase tracking-wider">{product.category?.name || 'Category'}</span>
                   <h2 className="font-playfair text-2xl font-bold text-neutral-900 mt-1">{product.name || 'Untitled Product'}</h2>
                   <p className="text-xs text-neutral-500 font-mono mt-0.5">SKU: {product.sku || 'N/A'}</p>
                 </div>
@@ -1102,7 +1102,7 @@ const ProductModal = ({ product, onClose, onSave, saving = false, uploadProgress
           {/* SECTION 1: BASIC INFORMATION */}
           <div className="bg-neutral-50 p-5 rounded-lg border border-brand-light space-y-4">
             <div className="flex items-center justify-between border-b border-neutral-200 pb-2">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-brand-gold">1. Basic Information</h3>
+              <h3 className="text-xs font-bold uppercase tracking-wider text-[#1a175a]">1. Basic Information</h3>
               <span className="text-[10px] text-neutral-400">* Required Fields</span>
             </div>
 
@@ -1116,7 +1116,7 @@ const ProductModal = ({ product, onClose, onSave, saving = false, uploadProgress
                   onChange={e => handleNameChange(e.target.value)}
                   required
                   placeholder="e.g. Emerald Silk Kaftan"
-                  className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-brand-gold rounded-sm bg-white"
+                  className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-[#1a175a] rounded-sm bg-white"
                 />
               </div>
 
@@ -1130,7 +1130,7 @@ const ProductModal = ({ product, onClose, onSave, saving = false, uploadProgress
                   value={form.sku}
                   onChange={e => set('sku', e.target.value)}
                   placeholder="Auto-assigned (e.g. SKU-P104)"
-                  className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-brand-gold rounded-sm bg-white font-mono uppercase"
+                  className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-[#1a175a] rounded-sm bg-white font-mono uppercase"
                 />
               </div>
 
@@ -1143,7 +1143,7 @@ const ProductModal = ({ product, onClose, onSave, saving = false, uploadProgress
                   value={form.categoryId}
                   onChange={e => handleCategoryChange(e.target.value)}
                   required
-                  className="w-full border border-brand-light bg-white px-3 py-2 text-sm focus:outline-none focus:border-brand-gold rounded-sm"
+                  className="w-full border border-brand-light bg-white px-3 py-2 text-sm focus:outline-none focus:border-[#1a175a] rounded-sm"
                 >
                   <option value="">Select Category</option>
                   {categories.map(c => (
@@ -1162,7 +1162,7 @@ const ProductModal = ({ product, onClose, onSave, saving = false, uploadProgress
                   onChange={e => handleSubCategoryChange(e.target.value)}
                   required={filteredSubCategories.length > 0}
                   disabled={!form.categoryId}
-                  className="w-full border border-brand-light bg-white px-3 py-2 text-sm focus:outline-none focus:border-brand-gold rounded-sm disabled:bg-neutral-100 disabled:text-neutral-400 font-medium text-neutral-800"
+                  className="w-full border border-brand-light bg-white px-3 py-2 text-sm focus:outline-none focus:border-[#1a175a] rounded-sm disabled:bg-neutral-100 disabled:text-neutral-400 font-medium text-neutral-800"
                 >
                   <option value="">
                     {!form.categoryId ? '— Select Category First —' : 'Select Sub-Category'}
@@ -1178,7 +1178,7 @@ const ProductModal = ({ product, onClose, onSave, saving = false, uploadProgress
 
           {/* SECTION 2: DESCRIPTION */}
           <div className="bg-neutral-50 p-5 rounded-lg border border-brand-light space-y-4">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-brand-gold border-b border-neutral-200 pb-2">2. Description</h3>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#1a175a] border-b border-neutral-200 pb-2">2. Description</h3>
             
             <div>
               <div className="flex justify-between items-center mb-1">
@@ -1193,7 +1193,7 @@ const ProductModal = ({ product, onClose, onSave, saving = false, uploadProgress
                 value={form.shortDescription}
                 onChange={e => set('shortDescription', e.target.value)}
                 placeholder="Brief excerpt shown on product cards."
-                className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-brand-gold rounded-sm bg-white resize-none"
+                className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-[#1a175a] rounded-sm bg-white resize-none"
               />
             </div>
 
@@ -1207,19 +1207,19 @@ const ProductModal = ({ product, onClose, onSave, saving = false, uploadProgress
                     type="button"
                     title="Heading 1"
                     onClick={() => applyRichTextCommand('formatBlock', 'H1')}
-                    className="px-2.5 py-1 bg-white border border-neutral-300 rounded text-[11px] font-extrabold hover:bg-brand-gold hover:text-white hover:border-brand-gold transition-colors"
+                    className="px-2.5 py-1 bg-white border border-neutral-300 rounded text-[11px] font-extrabold hover:bg-[#1a175a] hover:text-white hover:border-[#1a175a] transition-colors"
                   >H1</button>
                   <button
                     type="button"
                     title="Heading 2"
                     onClick={() => applyRichTextCommand('formatBlock', 'H2')}
-                    className="px-2.5 py-1 bg-white border border-neutral-300 rounded text-[11px] font-bold hover:bg-brand-gold hover:text-white hover:border-brand-gold transition-colors"
+                    className="px-2.5 py-1 bg-white border border-neutral-300 rounded text-[11px] font-bold hover:bg-[#1a175a] hover:text-white hover:border-[#1a175a] transition-colors"
                   >H2</button>
                   <button
                     type="button"
                     title="Heading 3"
                     onClick={() => applyRichTextCommand('formatBlock', 'H3')}
-                    className="px-2.5 py-1 bg-white border border-neutral-300 rounded text-[11px] font-semibold hover:bg-brand-gold hover:text-white hover:border-brand-gold transition-colors"
+                    className="px-2.5 py-1 bg-white border border-neutral-300 rounded text-[11px] font-semibold hover:bg-[#1a175a] hover:text-white hover:border-[#1a175a] transition-colors"
                   >H3</button>
 
                   <span className="w-px h-4 bg-neutral-300 mx-0.5" />
@@ -1229,7 +1229,7 @@ const ProductModal = ({ product, onClose, onSave, saving = false, uploadProgress
                     type="button"
                     title="Bullet List"
                     onClick={() => applyRichTextCommand('insertUnorderedList')}
-                    className="px-2.5 py-1 bg-white border border-neutral-300 rounded hover:bg-brand-gold hover:text-white hover:border-brand-gold transition-colors"
+                    className="px-2.5 py-1 bg-white border border-neutral-300 rounded hover:bg-[#1a175a] hover:text-white hover:border-[#1a175a] transition-colors"
                   >• List</button>
 
                   <span className="w-px h-4 bg-neutral-300 mx-0.5" />
@@ -1265,7 +1265,7 @@ const ProductModal = ({ product, onClose, onSave, saving = false, uploadProgress
 
           {/* SECTION 3: PRODUCT IMAGE & GALLERY */}
           <div className="bg-neutral-50 p-5 rounded-lg border border-brand-light space-y-4">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-brand-gold border-b border-neutral-200 pb-2">3. Product Image & Gallery</h3>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#1a175a] border-b border-neutral-200 pb-2">3. Product Image & Gallery</h3>
 
             <div className="space-y-1.5">
               <label className="block text-xs font-semibold text-neutral-700">
@@ -1290,10 +1290,10 @@ const ProductModal = ({ product, onClose, onSave, saving = false, uploadProgress
                   onDragEnter={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingDefault(true); }}
                   onDragLeave={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingDefault(false); }}
                   onDrop={handleDefaultImageDrop}
-                  className={`border-2 border-dashed ${isDraggingDefault ? 'border-brand-gold bg-blue-50/60 ring-2 ring-brand-gold/30' : 'border-neutral-300 hover:border-brand-gold bg-white hover:bg-neutral-50/50'} rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer transition-all group`}
+                  className={`border-2 border-dashed ${isDraggingDefault ? 'border-[#1a175a] bg-blue-50/60 ring-2 ring-[#1a175a]/30' : 'border-neutral-300 hover:border-[#1a175a] bg-white hover:bg-neutral-50/50'} rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer transition-all group`}
                 >
                   <div className="flex items-center gap-1.5 text-xs text-neutral-500 font-medium group-hover:text-neutral-800">
-                    <Camera size={16} className={`text-neutral-400 group-hover:text-brand-gold transition-transform ${isDraggingDefault ? 'text-brand-gold scale-125' : ''}`} />
+                    <Camera size={16} className={`text-neutral-400 group-hover:text-[#1a175a] transition-transform ${isDraggingDefault ? 'text-[#1a175a] scale-125' : ''}`} />
                     <span>Click to <strong>browse</strong> or <strong>drag & drop</strong></span>
                   </div>
                   <span className="text-[10px] text-neutral-400 mt-1">Supports JPG, PNG, WebP up to 5MB</span>
@@ -1307,7 +1307,7 @@ const ProductModal = ({ product, onClose, onSave, saving = false, uploadProgress
           <div className="bg-neutral-50 p-5 rounded-lg border border-brand-light space-y-4">
             <div className="flex items-center justify-between border-b border-neutral-200 pb-2">
               <div>
-                <h3 className="text-xs font-bold uppercase tracking-wider text-brand-gold">4. Variant Options & Color Picker</h3>
+                <h3 className="text-xs font-bold uppercase tracking-wider text-[#1a175a]">4. Variant Options & Color Picker</h3>
                 <p className="text-[11px] text-neutral-500">Select pre-determined options (Color, Size, Material) or type custom specs.</p>
               </div>
               <span className="text-xs font-bold text-neutral-600 bg-neutral-200 px-2 py-0.5 rounded">{optionRows.length} Options</span>
@@ -1460,7 +1460,7 @@ const ProductModal = ({ product, onClose, onSave, saving = false, uploadProgress
               <button
                 type="button"
                 onClick={addOptionRow}
-                className="bg-brand-gold text-white text-xs px-4 py-2 font-semibold uppercase tracking-wider rounded-sm flex items-center gap-1.5 hover:bg-brand-gold/90 transition-colors"
+                className="bg-[#1a175a] text-white text-xs px-4 py-2 font-semibold uppercase tracking-wider rounded-lg flex items-center gap-1.5 hover:bg-[#120f40] transition-colors shadow-sm"
               >
                 <Plus size={14} /> Add Option
               </button>
@@ -1502,7 +1502,7 @@ const ProductModal = ({ product, onClose, onSave, saving = false, uploadProgress
                             value={v.sku}
                             onChange={e => updateVariantRow(v.id, 'sku', e.target.value)}
                             placeholder="SKU Code"
-                            className="w-full border border-neutral-300 rounded-lg px-3 py-2 text-xs font-sans font-medium text-neutral-800 focus:outline-none focus:border-brand-gold bg-white"
+                            className="w-full border border-neutral-300 rounded-lg px-3 py-2 text-xs font-sans font-medium text-neutral-800 focus:outline-none focus:border-[#1a175a] bg-white"
                           />
                         </div>
 
@@ -1513,7 +1513,7 @@ const ProductModal = ({ product, onClose, onSave, saving = false, uploadProgress
                             value={v.stock !== undefined ? v.stock : ''}
                             onChange={e => updateVariantRow(v.id, 'stock', e.target.value)}
                             placeholder="0"
-                            className="w-full border border-neutral-300 rounded-lg px-3 py-2 text-xs font-sans font-medium text-neutral-800 focus:outline-none focus:border-brand-gold bg-white"
+                            className="w-full border border-neutral-300 rounded-lg px-3 py-2 text-xs font-sans font-medium text-neutral-800 focus:outline-none focus:border-[#1a175a] bg-white"
                           />
                         </div>
 
@@ -1524,7 +1524,7 @@ const ProductModal = ({ product, onClose, onSave, saving = false, uploadProgress
                             value={v.lowStockThreshold || '10'}
                             onChange={e => updateVariantRow(v.id, 'lowStockThreshold', e.target.value)}
                             placeholder="10"
-                            className="w-full border border-neutral-300 rounded-lg px-3 py-2 text-xs font-sans font-medium text-neutral-800 focus:outline-none focus:border-brand-gold bg-white"
+                            className="w-full border border-neutral-300 rounded-lg px-3 py-2 text-xs font-sans font-medium text-neutral-800 focus:outline-none focus:border-[#1a175a] bg-white"
                           />
                         </div>
                       </div>
@@ -1532,7 +1532,7 @@ const ProductModal = ({ product, onClose, onSave, saving = false, uploadProgress
                       {/* Row 2: Pricing (₹ INR Only) */}
                       <div className="bg-neutral-50/80 p-3.5 rounded-xl border border-neutral-200/80 space-y-3">
                         <div className="flex items-center gap-2">
-                          <span className="w-2 h-2 rounded-full bg-brand-gold" />
+                          <span className="w-2 h-2 rounded-full bg-[#1a175a]" />
                           <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-700">
                             Pricing (INR ₹)
                           </span>
@@ -1554,7 +1554,7 @@ const ProductModal = ({ product, onClose, onSave, saving = false, uploadProgress
                                 value={v.price !== undefined ? v.price : ''}
                                 onChange={e => handleVariantPriceChange(v.id, e.target.value)}
                                 placeholder="0.00"
-                                className="w-full pl-7 pr-3 py-2 text-xs font-sans font-semibold text-neutral-900 bg-white border border-neutral-300 focus:border-brand-gold focus:ring-1 focus:ring-brand-gold rounded-lg outline-none transition-all"
+                                className="w-full pl-7 pr-3 py-2 text-xs font-sans font-semibold text-neutral-900 bg-white border border-neutral-300 focus:border-[#1a175a] focus:ring-1 focus:ring-[#1a175a] rounded-lg outline-none transition-all"
                               />
                             </div>
                             <p className="text-[9px] text-neutral-400 mt-1">Base price in INR</p>
@@ -1575,7 +1575,7 @@ const ProductModal = ({ product, onClose, onSave, saving = false, uploadProgress
                                 value={v.mrp !== undefined ? v.mrp : ''}
                                 onChange={e => handleVariantMrpChange(v.id, e.target.value)}
                                 placeholder="0.00"
-                                className="w-full pl-7 pr-3 py-2 text-xs font-sans font-semibold text-neutral-900 bg-white border border-neutral-300 focus:border-brand-gold focus:ring-1 focus:ring-brand-gold rounded-lg outline-none transition-all"
+                                className="w-full pl-7 pr-3 py-2 text-xs font-sans font-semibold text-neutral-900 bg-white border border-neutral-300 focus:border-[#1a175a] focus:ring-1 focus:ring-[#1a175a] rounded-lg outline-none transition-all"
                               />
                             </div>
                             <p className="text-[9px] text-neutral-400 mt-1">Base MRP in INR</p>
@@ -1614,10 +1614,10 @@ const ProductModal = ({ product, onClose, onSave, saving = false, uploadProgress
                                 await processVariantMainImage(v.id, file);
                               }
                             }}
-                            className="border-2 border-dashed border-neutral-300 hover:border-brand-gold bg-white hover:bg-neutral-50/50 rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer transition-all group"
+                            className="border-2 border-dashed border-neutral-300 hover:border-[#1a175a] bg-white hover:bg-neutral-50/50 rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer transition-all group"
                           >
                             <div className="flex items-center gap-1.5 text-xs text-neutral-500 font-medium group-hover:text-neutral-800">
-                              <Camera size={16} className="text-neutral-400 group-hover:text-brand-gold" />
+                              <Camera size={16} className="text-neutral-400 group-hover:text-[#1a175a]" />
                               <span>Click to <strong>browse</strong> or <strong>drag & drop</strong> main image</span>
                             </div>
                             <input
@@ -1661,9 +1661,9 @@ const ProductModal = ({ product, onClose, onSave, saving = false, uploadProgress
                           {v.newFiles?.map((file, iIdx) => {
                             const globalPos = (v.existingImages?.length || 0) + iIdx + 1;
                             return (
-                              <div key={`new-${iIdx}`} className="relative w-14 h-14 border-2 border-brand-gold/60 rounded-lg overflow-hidden flex-shrink-0 bg-neutral-100">
+                              <div key={`new-${iIdx}`} className="relative w-14 h-14 border-2 border-[#1a175a]/60 rounded-lg overflow-hidden flex-shrink-0 bg-neutral-100">
                                 <img src={file.preview} alt={`Upload ${globalPos}`} className="w-full h-full object-cover" />
-                                <span className="absolute top-0.5 left-0.5 bg-brand-gold text-white text-[8px] font-bold px-1 rounded">#{globalPos}</span>
+                                <span className="absolute top-0.5 left-0.5 bg-[#1a175a] text-white text-[8px] font-bold px-1 rounded">#{globalPos}</span>
                                 <button
                                   type="button"
                                   onClick={() => removeVariantRowImage(v.id, true, iIdx)}
@@ -1686,7 +1686,7 @@ const ProductModal = ({ product, onClose, onSave, saving = false, uploadProgress
                                   await processVariantGalleryFiles(v.id, files);
                                 }
                               }}
-                              className="w-14 h-14 border-2 border-dashed border-neutral-300 hover:border-brand-gold flex flex-col items-center justify-center text-neutral-400 hover:text-brand-gold cursor-pointer rounded-lg bg-neutral-50 transition-colors"
+                              className="w-14 h-14 border-2 border-dashed border-neutral-300 hover:border-[#1a175a] flex flex-col items-center justify-center text-neutral-400 hover:text-[#1a175a] cursor-pointer rounded-lg bg-neutral-50 transition-colors"
                               title="Click to browse or drop images here"
                             >
                               <Plus size={16} />
@@ -1711,7 +1711,7 @@ const ProductModal = ({ product, onClose, onSave, saving = false, uploadProgress
 
           {/* SECTION 6: STATUS & STOREFRONT TOGGLES */}
           <div className="bg-neutral-50 p-5 rounded-lg border border-brand-light space-y-4">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-brand-gold border-b border-neutral-200 pb-2">5. Status & Storefront Toggles</h3>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#1a175a] border-b border-neutral-200 pb-2">5. Status & Storefront Toggles</h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <label className="flex items-center justify-between bg-white p-3 border border-brand-light rounded-sm cursor-pointer">
@@ -1741,7 +1741,7 @@ const ProductModal = ({ product, onClose, onSave, saving = false, uploadProgress
               onClick={() => setPreviewOpen(true)}
               className="px-4 py-2 text-xs font-bold text-neutral-800 bg-neutral-100 hover:bg-neutral-200 border border-neutral-300 rounded-sm transition-colors flex items-center gap-1.5 uppercase tracking-wider"
             >
-              <Eye size={14} className="text-brand-gold" /> Preview Product
+              <Eye size={14} className="text-[#1a175a]" /> Preview Product
             </button> */}
             <div />
 
@@ -1757,7 +1757,7 @@ const ProductModal = ({ product, onClose, onSave, saving = false, uploadProgress
               <button
                 type="submit"
                 disabled={saving}
-                className="px-6 py-2 text-xs font-bold text-white bg-brand-gold hover:bg-brand-gold/90 rounded-sm transition-colors uppercase tracking-wider shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="px-6 py-2 text-xs font-bold text-white bg-[#1a175a] hover:bg-[#120f40] rounded-lg transition-colors uppercase tracking-wider shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {saving ? (
                   <>
@@ -1959,7 +1959,7 @@ const ProductsAdminPage = () => {
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-1.5">
                         {canEditProduct && (
-                          <button onClick={() => { setEditing(product); setModalOpen(true); }} className="p-1.5 text-brand-grey hover:text-brand-gold transition-colors" title="Edit">
+                          <button onClick={() => { setEditing(product); setModalOpen(true); }} className="p-1.5 text-brand-grey hover:text-[#1a175a] transition-colors" title="Edit">
                             <Edit2 size={14} />
                           </button>
                         )}

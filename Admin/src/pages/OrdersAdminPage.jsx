@@ -143,7 +143,7 @@ const OrdersAdminPage = () => {
               role="tab" aria-selected={activeStatus === s}
               id={`orders-tab-${s}`}
               className={`flex-shrink-0 px-3.5 py-2 text-xs font-medium rounded-lg transition-all flex items-center gap-2 ${
-                activeStatus === s ? 'bg-brand-gold text-white shadow-xs font-semibold' : 'bg-white text-brand-grey hover:bg-brand-light'
+                activeStatus === s ? 'bg-[#1a175a] text-white shadow-sm font-semibold' : 'bg-white text-brand-grey hover:bg-brand-light'
               }`}
             >
               <span>{STATUS_LABELS[s] || s}</span>
@@ -190,7 +190,7 @@ const OrdersAdminPage = () => {
               ) : filtered.map(order => (
                 <tr key={order.id} className="border-b border-brand-light hover:bg-brand-light/20 transition-colors">
                   <td className="px-4 py-3">
-                    <span className="font-mono text-xs font-semibold text-brand-gold">{order.orderNumber}</span>
+                    <span className="font-mono text-xs font-semibold text-[#1a175a]">{order.orderNumber}</span>
                     {order.isFraudFlagged && <AlertTriangle size={12} className="inline ml-1 text-red-500" title="Fraud flagged" />}
                   </td>
                   <td className="px-4 py-3">
@@ -224,7 +224,7 @@ const OrdersAdminPage = () => {
                     <div className="flex items-center gap-1.5">
                       <button
                         onClick={() => setSelectedOrderModal(order)}
-                        className="p-1.5 bg-brand-gold/10 hover:bg-brand-gold hover:text-white text-brand-gold rounded-lg transition-all flex items-center gap-1 text-xs font-medium border border-brand-gold/20"
+                        className="p-1.5 bg-[#1a175a]/10 hover:bg-[#1a175a] hover:text-white text-[#1a175a] rounded-lg transition-all flex items-center gap-1 text-xs font-semibold border border-[#1a175a]/20 shadow-2xs"
                         title="View Order Details"
                         id={`view-order-${order.id}`}
                       >

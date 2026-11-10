@@ -399,7 +399,7 @@ const ReportsAdminPage = () => {
           <div className="flex items-center gap-2">
             <button
               onClick={loadDynamicData}
-              className="p-2 rounded-lg border border-neutral-300 bg-white text-neutral-600 hover:text-brand-gold transition-colors"
+              className="p-2 rounded-lg border border-neutral-300 bg-white text-neutral-600 hover:text-[#1a175a] transition-colors"
               title="Refresh Data"
             >
               <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
@@ -436,7 +436,7 @@ const ReportsAdminPage = () => {
               <select
                 value={reportType}
                 onChange={(e) => setReportType(e.target.value)}
-                className="w-full bg-white border border-neutral-300 rounded-lg px-3 py-2 text-xs font-medium text-neutral-800 focus:ring-2 focus:ring-brand-gold focus:border-brand-gold outline-none transition-all shadow-sm"
+                className="w-full bg-white border border-neutral-300 rounded-lg px-3 py-2 text-xs font-medium text-neutral-800 focus:ring-2 focus:ring-[#1a175a] focus:border-[#1a175a] outline-none transition-all shadow-sm"
                 id="report-type-select"
               >
                 <option value="sales">Sales</option>
@@ -453,7 +453,7 @@ const ReportsAdminPage = () => {
               <select
                 value={dateRange}
                 onChange={(e) => setDateRange(e.target.value)}
-                className="w-full bg-white border border-neutral-300 rounded-lg px-3 py-2 text-xs font-medium text-neutral-800 focus:ring-2 focus:ring-brand-gold focus:border-brand-gold outline-none transition-all shadow-sm"
+                className="w-full bg-white border border-neutral-300 rounded-lg px-3 py-2 text-xs font-medium text-neutral-800 focus:ring-2 focus:ring-[#1a175a] focus:border-[#1a175a] outline-none transition-all shadow-sm"
                 id="date-range-select"
               >
                 <option value="All Time">All Time</option>
@@ -473,7 +473,7 @@ const ReportsAdminPage = () => {
                 <select
                   value={selectedPaymentStatus}
                   onChange={(e) => setSelectedPaymentStatus(e.target.value)}
-                  className="w-full bg-white border border-neutral-300 rounded-lg px-3 py-2 text-xs font-medium text-neutral-800 focus:ring-2 focus:ring-brand-gold focus:border-brand-gold outline-none transition-all shadow-sm"
+                  className="w-full bg-white border border-neutral-300 rounded-lg px-3 py-2 text-xs font-medium text-neutral-800 focus:ring-2 focus:ring-[#1a175a] focus:border-[#1a175a] outline-none transition-all shadow-sm"
                   id="payment-status-select"
                 >
                   <option value="ALL">All Payment Statuses</option>
@@ -493,7 +493,7 @@ const ReportsAdminPage = () => {
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="w-full bg-white border border-neutral-300 rounded-lg px-3 py-2 text-xs font-medium text-neutral-800 focus:ring-2 focus:ring-brand-gold focus:border-brand-gold outline-none transition-all shadow-sm"
+                  className="w-full bg-white border border-neutral-300 rounded-lg px-3 py-2 text-xs font-medium text-neutral-800 focus:ring-2 focus:ring-[#1a175a] focus:border-[#1a175a] outline-none transition-all shadow-sm"
                   id="category-select"
                 >
                   <option value="All Categories">All Categories</option>
@@ -512,7 +512,7 @@ const ReportsAdminPage = () => {
                 <select
                   value={selectedOrderStatus}
                   onChange={(e) => setSelectedOrderStatus(e.target.value)}
-                  className="w-full bg-white border border-neutral-300 rounded-lg px-3 py-2 text-xs font-medium text-neutral-800 focus:ring-2 focus:ring-brand-gold focus:border-brand-gold outline-none transition-all shadow-sm"
+                  className="w-full bg-white border border-neutral-300 rounded-lg px-3 py-2 text-xs font-medium text-neutral-800 focus:ring-2 focus:ring-[#1a175a] focus:border-[#1a175a] outline-none transition-all shadow-sm"
                   id="order-status-select"
                 >
                   <option value="ALL">All Statuses</option>
@@ -532,13 +532,13 @@ const ReportsAdminPage = () => {
           {dateRange === 'Custom' && (
             <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-neutral-200/60">
               <div className="flex items-center gap-2 text-xs text-neutral-600">
-                <Calendar size={14} className="text-brand-gold" />
+                <Calendar size={14} className="text-[#1a175a]" />
                 <span className="font-semibold text-neutral-700">Start Date:</span>
                 <input
                   type="date"
                   value={customStartDate}
                   onChange={(e) => setCustomStartDate(e.target.value)}
-                  className="bg-white border border-neutral-300 rounded px-2.5 py-1 text-xs outline-none focus:border-brand-gold"
+                  className="bg-white border border-neutral-300 rounded px-2.5 py-1 text-xs outline-none focus:border-[#1a175a]"
                 />
               </div>
               <div className="flex items-center gap-2 text-xs text-neutral-600">
@@ -547,7 +547,7 @@ const ReportsAdminPage = () => {
                   type="date"
                   value={customEndDate}
                   onChange={(e) => setCustomEndDate(e.target.value)}
-                  className="bg-white border border-neutral-300 rounded px-2.5 py-1 text-xs outline-none focus:border-brand-gold"
+                  className="bg-white border border-neutral-300 rounded px-2.5 py-1 text-xs outline-none focus:border-[#1a175a]"
                 />
               </div>
             </div>
@@ -564,7 +564,7 @@ const ReportsAdminPage = () => {
                 placeholder="Search items..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-white border border-neutral-300 rounded-lg pl-9 pr-3 py-1.5 text-xs text-neutral-800 placeholder-neutral-400 focus:ring-2 focus:ring-brand-gold focus:border-brand-gold outline-none transition-all"
+                className="w-full bg-white border border-neutral-300 rounded-lg pl-9 pr-3 py-1.5 text-xs text-neutral-800 placeholder-neutral-400 focus:ring-2 focus:ring-[#1a175a] focus:border-[#1a175a] outline-none transition-all"
                 id="report-search-input"
               />
               {searchQuery && (
@@ -583,7 +583,7 @@ const ReportsAdminPage = () => {
               <select
                 value={rowsPerPage}
                 onChange={(e) => setRowsPerPage(Number(e.target.value))}
-                className="bg-white border border-neutral-300 rounded-lg px-2.5 py-1 text-xs font-semibold text-neutral-800 focus:ring-2 focus:ring-brand-gold focus:border-brand-gold outline-none"
+                className="bg-white border border-neutral-300 rounded-lg px-2.5 py-1 text-xs font-semibold text-neutral-800 focus:ring-2 focus:ring-[#1a175a] focus:border-[#1a175a] outline-none"
                 id="rows-per-page-select"
               >
                 <option value={5}>5</option>
@@ -605,7 +605,7 @@ const ReportsAdminPage = () => {
                   <span className="text-[11px] font-bold uppercase tracking-wider text-brand-grey">
                     {metric.label}
                   </span>
-                  <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-brand-gold">
+                  <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-[#1a175a]">
                     <Icon size={16} />
                   </div>
                 </div>
@@ -719,7 +719,7 @@ const ReportsAdminPage = () => {
 
                       {reportType === 'orders' && (
                         <>
-                          <td className="px-5 py-3.5 font-semibold text-brand-gold">{row.orderNumber}</td>
+                          <td className="px-5 py-3.5 font-semibold text-[#1a175a]">{row.orderNumber}</td>
                           <td className="px-5 py-3.5 font-medium text-neutral-900">{row.customerName}</td>
                           <td className="px-5 py-3.5 text-neutral-500">{row.date}</td>
                           <td className="px-5 py-3.5 font-bold text-neutral-900">

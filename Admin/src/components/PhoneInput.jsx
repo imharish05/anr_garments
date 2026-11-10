@@ -365,7 +365,7 @@ const PhoneInput = ({
         className={`relative flex items-center w-full rounded border bg-white transition-all ${
           hasError
             ? 'border-red-500 ring-1 ring-red-200'
-            : 'border-brand-light hover:border-neutral-400 focus-within:border-brand-gold focus-within:ring-1 focus-within:ring-brand-gold/30'
+            : 'border-brand-light hover:border-neutral-400 focus-within:border-[#1a175a] focus-within:ring-1 focus-within:ring-[#1a175a]/30'
         } ${disabled ? 'bg-neutral-100 opacity-70 cursor-not-allowed' : ''}`}
       >
         <div className="relative shrink-0 border-r border-brand-light" ref={dropdownRef}>

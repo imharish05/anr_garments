@@ -260,14 +260,14 @@ const AdminUsersAdminPage = () => {
                 placeholder="Search by name or email..."
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 border border-neutral-200 rounded-xl text-xs focus:outline-none focus:border-brand-gold text-neutral-800 bg-white"
+                className="w-full pl-9 pr-3 py-2 border border-neutral-200 rounded-xl text-xs focus:outline-none focus:border-[#1a175a] text-neutral-800 bg-white"
               />
             </div>
 
             <select
               value={roleFilter}
               onChange={e => setRoleFilter(e.target.value)}
-              className="px-3 py-2 border border-neutral-200 rounded-xl text-xs bg-white text-neutral-700 focus:outline-none focus:border-brand-gold"
+              className="px-3 py-2 border border-neutral-200 rounded-xl text-xs bg-white text-neutral-700 focus:outline-none focus:border-[#1a175a]"
             >
               <option value="ALL">All Roles</option>
               {roles.map(r => (
@@ -296,7 +296,7 @@ const AdminUsersAdminPage = () => {
               {loading ? (
                 <tr>
                   <td colSpan={canManageAdminUsers ? 5 : 4} className="py-12 text-center text-xs text-neutral-400">
-                    <RefreshCw size={18} className="animate-spin text-brand-gold mx-auto mb-2" />
+                    <RefreshCw size={18} className="animate-spin text-[#1a175a] mx-auto mb-2" />
                     Loading admin users...
                   </td>
                 </tr>
@@ -314,7 +314,7 @@ const AdminUsersAdminPage = () => {
                   <tr key={u.id} className="hover:bg-neutral-50/70 transition-colors">
                     <td className="py-3.5 px-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-brand-gold/20 text-brand-gold font-bold flex items-center justify-center text-xs">
+                        <div className="w-8 h-8 rounded-full bg-[#1a175a]/15 text-[#1a175a] font-bold flex items-center justify-center text-xs">
                           {u.name ? u.name.charAt(0).toUpperCase() : 'U'}
                         </div>
                         <div className="font-semibold text-neutral-900">{u.name}</div>
@@ -400,7 +400,7 @@ const AdminUsersAdminPage = () => {
                     placeholder="e.g. Sales Manager"
                     value={form.name}
                     onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                    className="w-full border border-neutral-300 rounded-xl p-2.5 text-xs text-neutral-900 focus:border-brand-gold focus:outline-none"
+                    className="w-full border border-neutral-300 rounded-xl p-2.5 text-xs text-neutral-900 focus:border-[#1a175a] focus:outline-none"
                   />
                 </div>
 
@@ -412,7 +412,7 @@ const AdminUsersAdminPage = () => {
                     placeholder="admin@anrhospitals.com"
                     value={form.email}
                     onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                    className="w-full border border-neutral-300 rounded-xl p-2.5 text-xs text-neutral-900 focus:border-brand-gold focus:outline-none"
+                    className="w-full border border-neutral-300 rounded-xl p-2.5 text-xs text-neutral-900 focus:border-[#1a175a] focus:outline-none"
                   />
                 </div>
 
@@ -426,7 +426,7 @@ const AdminUsersAdminPage = () => {
                       placeholder="At least 6 characters"
                       value={form.password}
                       onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
-                      className="w-full border border-neutral-300 rounded-xl p-2.5 pr-16 text-xs text-neutral-900 focus:border-brand-gold focus:outline-none"
+                      className="w-full border border-neutral-300 rounded-xl p-2.5 pr-16 text-xs text-neutral-900 focus:border-[#1a175a] focus:outline-none"
                     />
                     <div className="absolute right-2.5 flex items-center gap-1 text-neutral-400">
                       <button
@@ -455,7 +455,7 @@ const AdminUsersAdminPage = () => {
                     required
                     value={form.roleId}
                     onChange={e => setForm(f => ({ ...f, roleId: e.target.value }))}
-                    className="w-full border border-neutral-300 rounded-xl p-2.5 text-xs text-neutral-900 focus:border-brand-gold focus:outline-none bg-white cursor-pointer"
+                    className="w-full border border-neutral-300 rounded-xl p-2.5 text-xs text-neutral-900 focus:border-[#1a175a] focus:outline-none bg-white cursor-pointer"
                   >
                     <option value="">-- Select Role --</option>
                     {roles.map(r => (
@@ -470,7 +470,7 @@ const AdminUsersAdminPage = () => {
                       type="checkbox"
                       checked={form.isActive}
                       onChange={e => setForm(f => ({ ...f, isActive: e.target.checked }))}
-                      className="w-4 h-4 accent-brand-gold rounded cursor-pointer"
+                      className="w-4 h-4 accent-[#1a175a] rounded cursor-pointer"
                     />
                     Activate user account immediately
                   </label>
@@ -527,7 +527,7 @@ const AdminUsersAdminPage = () => {
                     required
                     value={form.name}
                     onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                    className="w-full border border-neutral-300 rounded-xl p-2.5 text-xs text-neutral-900 focus:border-brand-gold focus:outline-none"
+                    className="w-full border border-neutral-300 rounded-xl p-2.5 text-xs text-neutral-900 focus:border-[#1a175a] focus:outline-none"
                   />
                 </div>
 
@@ -538,7 +538,7 @@ const AdminUsersAdminPage = () => {
                     required
                     value={form.email}
                     onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                    className="w-full border border-neutral-300 rounded-xl p-2.5 text-xs text-neutral-900 focus:border-brand-gold focus:outline-none"
+                    className="w-full border border-neutral-300 rounded-xl p-2.5 text-xs text-neutral-900 focus:border-[#1a175a] focus:outline-none"
                   />
                 </div>
 
@@ -550,7 +550,7 @@ const AdminUsersAdminPage = () => {
                       placeholder="Enter new password to reset"
                       value={form.password}
                       onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
-                      className="w-full border border-neutral-300 rounded-xl p-2.5 pr-16 text-xs text-neutral-900 focus:border-brand-gold focus:outline-none"
+                      className="w-full border border-neutral-300 rounded-xl p-2.5 pr-16 text-xs text-neutral-900 focus:border-[#1a175a] focus:outline-none"
                     />
                     <div className="absolute right-2.5 flex items-center gap-1 text-neutral-400">
                       <button
@@ -579,7 +579,7 @@ const AdminUsersAdminPage = () => {
                     required
                     value={form.roleId}
                     onChange={e => setForm(f => ({ ...f, roleId: e.target.value }))}
-                    className="w-full border border-neutral-300 rounded-xl p-2.5 text-xs text-neutral-900 focus:border-brand-gold focus:outline-none bg-white cursor-pointer"
+                    className="w-full border border-neutral-300 rounded-xl p-2.5 text-xs text-neutral-900 focus:border-[#1a175a] focus:outline-none bg-white cursor-pointer"
                   >
                     {roles.map(r => (
                       <option key={r.id || r.name} value={r.id}>{r.name}</option>
@@ -593,7 +593,7 @@ const AdminUsersAdminPage = () => {
                       type="checkbox"
                       checked={form.isActive}
                       onChange={e => setForm(f => ({ ...f, isActive: e.target.checked }))}
-                      className="w-4 h-4 accent-brand-gold rounded cursor-pointer"
+                      className="w-4 h-4 accent-[#1a175a] rounded cursor-pointer"
                     />
                     Account is active
                   </label>

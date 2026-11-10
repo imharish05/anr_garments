@@ -485,7 +485,7 @@ const VariantModal = ({ variant, variants = [], onClose, onSave, products, savin
                   value={selectedProductId}
                   onChange={e => setSelectedProductId(e.target.value)}
                   required
-                  className="w-full border border-brand-light bg-white px-3 py-2 text-sm focus:outline-none focus:border-brand-gold transition-colors rounded-md"
+                  className="w-full border border-brand-light bg-white px-3 py-2 text-sm focus:outline-none focus:border-[#1a175a] transition-colors rounded-md"
                 >
                   <option value="">Select Product</option>
                   {products.map(p => (
@@ -501,7 +501,7 @@ const VariantModal = ({ variant, variants = [], onClose, onSave, products, savin
                 {/* Section header with Copy icon */}
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-xs font-bold text-brand-gold uppercase tracking-wider">Configure Product Option Attributes</h3>
+                    <h3 className="text-xs font-bold text-[#1a175a] uppercase tracking-wider">Configure Product Option Attributes</h3>
                     <p className="text-[11px] text-neutral-500 mt-0.5">Select pre-determined options or type custom specs.</p>
                   </div>
                   {/* Copy icon — always visible if product has at least 1 existing variant */}
@@ -522,7 +522,7 @@ const VariantModal = ({ variant, variants = [], onClose, onSave, products, savin
                           setColorHex(sourceVariant.colorHex || '');
                           toast.success('Variant values copied!');
                         }}
-                        className="flex items-center gap-1.5 text-xs font-semibold text-neutral-600 hover:text-brand-gold border border-neutral-200 hover:border-brand-gold px-2.5 py-1.5 rounded-lg transition-colors bg-white shadow-sm"
+                        className="flex items-center gap-1.5 text-xs font-semibold text-neutral-600 hover:text-[#1a175a] border border-neutral-200 hover:border-[#1a175a] px-2.5 py-1.5 rounded-lg transition-colors bg-white shadow-sm"
                       >
                         <Copy size={13} /> Copy Existing
                       </button>
@@ -570,7 +570,7 @@ const VariantModal = ({ variant, variants = [], onClose, onSave, products, savin
                   value={sku}
                   onChange={e => setSku(e.target.value)}
                   placeholder="e.g. SKU-P104-V1"
-                  className="w-full border border-neutral-300 focus:border-brand-gold focus:ring-2 focus:ring-brand-gold/15 px-3.5 py-2.5 text-sm rounded-lg font-mono uppercase bg-white text-neutral-900 transition-all outline-none"
+                  className="w-full border border-neutral-300 focus:border-[#1a175a] focus:ring-2 focus:ring-[#1a175a]/15 px-3.5 py-2.5 text-sm rounded-lg font-mono uppercase bg-white text-neutral-900 transition-all outline-none"
                 />
               </div>
 
@@ -580,7 +580,7 @@ const VariantModal = ({ variant, variants = [], onClose, onSave, products, savin
             {/* 2. Pricing Section (INR Only) */}
             <div className="rounded-xl border border-neutral-200/90 bg-neutral-50/60 p-4 space-y-4">
               <div className="flex items-center gap-2 pb-2.5 border-b border-neutral-200/70">
-                <span className="w-2 h-2 rounded-full bg-brand-gold animate-pulse" />
+                <span className="w-2 h-2 rounded-full bg-[#1a175a] animate-pulse" />
                 <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-800">
                   Pricing (INR ₹)
                 </h4>
@@ -607,7 +607,7 @@ const VariantModal = ({ variant, variants = [], onClose, onSave, products, savin
                       value={price}
                       onChange={e => setPrice(e.target.value)}
                       placeholder="0.00"
-                      className="w-full pl-8 pr-3 py-2.5 text-sm font-semibold text-neutral-900 bg-white border border-neutral-300 rounded-lg focus:outline-none focus:border-brand-gold focus:ring-2 focus:ring-brand-gold/15 transition-all"
+                      className="w-full pl-8 pr-3 py-2.5 text-sm font-semibold text-neutral-900 bg-white border border-neutral-300 rounded-lg focus:outline-none focus:border-[#1a175a] focus:ring-2 focus:ring-[#1a175a]/15 transition-all"
                     />
                   </div>
                   <p className="text-[10px] text-neutral-400">Customer price in INR</p>
@@ -632,7 +632,7 @@ const VariantModal = ({ variant, variants = [], onClose, onSave, products, savin
                       value={mrp}
                       onChange={e => setMrp(e.target.value)}
                       placeholder="0.00"
-                      className="w-full pl-8 pr-3 py-2.5 text-sm font-semibold text-neutral-900 bg-white border border-neutral-300 rounded-lg focus:outline-none focus:border-brand-gold focus:ring-2 focus:ring-brand-gold/15 transition-all"
+                      className="w-full pl-8 pr-3 py-2.5 text-sm font-semibold text-neutral-900 bg-white border border-neutral-300 rounded-lg focus:outline-none focus:border-[#1a175a] focus:ring-2 focus:ring-[#1a175a]/15 transition-all"
                     />
                   </div>
                   <p className="text-[10px] text-neutral-400">Original price before discount</p>
@@ -660,7 +660,7 @@ const VariantModal = ({ variant, variants = [], onClose, onSave, products, savin
                   value={stock}
                   onChange={e => setStock(e.target.value)}
                   placeholder="0"
-                  className="w-full border border-neutral-300 focus:border-brand-gold focus:ring-2 focus:ring-brand-gold/15 px-3.5 py-2.5 text-sm font-semibold rounded-lg bg-white text-neutral-900 transition-all outline-none"
+                  className="w-full border border-neutral-300 focus:border-[#1a175a] focus:ring-2 focus:ring-[#1a175a]/15 px-3.5 py-2.5 text-sm font-semibold rounded-lg bg-white text-neutral-900 transition-all outline-none"
                 />
                 <p className="text-[10px] text-neutral-400 mt-1">Available inventory units</p>
               </div>
@@ -678,7 +678,7 @@ const VariantModal = ({ variant, variants = [], onClose, onSave, products, savin
                   value={lowStockThreshold}
                   onChange={e => setLowStockThreshold(e.target.value)}
                   placeholder="10"
-                  className="w-full border border-neutral-300 focus:border-brand-gold focus:ring-2 focus:ring-brand-gold/15 px-3.5 py-2.5 text-sm font-semibold rounded-lg bg-white text-neutral-900 transition-all outline-none"
+                  className="w-full border border-neutral-300 focus:border-[#1a175a] focus:ring-2 focus:ring-[#1a175a]/15 px-3.5 py-2.5 text-sm font-semibold rounded-lg bg-white text-neutral-900 transition-all outline-none"
                 />
                 <p className="text-[10px] text-neutral-400 mt-1">Alerts when inventory falls below this</p>
               </div>
@@ -711,10 +711,10 @@ const VariantModal = ({ variant, variants = [], onClose, onSave, products, savin
                   onDragEnter={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingMain(true); }}
                   onDragLeave={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingMain(false); }}
                   onDrop={handleMainImageDrop}
-                  className={`border-2 border-dashed ${isDraggingMain ? 'border-brand-gold bg-blue-50/60 ring-2 ring-brand-gold/30' : 'border-neutral-300 hover:border-brand-gold bg-white hover:bg-neutral-50/50'} rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer transition-all group`}
+                  className={`border-2 border-dashed ${isDraggingMain ? 'border-[#1a175a] bg-blue-50/60 ring-2 ring-[#1a175a]/30' : 'border-neutral-300 hover:border-[#1a175a] bg-white hover:bg-neutral-50/50'} rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer transition-all group`}
                 >
                   <div className="flex items-center gap-1.5 text-xs text-neutral-500 font-medium group-hover:text-neutral-800">
-                    <Camera size={16} className={`text-neutral-400 group-hover:text-brand-gold transition-transform ${isDraggingMain ? 'text-brand-gold scale-125' : ''}`} />
+                    <Camera size={16} className={`text-neutral-400 group-hover:text-[#1a175a] transition-transform ${isDraggingMain ? 'text-[#1a175a] scale-125' : ''}`} />
                     <span>Click to <strong>browse</strong> or <strong>drag & drop</strong></span>
                   </div>
                   <span className="text-[10px] text-neutral-400 mt-1">Supports JPG, PNG, WebP up to 5MB</span>
@@ -727,7 +727,7 @@ const VariantModal = ({ variant, variants = [], onClose, onSave, products, savin
             <div className="pt-2 border-t border-neutral-200 space-y-2">
               <div className="flex justify-between items-center">
                 <label className="block text-xs font-bold text-neutral-800">Variant Gallery (Max 5 Images)</label>
-                <span className="text-xs font-mono font-semibold text-brand-gold bg-brand-gold/10 px-2 py-0.5 rounded">
+                <span className="text-xs font-mono font-semibold text-[#1a175a] bg-[#1a175a]/10 px-2 py-0.5 rounded">
                   {existingImages.length + newImageFiles.length} / 5
                 </span>
               </div>
@@ -752,9 +752,9 @@ const VariantModal = ({ variant, variants = [], onClose, onSave, products, savin
                 {newImageFiles.map((file, idx) => {
                   const globalPos = existingImages.length + idx + 1;
                   return (
-                    <div key={`new-${idx}`} className="relative aspect-square border-2 border-brand-gold/60 rounded-md overflow-hidden bg-neutral-100 shadow-sm">
+                    <div key={`new-${idx}`} className="relative aspect-square border-2 border-[#1a175a]/60 rounded-md overflow-hidden bg-neutral-100 shadow-sm">
                       <img src={file.preview} alt={`Upload ${globalPos}`} className="w-full h-full object-cover" />
-                      <span className="absolute top-1 left-1 bg-brand-gold text-white text-[9px] font-bold px-1.5 py-0.5 rounded">
+                      <span className="absolute top-1 left-1 bg-[#1a175a] text-white text-[9px] font-bold px-1.5 py-0.5 rounded">
                         #{globalPos}
                       </span>
                       <button
@@ -780,7 +780,7 @@ const VariantModal = ({ variant, variants = [], onClose, onSave, products, savin
                         await processMultipleFiles(files);
                       }
                     }}
-                    className="aspect-square border-2 border-dashed border-neutral-300 hover:border-brand-gold flex flex-col items-center justify-center text-neutral-400 hover:text-brand-gold cursor-pointer rounded-md bg-neutral-50 transition-colors"
+                    className="aspect-square border-2 border-dashed border-neutral-300 hover:border-[#1a175a] flex flex-col items-center justify-center text-neutral-400 hover:text-[#1a175a] cursor-pointer rounded-md bg-neutral-50 transition-colors"
                     title="Click to browse or drop images here"
                   >
                     <Plus size={20} />
@@ -1020,7 +1020,7 @@ const VariantsAdminPage = () => {
           <select
             value={productFilter}
             onChange={(e) => { setProductFilter(e.target.value); setPage(1); }}
-            className="border border-neutral-300 bg-neutral-50/50 rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-800 focus:outline-none focus:border-brand-gold cursor-pointer"
+            className="border border-neutral-300 bg-neutral-50/50 rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-800 focus:outline-none focus:border-[#1a175a] cursor-pointer"
           >
             <option value="">All Products</option>
             {products.map(p => (
@@ -1112,12 +1112,12 @@ const VariantsAdminPage = () => {
                     {canShowActions && (
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
-                          {canEditVariant && <button onClick={() => { setEditing(variant); setModalOpen(true); }} className="p-1.5 text-brand-grey hover:text-brand-gold transition-colors focus-visible:outline-brand-gold" aria-label="Edit"><Edit2 size={14} /></button>}
+                          {canEditVariant && <button onClick={() => { setEditing(variant); setModalOpen(true); }} className="p-1.5 text-brand-grey hover:text-[#1a175a] transition-colors focus-visible:outline-[#1a175a]" aria-label="Edit"><Edit2 size={14} /></button>}
                           {canDeleteVariant && (
                             <button
                               onClick={() => handleDelete(variant.id)}
                               title={isLastVariant ? 'Delete Variant (will also delete product)' : 'Delete Variant'}
-                              className={`p-1.5 transition-colors focus-visible:outline-brand-gold ${
+                              className={`p-1.5 transition-colors focus-visible:outline-[#1a175a] ${
                                 isLastVariant
                                   ? 'text-red-400 hover:text-red-600 cursor-pointer'
                                   : 'text-brand-grey hover:text-red-400 cursor-pointer'

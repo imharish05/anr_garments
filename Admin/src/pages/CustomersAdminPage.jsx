@@ -48,7 +48,7 @@ const CustomersAdminPage = () => {
                 <tr key={customer.id} className="border-b border-brand-light hover:bg-brand-light/20 transition-colors">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-brand-gold flex items-center justify-center flex-shrink-0">
+                      <div className="w-9 h-9 rounded-full bg-[#1a175a] text-white flex items-center justify-center flex-shrink-0 shadow-sm font-semibold">
                         <span className="text-white text-xs font-bold">{customer.name?.[0] || '?'}</span>
                       </div>
                       <div>

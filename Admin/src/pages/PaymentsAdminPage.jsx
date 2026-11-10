@@ -121,7 +121,7 @@ const PaymentsAdminPage = () => {
     <AdminLayout title="Payments">
       {loading ? (
         <div className="flex items-center justify-center min-h-[300px]">
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-brand-gold"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-[#1a175a]"></div>
         </div>
       ) : (
         <>
@@ -145,7 +145,7 @@ const PaymentsAdminPage = () => {
                     placeholder="Search by Order ID or Gateway Ref..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full bg-white border border-neutral-300 rounded-lg pl-9 pr-8 py-1.5 text-xs text-neutral-800 placeholder-neutral-400 focus:ring-2 focus:ring-brand-gold focus:border-brand-gold outline-none transition-all shadow-sm"
+                    className="w-full bg-white border border-neutral-300 rounded-lg pl-9 pr-8 py-1.5 text-xs text-neutral-800 placeholder-neutral-400 focus:ring-2 focus:ring-[#1a175a] focus:border-[#1a175a] outline-none transition-all shadow-sm"
                     id="payment-search-input"
                   />
                   {searchQuery && (
@@ -194,7 +194,7 @@ const PaymentsAdminPage = () => {
                   ) : (
                     filteredPayments.map(p => (
                       <tr key={p.id} className="border-b border-brand-light hover:bg-brand-light/20 transition-colors">
-                        <td className="px-4 py-3 font-mono text-xs font-semibold text-brand-gold">{p.orderNo}</td>
+                        <td className="px-4 py-3 font-mono text-xs font-semibold text-[#1a175a]">{p.orderNo}</td>
                         <td className="px-4 py-3 font-semibold">
                           {p.currency === 'AED'
                             ? `AED ${p.amount.toLocaleString('en-AE', { minimumFractionDigits: 2 })}`

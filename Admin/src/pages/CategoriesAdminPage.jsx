@@ -384,7 +384,7 @@ const CategoriesAdminPage = () => {
                         </td>
                         {/* <td className="px-5 py-4">
                           <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${
-                            cat.showHeader ? 'bg-blue-50 text-brand-gold border border-blue-200' : 'bg-gray-50 text-gray-500 border border-gray-200'
+                            cat.showHeader ? 'bg-blue-50 text-[#1a175a] border border-blue-200' : 'bg-gray-50 text-gray-500 border border-gray-200'
                           }`}>
                             {cat.showHeader ? 'Show' : 'Hide'}
                           </span>
@@ -393,7 +393,7 @@ const CategoriesAdminPage = () => {
                           <td className="px-5 py-4 text-right">
                             <div className="flex justify-end gap-1.5">
                               {canEditCategory && (
-                                <button onClick={() => openModal(cat)} className="p-2 text-brand-grey hover:text-brand-gold hover:bg-brand-light/30 rounded transition-colors" id={`edit-cat-${cat.id}`} title="Edit">
+                                <button onClick={() => openModal(cat)} className="p-2 text-brand-grey hover:text-[#1a175a] hover:bg-brand-light/30 rounded transition-colors" id={`edit-cat-${cat.id}`} title="Edit">
                                   <Edit2 size={14} />
                                 </button>
                               )}
@@ -427,7 +427,7 @@ const CategoriesAdminPage = () => {
             <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.96 }} className="bg-white rounded-xl w-full max-w-md shadow-xl overflow-hidden">
               <div className="flex items-center justify-between px-6 py-4 border-b border-brand-light">
                 <h2 className="font-playfair text-lg font-semibold">{editing ? 'Edit Category' : 'Add Category'}</h2>
-                <button onClick={() => !saving && setModalOpen(false)} className="p-1.5 hover:text-brand-gold focus-visible:outline-brand-gold transition-colors"><X size={18} /></button>
+                <button onClick={() => !saving && setModalOpen(false)} className="p-1.5 hover:text-[#1a175a] focus-visible:outline-[#1a175a] transition-colors"><X size={18} /></button>
               </div>
               <form onSubmit={handleSave} className="p-6 space-y-4">
                 {uploadError && (
@@ -436,12 +436,12 @@ const CategoriesAdminPage = () => {
                 
                 <div>
                   <label className="block text-xs font-medium text-brand-grey mb-1.5" htmlFor="cat-name">Category Name *</label>
-                  <input id="cat-name" type="text" value={form.name} onChange={handleNameChange} required className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-brand-gold transition-colors" placeholder="e.g. Party Wear" />
+                  <input id="cat-name" type="text" value={form.name} onChange={handleNameChange} required className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-[#1a175a] transition-colors" placeholder="e.g. Party Wear" />
                 </div>
 
                 <div>
                   <label className="block text-xs font-medium text-brand-grey mb-1.5" htmlFor="cat-slug">Slug *</label>
-                  <input id="cat-slug" type="text" value={form.slug} onChange={e => setForm(p => ({ ...p, slug: e.target.value }))} required className="w-full border border-brand-light bg-neutral-50 px-3 py-2 text-sm focus:outline-none focus:border-brand-gold transition-colors" placeholder="party-wear" />
+                  <input id="cat-slug" type="text" value={form.slug} onChange={e => setForm(p => ({ ...p, slug: e.target.value }))} required className="w-full border border-brand-light bg-neutral-50 px-3 py-2 text-sm focus:outline-none focus:border-[#1a175a] transition-colors" placeholder="party-wear" />
                 </div>
 
                 {/* Categories Image upload zone */}
@@ -449,7 +449,7 @@ const CategoriesAdminPage = () => {
                   <label className="block text-xs font-medium text-brand-grey mb-1.5">Category Image (Square 1:1 Aspect Ratio) *</label>
                   <div
                     className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors cursor-pointer ${
-                      isDragging ? 'border-brand-gold bg-brand-gold/5' : 'border-brand-light hover:border-brand-gold'
+                      isDragging ? 'border-[#1a175a] bg-blue-50/50' : 'border-brand-light hover:border-[#1a175a]'
                     }`}
                     onClick={() => fileInputRef.current?.click()}
                     onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}

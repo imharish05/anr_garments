@@ -211,7 +211,7 @@ const CouponsAdminPage = () => {
               : coupons.length === 0 ? (
                 <tr>
                   <td colSpan={couponHeaders.length} className="text-center py-10 text-brand-grey text-sm font-medium">
-                    No coupons found. Click <span className="font-semibold text-brand-gold">'+ Add Coupon'</span> to create one.
+                    No coupons found. Click <span className="font-semibold text-[#1a175a]">'+ Add Coupon'</span> to create one.
                   </td>
                 </tr>
               ) : (
@@ -220,7 +220,7 @@ const CouponsAdminPage = () => {
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         <span className="font-mono font-bold text-brand-text bg-brand-light px-2 py-0.5 rounded text-xs">{coupon.code}</span>
-                        <button onClick={() => navigator.clipboard.writeText(coupon.code)} className="text-brand-grey hover:text-brand-gold" aria-label="Copy coupon code" id={`copy-${coupon.code}`}><Copy size={12} /></button>
+                        <button onClick={() => navigator.clipboard.writeText(coupon.code)} className="text-brand-grey hover:text-[#1a175a]" aria-label="Copy coupon code" id={`copy-${coupon.code}`}><Copy size={12} /></button>
                       </div>
                     </td>
                     <td className="px-4 py-3"><span className={`text-xs px-2 py-0.5 rounded-full ${coupon.type === 'PERCENT' ? 'bg-blue-50 text-blue-700' : 'bg-purple-50 text-purple-700'}`}>{coupon.type}</span></td>
@@ -256,7 +256,7 @@ const CouponsAdminPage = () => {
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
                           {canEditCoupon && (
-                            <button onClick={() => handleEdit(coupon)} className="p-1.5 text-brand-grey hover:text-brand-gold transition-colors" title="Edit" id={`edit-${coupon.code}`}>
+                            <button onClick={() => handleEdit(coupon)} className="p-1.5 text-brand-grey hover:text-[#1a175a] transition-colors" title="Edit" id={`edit-${coupon.code}`}>
                               <Edit size={14} />
                             </button>
                           )}
@@ -288,35 +288,35 @@ const CouponsAdminPage = () => {
             <motion.div initial={{opacity:0,scale:0.96}} animate={{opacity:1,scale:1}} exit={{opacity:0,scale:0.96}} className="bg-white rounded-xl w-full max-w-3xl overflow-hidden shadow-2xl">
               <div className="flex items-center justify-between px-6 py-4 border-b border-brand-light">
                 <h2 className="font-playfair text-lg font-semibold">{editingId ? 'Edit Coupon' : 'Add Coupon'}</h2>
-                <button onClick={()=>setModalOpen(false)} className="p-1.5 hover:text-brand-gold"><X size={18}/></button>
+                <button onClick={()=>setModalOpen(false)} className="p-1.5 hover:text-[#1a175a]"><X size={18}/></button>
               </div>
               <div className="flex flex-col md:flex-row">
                 <form onSubmit={handleSave} className="flex-1 p-6 space-y-4">
                   <div>
                     <label className="block text-xs font-medium text-brand-grey mb-1.5" htmlFor="coup-code">Coupon Code *</label>
-                    <input id="coup-code" type="text" value={form.code} onChange={e=>setForm(p=>({...p,code:e.target.value.toUpperCase()}))} required className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-brand-gold uppercase font-mono" placeholder="WELCOME20"/>
+                    <input id="coup-code" type="text" value={form.code} onChange={e=>setForm(p=>({...p,code:e.target.value.toUpperCase()}))} required className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-[#1a175a] uppercase font-mono" placeholder="WELCOME20"/>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-xs font-medium text-brand-grey mb-1.5" htmlFor="coup-type">Type</label>
-                      <select id="coup-type" value={form.type} onChange={e=>setForm(p=>({...p,type:e.target.value}))} className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-brand-gold">
+                      <select id="coup-type" value={form.type} onChange={e=>setForm(p=>({...p,type:e.target.value}))} className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-[#1a175a]">
                         <option value="PERCENT">Percentage</option>
                         <option value="FLAT">Flat Amount</option>
                       </select>
                     </div>
                     <div>
                       <label className="block text-xs font-medium text-brand-grey mb-1.5" htmlFor="coup-val">Value *</label>
-                      <input id="coup-val" type="number" value={form.value} onChange={e=>setForm(p=>({...p,value:e.target.value}))} required className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-brand-gold"/>
+                      <input id="coup-val" type="number" value={form.value} onChange={e=>setForm(p=>({...p,value:e.target.value}))} required className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-[#1a175a]"/>
                     </div>
                   </div>
                   <div className="grid grid-cols-3 gap-3">
                     <div>
                       <label className="block text-xs font-medium text-brand-grey mb-1.5" htmlFor="coup-min">Min Order (₹)</label>
-                      <input id="coup-min" type="number" value={form.minOrderValue} onChange={e=>setForm(p=>({...p,minOrderValue:e.target.value}))} className="w-full border border-brand-light px-2.5 py-2 text-xs focus:outline-none focus:border-brand-gold"/>
+                      <input id="coup-min" type="number" value={form.minOrderValue} onChange={e=>setForm(p=>({...p,minOrderValue:e.target.value}))} className="w-full border border-brand-light px-2.5 py-2 text-xs focus:outline-none focus:border-[#1a175a]"/>
                     </div>
                     <div>
                       <label className="block text-xs font-medium text-brand-grey mb-1.5 text-ellipsis overflow-hidden whitespace-nowrap" htmlFor="coup-max">Max Disc (₹)</label>
-                      <input id="coup-max" type="number" value={form.maxDiscount} onChange={e=>setForm(p=>({...p,maxDiscount:e.target.value}))} disabled={form.type === 'FLAT'} className="w-full border border-brand-light px-2.5 py-2 text-xs focus:outline-none focus:border-brand-gold disabled:bg-neutral-100 disabled:text-neutral-400" placeholder="N/A"/>
+                      <input id="coup-max" type="number" value={form.maxDiscount} onChange={e=>setForm(p=>({...p,maxDiscount:e.target.value}))} disabled={form.type === 'FLAT'} className="w-full border border-brand-light px-2.5 py-2 text-xs focus:outline-none focus:border-[#1a175a] disabled:bg-neutral-100 disabled:text-neutral-400" placeholder="N/A"/>
                     </div>
                     <div>
                       <label className="block text-xs font-medium text-brand-grey mb-1" htmlFor="coup-limit">
@@ -328,7 +328,7 @@ const CouponsAdminPage = () => {
                         min="1"
                         value={form.usageLimit}
                         onChange={e=>setForm(p=>({...p,usageLimit:e.target.value}))}
-                        className="w-full border border-brand-light px-2.5 py-2 text-xs focus:outline-none focus:border-brand-gold"
+                        className="w-full border border-brand-light px-2.5 py-2 text-xs focus:outline-none focus:border-[#1a175a]"
                         placeholder="Infinite"
                       />
                       <span className="block text-[10px] text-neutral-400 mt-1 font-medium italic">
@@ -352,7 +352,7 @@ const CouponsAdminPage = () => {
                             validTo: p.validTo && p.validTo < newFrom ? '' : p.validTo
                           }));
                         }}
-                        className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-brand-gold"
+                        className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-[#1a175a]"
                       />
                     </div>
                     <div>
@@ -363,7 +363,7 @@ const CouponsAdminPage = () => {
                         min={form.validFrom ? (form.validFrom > todayStr ? form.validFrom : todayStr) : todayStr}
                         value={form.validTo}
                         onChange={e => setForm(p => ({ ...p, validTo: e.target.value }))}
-                        className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-brand-gold"
+                        className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-[#1a175a]"
                       />
                     </div>
                   </div>

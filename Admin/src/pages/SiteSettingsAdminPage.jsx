@@ -387,7 +387,7 @@ const SiteSettingsAdminPage = () => {
       <AdminLayout title="Site Settings">
         <div className="flex h-[60vh] items-center justify-center">
           <div className="flex flex-col items-center gap-2">
-            <RefreshCw className="animate-spin text-brand-gold" size={32} />
+            <RefreshCw className="animate-spin text-[#1a175a]" size={32} />
             <span className="text-sm text-brand-grey">Loading site settings...</span>
           </div>
         </div>
@@ -402,8 +402,8 @@ const SiteSettingsAdminPage = () => {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-brand-light shadow-sm">
           <div>
             <div className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-brand-gold" />
-              <span className="text-xs font-semibold uppercase tracking-widest text-brand-gold">
+              <span className="h-2 w-2 rounded-full bg-[#1a175a]" />
+              <span className="text-xs font-semibold uppercase tracking-widest text-[#1a175a]">
                 Brand Content Management
               </span>
             </div>
@@ -419,7 +419,7 @@ const SiteSettingsAdminPage = () => {
             href="http://localhost:5173/about"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg border border-brand-gold/30 text-brand-gold hover:bg-blue-50/50 transition-colors w-fit"
+            className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg border border-[#1a175a]/30 text-[#1a175a] hover:bg-blue-50/50 transition-colors w-fit"
           >
             <span>Preview About Page</span>
             <ExternalLink size={14} />
@@ -436,7 +436,7 @@ const SiteSettingsAdminPage = () => {
               onClick={() => setActiveTab(id)}
               className={`flex items-center gap-2 px-5 py-3.5 text-sm font-medium border-b-2 whitespace-nowrap transition-all ${
                 activeTab === id
-                  ? 'border-brand-gold text-brand-gold bg-blue-50/50'
+                  ? 'border-[#1a175a] text-[#1a175a] bg-blue-50/50 font-semibold'
                   : 'border-transparent text-brand-grey hover:text-brand-text hover:bg-neutral-50/50'
               }`}
             >
@@ -481,7 +481,7 @@ const SiteSettingsAdminPage = () => {
                             hero: { ...settings.hero, eyebrow: e.target.value },
                           })
                         }
-                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-brand-gold"
+                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#1a175a]"
                         placeholder="About ANR Hospitals"
                       />
                     </div>
@@ -500,7 +500,7 @@ const SiteSettingsAdminPage = () => {
                             hero: { ...settings.hero, title: e.target.value },
                           })
                         }
-                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-brand-gold"
+                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#1a175a]"
                         placeholder="Founded with a passion for style and comfort"
                       />
                     </div>
@@ -519,7 +519,7 @@ const SiteSettingsAdminPage = () => {
                             hero: { ...settings.hero, text: e.target.value },
                           })
                         }
-                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-brand-gold leading-relaxed"
+                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#1a175a] leading-relaxed"
                         placeholder="We are manufacturers and wholesale distributors of high-quality..."
                       />
                     </div>
@@ -553,7 +553,7 @@ const SiteSettingsAdminPage = () => {
                         className="border border-brand-light rounded-xl p-4 bg-neutral-50/50 space-y-3 relative group"
                       >
                         <div className="flex items-center justify-between">
-                          <span className="text-[11px] font-bold text-brand-gold uppercase tracking-wider">
+                          <span className="text-[11px] font-bold text-[#1a175a] uppercase tracking-wider">
                             Hang Tag #{idx + 1}
                           </span>
                           {settings.hero.tags.length > 1 && (
@@ -576,7 +576,7 @@ const SiteSettingsAdminPage = () => {
                             type="text"
                             value={tag.kicker}
                             onChange={(e) => handleTagChange(idx, 'kicker', e.target.value)}
-                            className="w-full border border-brand-light bg-white px-2.5 py-1.5 rounded-lg text-xs focus:outline-none focus:border-brand-gold"
+                            className="w-full border border-brand-light bg-white px-2.5 py-1.5 rounded-lg text-xs focus:outline-none focus:border-[#1a175a]"
                             placeholder="We are"
                           />
                         </div>
@@ -589,7 +589,7 @@ const SiteSettingsAdminPage = () => {
                             type="text"
                             value={tag.title}
                             onChange={(e) => handleTagChange(idx, 'title', e.target.value)}
-                            className="w-full border border-brand-light bg-white px-2.5 py-1.5 rounded-lg text-xs font-medium focus:outline-none focus:border-brand-gold"
+                            className="w-full border border-brand-light bg-white px-2.5 py-1.5 rounded-lg text-xs font-medium focus:outline-none focus:border-[#1a175a]"
                             placeholder="Manufacturers"
                           />
                         </div>
@@ -602,7 +602,7 @@ const SiteSettingsAdminPage = () => {
                             type="text"
                             value={tag.foot}
                             onChange={(e) => handleTagChange(idx, 'foot', e.target.value)}
-                            className="w-full border border-brand-light bg-white px-2.5 py-1.5 rounded-lg text-xs focus:outline-none focus:border-brand-gold"
+                            className="w-full border border-brand-light bg-white px-2.5 py-1.5 rounded-lg text-xs focus:outline-none focus:border-[#1a175a]"
                             placeholder="High-quality clothing"
                           />
                         </div>
@@ -645,7 +645,7 @@ const SiteSettingsAdminPage = () => {
                             who: { ...settings.who, eyebrow: e.target.value },
                           })
                         }
-                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-brand-gold"
+                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#1a175a]"
                         placeholder="Who We Are"
                       />
                     </div>
@@ -664,7 +664,7 @@ const SiteSettingsAdminPage = () => {
                             who: { ...settings.who, title: e.target.value },
                           })
                         }
-                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-brand-gold"
+                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#1a175a]"
                         placeholder="Manufacturers and wholesale distributors"
                       />
                     </div>
@@ -683,7 +683,7 @@ const SiteSettingsAdminPage = () => {
                             who: { ...settings.who, text: e.target.value },
                           })
                         }
-                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-brand-gold leading-relaxed"
+                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#1a175a] leading-relaxed"
                         placeholder="High-quality men's wear, kid's wear, shorts, cargo pants, 3/4ths and stylish T-shirts, made and supplied from Coimbatore."
                       />
                     </div>
@@ -715,8 +715,8 @@ const SiteSettingsAdminPage = () => {
                         }}
                         className={`border-2 border-dashed rounded-2xl p-6 transition-all flex flex-col items-center justify-center text-center h-48 cursor-pointer ${
                           whoDragging
-                            ? 'border-brand-gold bg-blue-50/20 scale-98'
-                            : 'border-brand-light hover:border-brand-gold hover:bg-blue-50/10'
+                            ? 'border-[#1a175a] bg-blue-50/20 scale-98'
+                            : 'border-brand-light hover:border-[#1a175a] hover:bg-blue-50/10'
                         }`}
                       >
                         <Upload className="w-8 h-8 text-brand-grey mb-2" />
@@ -746,7 +746,7 @@ const SiteSettingsAdminPage = () => {
                               />
                               <div className="absolute top-3 right-3 flex items-center gap-2">
                                 {whoImageFile && (
-                                  <span className="bg-brand-gold text-white text-[10px] font-semibold px-2 py-0.5 rounded-full shadow">
+                                  <span className="bg-[#1a175a] text-white text-[10px] font-semibold px-2 py-0.5 rounded-full shadow">
                                     New File Ready
                                   </span>
                                 )}
@@ -816,7 +816,7 @@ const SiteSettingsAdminPage = () => {
                             fabrics: { ...settings.fabrics, eyebrow: e.target.value },
                           })
                         }
-                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-brand-gold"
+                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#1a175a]"
                         placeholder="Superior Materials"
                       />
                     </div>
@@ -834,7 +834,7 @@ const SiteSettingsAdminPage = () => {
                             fabrics: { ...settings.fabrics, title: e.target.value },
                           })
                         }
-                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-brand-gold"
+                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#1a175a]"
                         placeholder="Superior fabrics, chosen with care"
                       />
                     </div>
@@ -852,7 +852,7 @@ const SiteSettingsAdminPage = () => {
                             fabrics: { ...settings.fabrics, text: e.target.value },
                           })
                         }
-                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-brand-gold"
+                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#1a175a]"
                         placeholder="We use superior fabrics to ensure durability, comfort, and the latest trends..."
                       />
                     </div>
@@ -873,9 +873,9 @@ const SiteSettingsAdminPage = () => {
                       {settings.fabrics.list.map((fabric) => (
                         <span
                           key={fabric}
-                          className="inline-flex items-center gap-1.5 bg-white border border-brand-gold/40 text-brand-text px-3 py-1.5 rounded-full text-xs font-medium shadow-xs"
+                          className="inline-flex items-center gap-1.5 bg-white border border-[#1a175a]/40 text-brand-text px-3 py-1.5 rounded-full text-xs font-medium shadow-xs"
                         >
-                          <span className="h-1.5 w-1.5 rounded-full bg-brand-gold" />
+                          <span className="h-1.5 w-1.5 rounded-full bg-[#1a175a]" />
                           {fabric}
                           <button
                             type="button"
@@ -900,7 +900,7 @@ const SiteSettingsAdminPage = () => {
                             handleAddFabric(e);
                           }
                         }}
-                        className="flex-1 border border-brand-light px-3 py-2 rounded-lg text-xs focus:outline-none focus:border-brand-gold"
+                        className="flex-1 border border-brand-light px-3 py-2 rounded-lg text-xs focus:outline-none focus:border-[#1a175a]"
                         placeholder="Add new fabric name (e.g. Linen Blend)..."
                       />
                       <button
@@ -944,7 +944,7 @@ const SiteSettingsAdminPage = () => {
                         type="text"
                         value={settings.missionTitle}
                         onChange={(e) => setSettings({ ...settings, missionTitle: e.target.value })}
-                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-brand-gold"
+                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#1a175a]"
                         placeholder="Our mission"
                       />
                     </div>
@@ -957,7 +957,7 @@ const SiteSettingsAdminPage = () => {
                         type="text"
                         value={settings.valuesTitle}
                         onChange={(e) => setSettings({ ...settings, valuesTitle: e.target.value })}
-                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-brand-gold"
+                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#1a175a]"
                         placeholder="What we stand for"
                       />
                     </div>
@@ -973,7 +973,7 @@ const SiteSettingsAdminPage = () => {
                         onChange={(e) =>
                           setSettings({ ...settings, mission: e.target.value })
                         }
-                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-brand-gold leading-relaxed"
+                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#1a175a] leading-relaxed"
                         placeholder="To deliver exceptional clothing that combines **modern fashion** with **unmatched comfort**..."
                       />
                     </div>
@@ -1030,8 +1030,8 @@ const SiteSettingsAdminPage = () => {
                         }}
                         className={`border-2 border-dashed rounded-xl h-36 flex flex-col items-center justify-center cursor-pointer transition-all ${
                           missionMainDragging
-                            ? 'border-brand-gold bg-blue-50/20'
-                            : 'border-brand-light hover:border-brand-gold'
+                            ? 'border-[#1a175a] bg-blue-50/20'
+                            : 'border-brand-light hover:border-[#1a175a]'
                         }`}
                       >
                         {missionMainPreview ? (
@@ -1094,8 +1094,8 @@ const SiteSettingsAdminPage = () => {
                         }}
                         className={`border-2 border-dashed rounded-xl h-36 flex flex-col items-center justify-center cursor-pointer transition-all ${
                           missionAccentDragging
-                            ? 'border-brand-gold bg-blue-50/20'
-                            : 'border-brand-light hover:border-brand-gold'
+                            ? 'border-[#1a175a] bg-blue-50/20'
+                            : 'border-brand-light hover:border-[#1a175a]'
                         }`}
                       >
                         {missionAccentPreview ? (
@@ -1154,9 +1154,9 @@ const SiteSettingsAdminPage = () => {
                     {settings.values.map((val) => (
                       <span
                         key={val}
-                        className="inline-flex items-center gap-1.5 bg-white border border-brand-gold/40 text-brand-text px-3 py-1.5 rounded-full text-xs font-medium shadow-xs"
+                        className="inline-flex items-center gap-1.5 bg-white border border-[#1a175a]/40 text-brand-text px-3 py-1.5 rounded-full text-xs font-medium shadow-xs"
                       >
-                        <CheckCircle2 size={13} className="text-brand-gold" />
+                        <CheckCircle2 size={13} className="text-[#1a175a]" />
                         {val}
                         <button
                           type="button"
@@ -1181,7 +1181,7 @@ const SiteSettingsAdminPage = () => {
                           handleAddValue(e);
                         }
                       }}
-                      className="flex-1 border border-brand-light px-3 py-2 rounded-lg text-xs focus:outline-none focus:border-brand-gold"
+                      className="flex-1 border border-brand-light px-3 py-2 rounded-lg text-xs focus:outline-none focus:border-[#1a175a]"
                       placeholder="Add value (e.g. Ethical Sourcing)..."
                     />
                     <button
@@ -1229,7 +1229,7 @@ const SiteSettingsAdminPage = () => {
                             contact: { ...settings.contact, eyebrow: e.target.value },
                           })
                         }
-                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-brand-gold"
+                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#1a175a]"
                         placeholder="Wholesale & Retail Inquiries"
                       />
                     </div>
@@ -1247,7 +1247,7 @@ const SiteSettingsAdminPage = () => {
                             contact: { ...settings.contact, title: e.target.value },
                           })
                         }
-                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-brand-gold"
+                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#1a175a]"
                         placeholder="Get in touch"
                       />
                     </div>
@@ -1265,7 +1265,7 @@ const SiteSettingsAdminPage = () => {
                             contact: { ...settings.contact, button: e.target.value },
                           })
                         }
-                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-brand-gold"
+                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#1a175a]"
                         placeholder="Contact us"
                       />
                     </div>
@@ -1283,7 +1283,7 @@ const SiteSettingsAdminPage = () => {
                             contact: { ...settings.contact, to: e.target.value },
                           })
                         }
-                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-brand-gold"
+                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#1a175a]"
                         placeholder="/contact"
                       />
                     </div>
@@ -1301,7 +1301,7 @@ const SiteSettingsAdminPage = () => {
                             contact: { ...settings.contact, text: e.target.value },
                           })
                         }
-                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-brand-gold leading-relaxed"
+                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#1a175a] leading-relaxed"
                         placeholder="Men's wear, kid's wear and ladies' wear, all in one place."
                       />
                     </div>
@@ -1331,7 +1331,7 @@ const SiteSettingsAdminPage = () => {
                             office: { ...settings.office, label: e.target.value },
                           })
                         }
-                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-brand-gold"
+                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#1a175a]"
                         placeholder="Manufacturing & Office"
                       />
                     </div>
@@ -1356,7 +1356,7 @@ const SiteSettingsAdminPage = () => {
                             },
                           })
                         }
-                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-brand-gold font-mono text-xs leading-relaxed"
+                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#1a175a] font-mono text-xs leading-relaxed"
                         placeholder="6/154, 2nd Street, Radhithya Avenue,&#10;Checkpost, Kinathukadavu - Pollachi Main Road,&#10;Coimbatore - 642109"
                       />
                     </div>
@@ -1374,7 +1374,7 @@ const SiteSettingsAdminPage = () => {
                             office: { ...settings.office, phone: e.target.value },
                           })
                         }
-                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-brand-gold"
+                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#1a175a]"
                         placeholder="+91 98765 43210"
                       />
                     </div>
@@ -1392,7 +1392,7 @@ const SiteSettingsAdminPage = () => {
                             office: { ...settings.office, email: e.target.value },
                           })
                         }
-                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-brand-gold"
+                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#1a175a]"
                         placeholder="info@anrhospitals.com"
                       />
                     </div>
@@ -1410,7 +1410,7 @@ const SiteSettingsAdminPage = () => {
                             office: { ...settings.office, mapsUrl: e.target.value },
                           })
                         }
-                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-brand-gold"
+                        className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#1a175a]"
                         placeholder="https://www.google.com/maps/..."
                       />
                     </div>

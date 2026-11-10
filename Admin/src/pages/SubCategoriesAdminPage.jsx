@@ -321,8 +321,8 @@ const SubCategoriesAdminPage = () => {
           onClick={() => { setSelectedCategory(''); setPage(1); }}
           className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all shadow-2xs ${
             selectedCategory === ''
-              ? 'bg-neutral-900 text-white'
-              : 'bg-white text-neutral-600 hover:bg-neutral-100 border border-neutral-200'
+              ? 'bg-[#1a175a] text-white shadow-sm'
+              : 'bg-white text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 border border-neutral-200'
           }`}
         >
           All Categories
@@ -334,8 +334,8 @@ const SubCategoriesAdminPage = () => {
             onClick={() => { setSelectedCategory(String(cat.id)); setPage(1); }}
             className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all shadow-2xs ${
               String(selectedCategory) === String(cat.id)
-                ? 'bg-brand-gold text-white shadow-xs'
-                : 'bg-white text-neutral-600 hover:bg-neutral-100 border border-neutral-200'
+                ? 'bg-[#1a175a] text-white shadow-sm'
+                : 'bg-white text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 border border-neutral-200'
             }`}
           >
             {cat.name}
@@ -416,7 +416,7 @@ const SubCategoriesAdminPage = () => {
                           <td className="px-5 py-4 text-right">
                             <div className="flex justify-end gap-1.5">
                               {canEditSubCategory && (
-                                <button onClick={() => openModal(sub)} className="p-2 text-brand-grey hover:text-brand-gold hover:bg-brand-light/30 rounded transition-colors" id={`edit-sub-${sub.id}`} title="Edit">
+                                <button onClick={() => openModal(sub)} className="p-2 text-brand-grey hover:text-[#1a175a] hover:bg-brand-light/30 rounded transition-colors" id={`edit-sub-${sub.id}`} title="Edit">
                                   <Edit2 size={14} />
                                 </button>
                               )}
@@ -450,7 +450,7 @@ const SubCategoriesAdminPage = () => {
             <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.96 }} className="bg-white rounded-xl w-full max-w-md shadow-xl overflow-hidden">
               <div className="flex items-center justify-between px-6 py-4 border-b border-brand-light">
                 <h2 className="font-playfair text-lg font-semibold">{editing ? 'Edit Sub-Category' : 'Add Sub-Category'}</h2>
-                <button onClick={() => !saving && setModalOpen(false)} className="p-1.5 hover:text-brand-gold focus-visible:outline-brand-gold transition-colors"><X size={18} /></button>
+                <button onClick={() => !saving && setModalOpen(false)} className="p-1.5 hover:text-[#1a175a] focus-visible:outline-[#1a175a] transition-colors"><X size={18} /></button>
               </div>
               <form onSubmit={handleSave} className="p-6 space-y-4">
                 {uploadError && (
@@ -460,7 +460,7 @@ const SubCategoriesAdminPage = () => {
                 {/* Category Selector */}
                 <div>
                   <label className="block text-xs font-medium text-brand-grey mb-1.5" htmlFor="sub-parent">Category *</label>
-                  <select id="sub-parent" value={form.categoryId} onChange={e => setForm(p => ({ ...p, categoryId: e.target.value }))} required className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-brand-gold transition-colors bg-white">
+                  <select id="sub-parent" value={form.categoryId} onChange={e => setForm(p => ({ ...p, categoryId: e.target.value }))} required className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-[#1a175a] transition-colors bg-white">
                     <option value="" disabled>Select category...</option>
                     {parentCategories.map(p => (
                       <option key={p.id} value={p.id}>{p.name}</option>
@@ -470,12 +470,12 @@ const SubCategoriesAdminPage = () => {
 
                 <div>
                   <label className="block text-xs font-medium text-brand-grey mb-1.5" htmlFor="sub-name">Sub-Category Name *</label>
-                  <input id="sub-name" type="text" value={form.name} onChange={handleNameChange} required className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-brand-gold transition-colors" placeholder="e.g. Lehenga Sets" />
+                  <input id="sub-name" type="text" value={form.name} onChange={handleNameChange} required className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-[#1a175a] transition-colors" placeholder="e.g. Lehenga Sets" />
                 </div>
 
                 <div>
                   <label className="block text-xs font-medium text-brand-grey mb-1.5" htmlFor="sub-slug">Slug *</label>
-                  <input id="sub-slug" type="text" value={form.slug} onChange={e => setForm(p => ({ ...p, slug: e.target.value }))} required className="w-full border border-brand-light bg-neutral-50 px-3 py-2 text-sm focus:outline-none focus:border-brand-gold transition-colors" placeholder="lehenga-sets" />
+                  <input id="sub-slug" type="text" value={form.slug} onChange={e => setForm(p => ({ ...p, slug: e.target.value }))} required className="w-full border border-brand-light bg-neutral-50 px-3 py-2 text-sm focus:outline-none focus:border-[#1a175a] transition-colors" placeholder="lehenga-sets" />
                 </div>
 
                 {/* SubCategory Image upload zone */}
@@ -483,7 +483,7 @@ const SubCategoriesAdminPage = () => {
                   <label className="block text-xs font-medium text-brand-grey mb-1.5">Sub-Category Image (Square 1:1 Aspect Ratio)</label>
                   <div
                     className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors cursor-pointer ${
-                      isDragging ? 'border-brand-gold bg-brand-gold/5' : 'border-brand-light hover:border-brand-gold'
+                      isDragging ? 'border-[#1a175a] bg-blue-50/50' : 'border-brand-light hover:border-[#1a175a]'
                     }`}
                     onClick={() => fileInputRef.current?.click()}
                     onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}

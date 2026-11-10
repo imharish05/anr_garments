@@ -298,7 +298,7 @@ const Sidebar = ({
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium mb-0.5 transition-all border-l-2 ${
                     isActive
-                      ? 'bg-blue-50/80 text-brand-gold border-brand-gold'
+                      ? 'bg-[#1a175a]/10 text-[#1a175a] border-[#1a175a] font-semibold'
                       : 'border-transparent text-brand-grey hover:bg-brand-light hover:text-brand-text'
                   }`
                 }
@@ -318,7 +318,7 @@ const Sidebar = ({
     {/* Bottom user section */}
     <div className="px-4 py-4 border-t border-brand-light">
       <div className="flex items-center gap-3 mb-3">
-        <div className="w-8 h-8 rounded-full bg-brand-gold flex items-center justify-center flex-shrink-0">
+        <div className="w-8 h-8 rounded-full bg-[#1a175a] text-white flex items-center justify-center flex-shrink-0 shadow-sm font-semibold">
           <span className="text-white text-xs font-bold">{admin?.name?.[0] || 'A'}</span>
         </div>
         <div className="min-w-0">
@@ -330,7 +330,7 @@ const Sidebar = ({
       </div>
       <button
         onClick={handleLogout}
-        className="w-full flex items-center gap-2 text-xs text-red-400 hover:text-red-600 transition-colors py-1.5 focus-visible:outline-brand-gold"
+        className="w-full flex items-center gap-2 text-xs text-red-500 hover:text-red-700 transition-colors py-1.5 focus-visible:outline-[#1a175a]"
         id="admin-logout-btn"
       >
         <LogOut size={14} /> Sign Out
@@ -587,7 +587,7 @@ const AdminLayout = ({ children, title = '' }) => {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="lg:hidden p-1.5 hover:text-brand-gold transition-colors focus-visible:outline-brand-gold"
+              className="lg:hidden p-1.5 hover:text-[#1a175a] transition-colors focus-visible:outline-[#1a175a]"
               aria-label="Toggle sidebar"
               id="admin-mobile-menu"
             >
@@ -596,7 +596,7 @@ const AdminLayout = ({ children, title = '' }) => {
             <h1 className="font-playfair text-lg font-semibold text-brand-text">{title}</h1>
           </div>
           <div className="flex items-center gap-3">
-            <a href={import.meta.env.VITE_CLIENT_URL || '/'} target="_blank" rel="noopener noreferrer" className="text-xs text-brand-grey hover:text-brand-gold transition-colors focus-visible:outline-brand-gold">
+            <a href={import.meta.env.VITE_CLIENT_URL || '/'} target="_blank" rel="noopener noreferrer" className="text-xs text-brand-grey hover:text-[#1a175a] transition-colors focus-visible:outline-[#1a175a]">
               View Store ↗
             </a>
 
@@ -604,7 +604,7 @@ const AdminLayout = ({ children, title = '' }) => {
             <div className="relative">
               <button
                 onClick={() => setNotificationsOpen(!notificationsOpen)}
-                className="p-1.5 text-brand-grey hover:text-brand-gold transition-colors focus-visible:outline-brand-gold relative flex items-center justify-center"
+                className="p-1.5 text-brand-grey hover:text-[#1a175a] transition-colors focus-visible:outline-[#1a175a] relative flex items-center justify-center"
                 aria-label="Notifications"
                 id="admin-notifications-bell"
               >
@@ -635,7 +635,7 @@ const AdminLayout = ({ children, title = '' }) => {
                           {unreadCount > 0 && (
                             <button
                               onClick={markAllRead}
-                              className="text-[10px] font-semibold text-brand-gold hover:underline uppercase tracking-wider bg-transparent border-none cursor-pointer"
+                              className="text-[10px] font-semibold text-[#1a175a] hover:underline uppercase tracking-wider bg-transparent border-none cursor-pointer"
                             >
                               Mark read
                             </button>
@@ -667,7 +667,7 @@ const AdminLayout = ({ children, title = '' }) => {
                                 <p className="text-[10px] text-brand-grey text-left mt-0.5">{n.time}</p>
                               </div>
                               {!n.read && (
-                                <div className="w-1.5 h-1.5 bg-brand-gold rounded-full self-center" />
+                                <div className="w-1.5 h-1.5 bg-[#1a175a] rounded-full self-center" />
                               )}
                             </div>
                           ))
@@ -679,7 +679,7 @@ const AdminLayout = ({ children, title = '' }) => {
               </AnimatePresence>
             </div>
 
-            <div className="w-8 h-8 rounded-full bg-brand-gold flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-[#1a175a] text-white flex items-center justify-center shadow-sm font-semibold">
               <span className="text-white text-xs font-bold">{admin?.name?.[0] || 'A'}</span>
             </div>
           </div>

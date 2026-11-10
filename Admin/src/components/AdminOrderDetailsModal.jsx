@@ -84,14 +84,14 @@ const renderAddress = (rawAddr) => {
         <div className="text-neutral-600 text-[11px] pt-1.5 border-t border-neutral-100 mt-2 space-y-0.5">
           {phone && (
             <p className="flex items-center gap-1">
-              <Phone size={11} className="text-brand-gold shrink-0" />
+              <Phone size={11} className="text-[#1a175a] shrink-0" />
               <span className="font-medium text-neutral-800">Phone : </span>
               <span>{phone}</span>
             </p>
           )}
           {email && (
             <p className="flex items-center gap-1 break-all">
-              <Mail size={11} className="text-brand-gold shrink-0" />
+              <Mail size={11} className="text-[#1a175a] shrink-0" />
               <span className="font-medium text-neutral-800">Email : </span>
               <span>{email}</span>
             </p>
@@ -199,7 +199,7 @@ const AdminOrderDetailsModal = ({ order, onClose, onStatusUpdate }) => {
                       navigator.clipboard.writeText(order.razorpay_payment_id || order.paymentGatewayRef);
                       toast.success('Transaction Ref ID copied to clipboard!');
                     }}
-                    className="p-1 text-neutral-400 hover:text-brand-gold transition-colors rounded hover:bg-neutral-200/60"
+                    className="p-1 text-neutral-400 hover:text-[#1a175a] transition-colors rounded hover:bg-neutral-200/60"
                     title="Copy Transaction Ref ID"
                   >
                     <Copy size={14} />
@@ -214,7 +214,7 @@ const AdminOrderDetailsModal = ({ order, onClose, onStatusUpdate }) => {
           {/* Ordered Products & Variants */}
           <div>
             <h3 className="font-playfair font-semibold text-base sm:text-lg mb-3 text-neutral-900 flex items-center gap-2">
-              <Package size={16} className="text-brand-gold" />
+              <Package size={16} className="text-[#1a175a]" />
               Purchased Items ({order.items?.length || 0})
             </h3>
             <div className="border border-neutral-200 rounded-lg overflow-hidden">
@@ -269,7 +269,7 @@ const AdminOrderDetailsModal = ({ order, onClose, onStatusUpdate }) => {
                         </td>
                         <td className="py-3 px-4 text-center font-medium text-neutral-700">× {item.quantity}</td>
                         <td className="py-3 px-4 text-right text-neutral-600">{fmt(item.unitPrice || item.price, currency)}</td>
-                        <td className="py-3 px-4 text-right font-bold text-brand-gold">{fmt(item.totalPrice || (item.quantity * (item.unitPrice || item.price)), currency)}</td>
+                        <td className="py-3 px-4 text-right font-bold text-[#1a175a]">{fmt(item.totalPrice || (item.quantity * (item.unitPrice || item.price)), currency)}</td>
                       </tr>
                     );
                   })}
@@ -282,7 +282,7 @@ const AdminOrderDetailsModal = ({ order, onClose, onStatusUpdate }) => {
           <div className="grid md:grid-cols-2 gap-4">
             {/* Shipping Address */}
             <div className="bg-white p-4 rounded-lg border border-neutral-200 shadow-sm flex items-start gap-3">
-              <MapPin size={18} className="text-brand-gold mt-0.5 flex-shrink-0" />
+              <MapPin size={18} className="text-[#1a175a] mt-0.5 flex-shrink-0" />
               <div className="flex-1">
                 <h4 className="text-xs font-semibold uppercase tracking-wider text-neutral-500 mb-2">Shipping Address</h4>
                 {renderAddress(order.shippingAddress)}
@@ -291,7 +291,7 @@ const AdminOrderDetailsModal = ({ order, onClose, onStatusUpdate }) => {
 
             {/* Billing Address */}
             <div className="bg-white p-4 rounded-lg border border-neutral-200 shadow-sm flex items-start gap-3">
-              <CreditCard size={18} className="text-brand-gold mt-0.5 flex-shrink-0" />
+              <CreditCard size={18} className="text-[#1a175a] mt-0.5 flex-shrink-0" />
               <div className="flex-1">
                 <h4 className="text-xs font-semibold uppercase tracking-wider text-neutral-500 mb-2">Billing Address</h4>
                 {renderAddress(order.billingAddress || order.shippingAddress)}
@@ -335,7 +335,7 @@ const AdminOrderDetailsModal = ({ order, onClose, onStatusUpdate }) => {
             )}
             <div className="flex justify-between items-center pt-3 border-t border-neutral-200 text-neutral-900 font-bold text-sm">
               <span>Total Order Value</span>
-              <span className="text-brand-gold text-base">{fmt(order.totalAmount, currency)}</span>
+              <span className="text-[#1a175a] text-base">{fmt(order.totalAmount, currency)}</span>
             </div>
           </div>
 
@@ -352,7 +352,7 @@ const AdminOrderDetailsModal = ({ order, onClose, onStatusUpdate }) => {
               className="px-4 py-2 bg-neutral-900 hover:bg-neutral-800 text-white rounded-lg text-xs font-bold flex items-center gap-2 transition-all shadow-sm"
               id="btn-footer-print-invoice"
             >
-              <Printer size={14} className="text-brand-gold" />
+              <Printer size={14} className="text-[#1a175a]" />
               <span>Print GST Invoice</span>
             </button> */}
             <button
