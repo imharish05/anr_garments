@@ -373,7 +373,7 @@ const ReportsAdminPage = () => {
       XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
       
       const todayStr = new Date().toISOString().split('T')[0];
-      const fileName = `TwinAApparels_${sheetName}_${todayStr}.xlsx`;
+      const fileName = `ANRHospitals_${sheetName}_${todayStr}.xlsx`;
       
       XLSX.writeFile(workbook, fileName);
       toast.success(`Successfully exported ${exportRows.length} rows to ${fileName}`);
@@ -605,7 +605,7 @@ const ReportsAdminPage = () => {
                   <span className="text-[11px] font-bold uppercase tracking-wider text-brand-grey">
                     {metric.label}
                   </span>
-                  <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center text-brand-gold">
+                  <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-brand-gold">
                     <Icon size={16} />
                   </div>
                 </div>
@@ -688,7 +688,7 @@ const ReportsAdminPage = () => {
                   paginatedData.map((row, idx) => (
                     <tr 
                       key={row.id || idx} 
-                      className="hover:bg-amber-50/30 transition-colors"
+                      className="hover:bg-blue-50/40 transition-colors"
                     >
                       {reportType === 'sales' && (
                         <>

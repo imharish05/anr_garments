@@ -384,7 +384,7 @@ const CategoriesAdminPage = () => {
                         </td>
                         {/* <td className="px-5 py-4">
                           <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${
-                            cat.showHeader ? 'bg-amber-50 text-brand-gold border border-amber-200' : 'bg-gray-50 text-gray-500 border border-gray-200'
+                            cat.showHeader ? 'bg-blue-50 text-brand-gold border border-blue-200' : 'bg-gray-50 text-gray-500 border border-gray-200'
                           }`}>
                             {cat.showHeader ? 'Show' : 'Hide'}
                           </span>

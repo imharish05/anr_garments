@@ -151,7 +151,7 @@ const OrdersAdminPage = () => {
                 <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
                   activeStatus === s 
                     ? 'bg-white/20 text-white' 
-                    : (count > 0 ? 'bg-amber-100 text-amber-900' : 'bg-neutral-100 text-neutral-500')
+                    : (count > 0 ? 'bg-blue-100 text-[#1a175a]' : 'bg-neutral-100 text-neutral-500')
                 }`}>
                   {count}
                 </span>

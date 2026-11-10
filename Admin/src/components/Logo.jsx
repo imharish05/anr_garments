@@ -1,29 +1,25 @@
-const Logo = ({ size = 'md', className = '', showText = true }) => {
-  const imageSizes = {
-    sm: 'h-8 w-auto max-h-8',
-    md: 'h-10 w-auto max-h-10',
-    lg: 'h-16 w-auto max-h-16',
-  };
+import anrLogo from '../assets/anr-logo.jpg';
 
-  const textSizes = {
-    sm: '16px',
-    md: '20px',
-    lg: '28px',
+const Logo = ({ size = 'md', className = '', showText = false }) => {
+  const imageSizes = {
+    sm: 'h-8 max-h-8',
+    md: 'h-10 max-h-10',
+    lg: 'h-14 max-h-14',
   };
 
   return (
     <div className={`flex items-center gap-2.5 ${className}`}>
       <img
-        src="/logo.png"
-        alt="Twin A Apparels Logo"
-        className={`${imageSizes[size]} object-contain`}
+        src={anrLogo}
+        alt="ANR Hospitals"
+        className={`${imageSizes[size] || imageSizes.md} w-auto object-contain rounded`}
       />
-      {/* {showText && (
-        <span style={{ fontFamily: '"Cinzel", Georgia, serif', fontSize: textSizes[size], fontWeight: 700 }}>
-          <span style={{ color: 'var(--color-gold, #C58837)' }}>Twin A</span>{' '}
-          <span style={{ color: 'var(--color-text, #1A1A1A)' }}>Apparels</span>
+      {showText && (
+        <span style={{ fontFamily: '"Montserrat", system-ui, sans-serif', fontSize: size === 'lg' ? '22px' : '17px', fontWeight: 700 }}>
+          <span style={{ color: '#1a175a' }}>ANR</span>{' '}
+          <span style={{ color: '#1A1A1A' }}>Hospitals</span>
         </span>
-      )} */}
+      )}
     </div>
   );
 };

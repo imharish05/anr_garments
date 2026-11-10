@@ -20,14 +20,14 @@ const ServiceUnavailableAdminPage = () => {
           className="max-w-lg w-full flex flex-col items-center"
         >
           {/* Status Badge */}
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-50 border border-amber-200/80 text-amber-900 text-xs font-bold uppercase tracking-wider mb-4">
-            <ShieldAlert size={14} className="text-[#C9A24B]" />
+          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-blue-50 border border-blue-200/80 text-blue-900 text-xs font-bold uppercase tracking-wider mb-4">
+            <ShieldAlert size={14} className="text-[#1a175a]" />
             <span>503 Service Unavailable / Access Denied</span>
           </div>
 
           <motion.h1
             className="font-playfair text-[100px] md:text-[140px] font-bold leading-none select-none"
-            style={{ color: 'transparent', WebkitTextStroke: '2px #C9A24B' }}
+            style={{ color: 'transparent', WebkitTextStroke: '2px #1a175a' }}
           >
             503
           </motion.h1>

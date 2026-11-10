@@ -14,59 +14,106 @@ export const COMPANY_INFO = {
 };
 
 export const ANNOUNCEMENTS = [
-  "Direct Factory Supply: Bangalore Manufacturing Unit | Girinagar, Banashankari",
-  "Call Direct: Mr. Manjunath Rao G (9986044574) & Mr. Balraj. V (6363429113)",
+  "Free shipping on orders above ₹1499 · Use code WELCOME20 for 20% off",
   "Special Hospital & Institutional Bulk Pricing Available Across India",
-  "Scrub Suits • Aprons & Lab Coats • Underscrubs • Patient Gowns • Patient Pant & Shirt",
-  "Custom Hospital Crest & Doctor Name Computerized Embroidery Available"
+  "Custom Hospital Crest & Doctor Name Computerized Embroidery Available",
+  "Premium Medical Apparel: Scrub Suits • Aprons & Lab Coats • Underscrubs • Patient Wear",
+  "Direct Factory Supply: Certified Medical-Grade Hospital Garments"
 ];
 
 // The 5 Core Product Categories strictly defined
 export const CATEGORIES = [
   {
     id: "scrub-suits",
+    name: "Scrub Suits",
     title: "Scrub Suits (Men & Women)",
+    shortLabel: "Scrubs",
     description: "Functional, comfortable, durable. Made for everyday hospital shifts.",
     count: "Men & Women Cuts",
     badge: "Core Essential",
-    image: "/anr-hero-banner.jpg",
-    link: "#scrubs-collection"
+    startingPrice: "₹1,199",
+    image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=700&q=80",
+    link: "#scrubs-collection",
+    href: "#scrubs-collection",
+    subcategories: [
+      { name: "Classic Scrub Suits (Unisex)", label: "Classic Scrub Suits (Unisex)", href: "#scrubs-collection", image: "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=400&q=80" },
+      { name: "Women's Tailored Scrub Suits", label: "Women's Tailored Scrub Suits", href: "#scrubs-collection", image: "https://images.unsplash.com/photo-1594824813633-82421bd97354?auto=format&fit=crop&w=400&q=80" },
+      { name: "Men's Multi-Pocket Cargo Scrubs", label: "Men's Multi-Pocket Cargo Scrubs", href: "#scrubs-collection", image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=400&q=80" },
+      { name: "OT & Surgical Scrub Suits", label: "OT & Surgical Scrub Suits", href: "#scrubs-collection", image: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=400&q=80" }
+    ]
   },
   {
     id: "aprons-labcoats",
+    name: "Aprons & Lab Coats",
     title: "Aprons for Men & Women",
+    shortLabel: "Aprons & Coats",
     description: "Doctor's consultation coats, long aprons, and clinical examination aprons.",
     count: "Full & Half Sleeves",
-    badge: "Professional Attire",
+    badge: "Doctor Choice",
+    startingPrice: "₹899",
     image: "https://images.unsplash.com/photo-1582750433449-648ed127bb54?auto=format&fit=crop&w=700&q=80",
-    link: "#aprons-collection"
+    link: "#aprons-collection",
+    href: "#aprons-collection",
+    subcategories: [
+      { name: "Doctor Full-Length Lab Coats", label: "Doctor Full-Length Lab Coats", href: "#aprons-collection", image: "https://images.unsplash.com/photo-1582750433449-648ed127bb54?auto=format&fit=crop&w=400&q=80" },
+      { name: "Consultation Half-Sleeve Aprons", label: "Consultation Half-Sleeve Aprons", href: "#aprons-collection", image: "https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=400&q=80" },
+      { name: "Women's Fitted Doctor Aprons", label: "Women's Fitted Doctor Aprons", href: "#aprons-collection", image: "https://images.unsplash.com/photo-1594824813633-82421bd97354?auto=format&fit=crop&w=400&q=80" },
+      { name: "Executive Lab & Tech Aprons", label: "Executive Lab & Tech Aprons", href: "#aprons-collection", image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=400&q=80" }
+    ]
   },
   {
     id: "underscrubs",
+    name: "Underscrubs",
     title: "Underscrubs for Men & Women",
+    shortLabel: "Underscrubs",
     description: "Moisture-wicking, thermal breathable base layer for sterile OT environments.",
     count: "Long & Short Sleeve",
     badge: "Comfort Layer",
+    startingPrice: "₹649",
     image: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=700&q=80",
-    link: "#underscrubs-collection"
+    link: "#underscrubs-collection",
+    href: "#underscrubs-collection",
+    subcategories: [
+      { name: "Performance Long Sleeve Underscrubs", label: "Performance Long Sleeve Underscrubs", href: "#underscrubs-collection", image: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=400&q=80" },
+      { name: "Women's Cooling Moisture-Wicking", label: "Women's Cooling Moisture-Wicking", href: "#underscrubs-collection", image: "https://images.unsplash.com/photo-1594824813633-82421bd97354?auto=format&fit=crop&w=400&q=80" },
+      { name: "Men's Athletic Fit Crew Underscrubs", label: "Men's Athletic Fit Crew Underscrubs", href: "#underscrubs-collection", image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=400&q=80" }
+    ]
   },
   {
     id: "patient-gown",
-    title: "Patient Gown",
+    name: "Patient Wear",
+    title: "Patient Gown & Inpatient Wear",
+    shortLabel: "Patient Wear",
     description: "Soft, hygienic, overlap tie-back patient gowns for examination and surgery.",
     count: "Adult & Pediatric",
     badge: "Hospital Grade",
+    startingPrice: "₹499",
     image: "https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&w=700&q=80",
-    link: "#patient-wear-collection"
+    link: "#patient-wear-collection",
+    href: "#patient-wear-collection",
+    subcategories: [
+      { name: "Hospital Patient Gowns (Tie-Back)", label: "Hospital Patient Gowns (Tie-Back)", href: "#patient-wear-collection", image: "https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&w=400&q=80" },
+      { name: "Two-Piece Patient Pant & Shirt Sets", label: "Two-Piece Patient Pant & Shirt Sets", href: "#patient-wear-collection", image: "https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=400&q=80" },
+      { name: "OT & Maternity Patient Gowns", label: "OT & Maternity Patient Gowns", href: "#patient-wear-collection", image: "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=400&q=80" }
+    ]
   },
   {
-    id: "patient-pant-shirt",
-    title: "Patient Pant & Shirt",
-    description: "Dignified two-piece hospital ward patient uniform with easy button & elastic closure.",
-    count: "Standard Ward Sizes",
-    badge: "Inpatient Care",
-    image: "https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=700&q=80",
-    link: "#patient-wear-collection"
+    id: "hospital-linen",
+    name: "Hospital Linen & Drapes",
+    title: "Hospital Bed Linen & OT Drapes",
+    shortLabel: "OT Linens & Bedding",
+    description: "Autoclavable OT green drape sheets, hospital ward bed sets, and clinic privacy curtains.",
+    count: "Institutional Grade",
+    badge: "Sterile Weave",
+    startingPrice: "Bulk Quote",
+    image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=700&q=80",
+    link: "#bulk-inquiry",
+    href: "#bulk-inquiry",
+    subcategories: [
+      { name: "Autoclavable OT Green Drapes", label: "Autoclavable OT Green Drapes", href: "#bulk-inquiry", image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=400&q=80" },
+      { name: "Hospital Ward Fitted Bed Sheets", label: "Hospital Ward Fitted Bed Sheets", href: "#bulk-inquiry", image: "https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&w=400&q=80" },
+      { name: "Patient Privacy Curtains", label: "Patient Privacy Curtains", href: "#bulk-inquiry", image: "https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=400&q=80" }
+    ]
   }
 ];
 
@@ -84,6 +131,8 @@ export const SCRUB_SUITS = [
     badge: "Most Popular",
     colors: ["#1E40AF", "#1A175A", "#0F766E", "#0F172A"],
     image: "/anr-hero-banner.jpg",
+    sectionId: "scrubs-collection",
+    overview: "Autoclavable medical-grade poly-cotton weave engineered for 14+ hour shifts. Features 5 deep reinforced utility pockets for stethoscope, scissors & phone, with ergonomic side-slit hem for unrestricted mobility.",
     features: ["5 Deep Utility Pockets", "Breathable & Sweat Absorbent", "Side Slit Movement"]
   },
   {
@@ -98,6 +147,8 @@ export const SCRUB_SUITS = [
     badge: "Doctor Choice",
     colors: ["#3B82F6", "#1A175A", "#6B1D2F", "#0F766E"],
     image: "https://images.unsplash.com/photo-1594824813633-82421bd97354?auto=format&fit=crop&w=600&q=80",
+    sectionId: "scrubs-collection",
+    overview: "Contoured princess-cut medical scrub tailored specifically for women practitioners. Fitted comfort with hidden zippered security pocket and silky soft hypoallergenic hand-feel.",
     features: ["Fitted Princess Cut", "Hidden Zipper Security Pocket", "Soft On Skin"]
   },
   {
@@ -112,6 +163,8 @@ export const SCRUB_SUITS = [
     badge: "High Mobility",
     colors: ["#1A175A", "#1C4E3D", "#475569", "#1E40AF"],
     image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=600&q=80",
+    sectionId: "scrubs-collection",
+    overview: "Heavy-duty tactical medical cargo scrub set with 7 reinforced cargo pockets, elasticated drawstring waistband, and high-mobility gusseting for emergency & surgical teams.",
     features: ["7 Reinforced Pockets", "Elasticated Drawstring Waist", "Autoclavable Weave"]
   },
   {
@@ -126,6 +179,8 @@ export const SCRUB_SUITS = [
     badge: "OT Certified",
     colors: ["#1C4E3D", "#3B82F6", "#1A175A"],
     image: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=600&q=80",
+    sectionId: "scrubs-collection",
+    overview: "Sterile Operation Theatre scrub suit certified for surgical suites. Anti-glare OT Green/Blue dye, fluid splash repellent finish, and autoclaving endurance exceeding 60+ cycles.",
     features: ["Fluid Splash Barrier", "Anti-Glare OT Green & Blue", "Fade & Shrink Proof"]
   }
 ];
@@ -144,6 +199,8 @@ export const APRONS_LIST = [
     badge: "Senior Consultant",
     colors: ["#FFFFFF"],
     image: "https://images.unsplash.com/photo-1582750433449-648ed127bb54?auto=format&fit=crop&w=600&q=80",
+    sectionId: "aprons-collection",
+    overview: "Senior consultant full-length consultation lab coat with structured notch lapels, padded tablet pocket, stethoscope loop, and pre-shrunk cotton-rich twill that stays crisp all day.",
     features: ["Notch Lapel Collar", "Tablet & Stethoscope Pockets", "Pre-Shrunk Cotton-Poly"]
   },
   {
@@ -158,6 +215,8 @@ export const APRONS_LIST = [
     badge: "Daily Clinical Wear",
     colors: ["#FFFFFF"],
     image: "https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=600&q=80",
+    sectionId: "aprons-collection",
+    overview: "Ergonomic half-sleeve clinical examination coat with rear movement vent, dual chest pen slot, and nanotechnology stain-release barrier against medical fluids.",
     features: ["Ergonomic Back Vent", "Chest Pen Slot", "Stain Release Nanotech"]
   },
   {
@@ -172,6 +231,8 @@ export const APRONS_LIST = [
     badge: "Tailored Cut",
     colors: ["#FFFFFF"],
     image: "https://images.unsplash.com/photo-1594824813633-82421bd97354?auto=format&fit=crop&w=600&q=80",
+    sectionId: "aprons-collection",
+    overview: "Tailored slim-cut doctor apron with flattering back-belt detailing, princess seams, and non-yellowing bright white clinical weave resistant to repeated laundering.",
     features: ["Princess Tailoring", "Back Belt Styling", "Smooth Non-Yellowing Fabric"]
   },
   {
@@ -186,6 +247,8 @@ export const APRONS_LIST = [
     badge: "Reinforced Seams",
     colors: ["#FFFFFF"],
     image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=600&q=80",
+    sectionId: "aprons-collection",
+    overview: "Heavy-duty executive lab coat designed for diagnostic labs and pathology. Features acid/chemical splash resistance, shatterproof buttons, and side pants-pocket pass-through slits.",
     features: ["Chemical Splash Resistant", "Unbreakable Buttons", "Side Access Slits"]
   }
 ];
@@ -204,6 +267,8 @@ export const UNDERSCRUBS_LIST = [
     badge: "Thermal Base Layer",
     colors: ["#1A175A", "#0F172A", "#FFFFFF", "#475569"],
     image: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=600&q=80",
+    sectionId: "underscrubs-collection",
+    overview: "Thermoregulating micro-knit underscrub shirt with thumbhole cuffs and flatlock anti-chafe seams. Ideal moisture-wicking base layer for cold Operation Theatres.",
     features: ["Ultra-Breathable Micro-Knit", "Thumb-Hole Cuffs", "Flatlock Anti-Chafe Seams"]
   },
   {
@@ -218,6 +283,8 @@ export const UNDERSCRUBS_LIST = [
     badge: "Cooling Tech",
     colors: ["#1E40AF", "#0F172A", "#FFFFFF"],
     image: "https://images.unsplash.com/photo-1594824813633-82421bd97354?auto=format&fit=crop&w=600&q=80",
+    sectionId: "underscrubs-collection",
+    overview: "Ultra-soft 4-way stretch poly-spandex underscrub with active evaporative cooling and silky inner finish designed to prevent skin irritation under protective PPE.",
     features: ["Temperature Regulating", "4-Way Spandex Stretch", "Soft Next to Skin"]
   },
   {
@@ -232,6 +299,8 @@ export const UNDERSCRUBS_LIST = [
     badge: "OT Duty",
     colors: ["#1A175A", "#475569", "#0F172A"],
     image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=600&q=80",
+    sectionId: "underscrubs-collection",
+    overview: "Athletic crewneck compression-fit underscrub with odor-resistant silver-ion yarn and quick-dry breathability designed for intensive surgical duties.",
     features: ["Quick-Dry Poly-Spandex", "Antimicrobial Treatment", "Tagless Collar"]
   }
 ];
@@ -249,7 +318,9 @@ export const PATIENT_WEAR_LIST = [
     reviews: 440,
     badge: "Patient Dignity",
     colors: ["#3B82F6", "#0F766E", "#E2E8F0"],
-    image: "https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&w=600&q=80",
+    image: "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=600&q=80",
+    sectionId: "patient-wear-collection",
+    overview: "Hygienic tie-back hospital inpatient gown with generous overlap modesty back, tear-resistant twill bindings, and 100% breathable skin-friendly cotton.",
     features: ["Full Overlap Modesty Back", "Heavy-Duty Cotton Twill Ties", "Soft Hypoallergenic Fabric"]
   },
   {
@@ -264,6 +335,8 @@ export const PATIENT_WEAR_LIST = [
     badge: "Inpatient Uniform",
     colors: ["#1E40AF", "#3B82F6", "#475569"],
     image: "https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=600&q=80",
+    sectionId: "patient-wear-collection",
+    overview: "Two-piece dignified ward patient uniform featuring easy-snap front shirt and elasticated drawstring trousers. Breathable, durable, and comfortable for extended hospital stays.",
     features: ["Front Button / Snap Closure Shirt", "Elastic Drawstring Pant", "Breathable Long-Wear Cotton"]
   },
   {
@@ -278,6 +351,8 @@ export const PATIENT_WEAR_LIST = [
     badge: "Sterile Surgery",
     colors: ["#0F766E", "#1E40AF"],
     image: "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=600&q=80",
+    sectionId: "patient-wear-collection",
+    overview: "Pre-sterilization ready OT surgical patient gown with fluid-barrier chest and abdomen panel, raglan sleeve styling for fast IV access, and 60+ autoclave wash endurance.",
     features: ["Fluid Repellent Finish", "Raglan Sleeves For IV Access", "Autoclavable 60+ Cycles"]
   },
   {
@@ -292,10 +367,19 @@ export const PATIENT_WEAR_LIST = [
     badge: "Easy Access",
     colors: ["#EC4899", "#3B82F6"],
     image: "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=600&q=80",
+    sectionId: "patient-wear-collection",
+    overview: "Maternity and pediatric patient gown featuring front shoulder snap closures for nursing access, tagless comfort, and non-toxic skin-safe hospital dyes.",
     features: ["Front Shoulder Snaps for Nursing", "100% Breathable Combed Cotton", "Non-Toxic Skin-Safe Dyes"]
   }
 ];
 
+// Unified catalog for real-time search across all medical garment collections
+export const ALL_PRODUCTS = [
+  ...SCRUB_SUITS,
+  ...APRONS_LIST,
+  ...UNDERSCRUBS_LIST,
+  ...PATIENT_WEAR_LIST
+];
 // Color Spectrum Line from Image 3 ("ALL COLOURS. SAME QUALITY. SAME CARE.")
 export const COLOR_COLLECTIONS = [
   { name: "Royal Blue", hex: "#1E40AF", count: "Top Seller for Surgery & OT", popular: true },

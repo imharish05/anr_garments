@@ -193,7 +193,7 @@ const Sidebar = ({
     <aside className="flex flex-col h-full bg-white border-r border-brand-light w-60">
       {/* Logo */}
       <div className="px-5 py-5 border-b border-brand-light flex-shrink-0">
-        <Logo size="md" showText={true} />
+        <Logo size="md" showText={false} />
         <p className="text-[10px] text-brand-grey mt-1 tracking-widest uppercase">Admin Panel</p>
       </div>
 
@@ -229,7 +229,7 @@ const Sidebar = ({
                     }}
                     className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all border-l-2 ${
                       isOrdersSectionActive
-                        ? 'bg-amber-50/70 text-brand-gold border-brand-gold font-semibold'
+                        ? 'bg-blue-50/80 text-brand-gold border-brand-gold font-semibold'
                         : 'border-transparent text-brand-grey hover:bg-brand-light hover:text-brand-text'
                     }`}
                     id="nav-orders-toggle"
@@ -298,7 +298,7 @@ const Sidebar = ({
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium mb-0.5 transition-all border-l-2 ${
                     isActive
-                      ? 'bg-amber-50 text-brand-gold border-brand-gold'
+                      ? 'bg-blue-50/80 text-brand-gold border-brand-gold'
                       : 'border-transparent text-brand-grey hover:bg-brand-light hover:text-brand-text'
                   }`
                 }
@@ -659,7 +659,7 @@ const AdminLayout = ({ children, title = '' }) => {
                               key={n.id}
                               onClick={() => handleNotificationClick(n)}
                               className={`p-3 text-xs transition-colors hover:bg-neutral-50/80 cursor-pointer flex gap-2 ${
-                                !n.read ? 'bg-amber-50/30' : ''
+                                !n.read ? 'bg-blue-50/40' : ''
                               }`}
                             >
                               <div className="flex-1">

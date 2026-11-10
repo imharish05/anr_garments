@@ -44,7 +44,7 @@ const LoginPage = () => {
             Admin Sign In
           </h2>
           <p className="font-playfair text-sm text-gray-500 mt-1">
-            Welcome to Twin A Apparels
+            Welcome to ANR Hospitals
           </p>
         </div>
 
@@ -72,7 +72,7 @@ const LoginPage = () => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white focus:border-transparent transition-all"
+                  className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#1a175a] focus:bg-white focus:border-transparent transition-all"
                   placeholder="Enter your email address"
                   required
                   autoComplete="email"
@@ -94,7 +94,7 @@ const LoginPage = () => {
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white focus:border-transparent transition-all"
+                  className="w-full pl-10 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#1a175a] focus:bg-white focus:border-transparent transition-all"
                   placeholder="Enter your password"
                   required
                   autoComplete="current-password"
@@ -117,7 +117,7 @@ const LoginPage = () => {
               type="submit"
               disabled={loading}
               id="admin-login-submit"
-              className="w-full py-3.5 px-4 bg-amber-600 hover:bg-amber-700 text-white font-semibold text-sm rounded-xl shadow-md transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 disabled:opacity-60 cursor-pointer flex items-center justify-center gap-2"
+              className="w-full py-3.5 px-4 bg-[#1a175a] hover:bg-[#120f40] text-white font-semibold text-sm rounded-xl shadow-md transition-colors focus:outline-none focus:ring-2 focus:ring-[#1a175a] focus:ring-offset-2 disabled:opacity-60 cursor-pointer flex items-center justify-center gap-2"
             >
               {loading ? (
                 <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

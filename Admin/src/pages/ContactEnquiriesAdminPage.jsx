@@ -166,7 +166,7 @@ const ContactEnquiriesAdminPage = () => {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 sm:p-6 rounded-2xl border border-neutral-200/80 shadow-sm">
           <div>
             <h1 className="font-playfair text-2xl sm:text-[32px] font-bold text-neutral-900 tracking-tight flex items-center gap-2.5">
-              <Mail className="w-6 h-6 sm:w-7 sm:h-7 text-amber-600 flex-shrink-0" />
+              <Mail className="w-6 h-6 sm:w-7 sm:h-7 text-[#1a175a] flex-shrink-0" />
               <span>Contact Enquiries</span>
             </h1>
             <p className="text-xs sm:text-sm text-neutral-500 mt-1">
@@ -190,7 +190,7 @@ const ContactEnquiriesAdminPage = () => {
               <p className="text-xs font-medium text-neutral-500 uppercase tracking-wider">Total Enquiries Received</p>
               <p className="text-2xl font-bold text-neutral-900 mt-1">{totalEnquiries}</p>
             </div>
-            <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center text-amber-600">
+            <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-[#1a175a]">
               <Mail className="w-6 h-6" />
             </div>
           </div>
@@ -208,7 +208,7 @@ const ContactEnquiriesAdminPage = () => {
                 setSearch(e.target.value);
                 setPage(1);
               }}
-              className="w-full pl-10 pr-9 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
+              className="w-full pl-10 pr-9 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1a175a]/20 focus:border-[#1a175a]"
             />
             {search && (
               <button
@@ -254,7 +254,7 @@ const ContactEnquiriesAdminPage = () => {
                       type="checkbox"
                       checked={enquiries.length > 0 && selectedIds.length === enquiries.length}
                       onChange={handleSelectAll}
-                      className="rounded border-neutral-300 text-amber-600 focus:ring-amber-500"
+                      className="rounded border-neutral-300 text-[#1a175a] focus:ring-[#1a175a]"
                     />
                   </th>
                   <th className="p-4 whitespace-nowrap">Date & Time</th>
@@ -270,7 +270,7 @@ const ContactEnquiriesAdminPage = () => {
                   <tr>
                     <td colSpan="7" className="p-8 text-center text-neutral-400">
                       <div className="flex flex-col items-center justify-center gap-2">
-                        <RefreshCw className="w-6 h-6 animate-spin text-amber-600" />
+                        <RefreshCw className="w-6 h-6 animate-spin text-[#1a175a]" />
                         <span>Loading contact enquiries...</span>
                       </div>
                     </td>
@@ -293,7 +293,7 @@ const ContactEnquiriesAdminPage = () => {
                           type="checkbox"
                           checked={selectedIds.includes(item.id)}
                           onChange={() => handleSelectOne(item.id)}
-                          className="rounded border-neutral-300 text-amber-600 focus:ring-amber-500"
+                          className="rounded border-neutral-300 text-[#1a175a] focus:ring-[#1a175a]"
                         />
                       </td>
                       <td className="p-4 text-xs text-neutral-500 whitespace-nowrap">
@@ -308,7 +308,7 @@ const ContactEnquiriesAdminPage = () => {
                       <td className="p-4 text-xs space-y-0.5 min-w-[180px] max-w-[240px]">
                         <a
                           href={`mailto:${item.email}`}
-                          className="text-amber-700 hover:underline font-medium block break-all"
+                          className="text-[#1a175a] hover:underline font-medium block break-all"
                           title={item.email}
                         >
                           {item.email}
@@ -336,7 +336,7 @@ const ContactEnquiriesAdminPage = () => {
                         <div className="flex items-center justify-end gap-2">
                           <button
                             onClick={() => openDetailModal(item)}
-                            className="p-1.5 text-neutral-500 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
+                            className="p-1.5 text-neutral-500 hover:text-[#1a175a] hover:bg-blue-50 rounded-lg transition-colors"
                             title="View Details"
                           >
                             <Eye className="w-4 h-4" />
@@ -381,7 +381,7 @@ const ContactEnquiriesAdminPage = () => {
                 {/* Modal Header */}
                 <div className="flex items-center justify-between p-4 sm:p-5 border-b border-neutral-100 bg-neutral-50/60 flex-shrink-0">
                   <div className="flex items-center gap-3 min-w-0 mr-2">
-                    <div className="w-10 h-10 bg-amber-100 text-amber-700 rounded-xl flex items-center justify-center font-bold flex-shrink-0">
+                    <div className="w-10 h-10 bg-blue-100 text-[#1a175a] rounded-xl flex items-center justify-center font-bold flex-shrink-0">
                       <Mail className="w-5 h-5" />
                     </div>
                     <div className="min-w-0">
@@ -435,11 +435,11 @@ const ContactEnquiriesAdminPage = () => {
                       {selectedEnquiry.email ? (
                         <a
                           href={`mailto:${selectedEnquiry.email}`}
-                          className="text-amber-700 hover:text-amber-800 hover:underline font-semibold text-sm inline-flex items-center gap-1.5 break-all max-w-full group"
+                          className="text-[#1a175a] hover:text-[#120f40] hover:underline font-semibold text-sm inline-flex items-center gap-1.5 break-all max-w-full group"
                           title={selectedEnquiry.email}
                         >
                           <span className="break-all">{selectedEnquiry.email}</span>
-                          <ExternalLink className="w-3.5 h-3.5 flex-shrink-0 text-amber-600 group-hover:text-amber-800" />
+                          <ExternalLink className="w-3.5 h-3.5 flex-shrink-0 text-[#1a175a] group-hover:text-[#120f40]" />
                         </a>
                       ) : (
                         <span className="text-neutral-400 italic text-sm">Not provided</span>
@@ -453,7 +453,7 @@ const ContactEnquiriesAdminPage = () => {
                       {selectedEnquiry.phone ? (
                         <a
                           href={`tel:${selectedEnquiry.phone}`}
-                          className="text-neutral-800 hover:text-amber-700 hover:underline font-semibold text-sm break-all inline-block"
+                          className="text-neutral-800 hover:text-[#1a175a] hover:underline font-semibold text-sm break-all inline-block"
                         >
                           {selectedEnquiry.phone}
                         </a>
@@ -468,7 +468,7 @@ const ContactEnquiriesAdminPage = () => {
                     <label className="block text-xs font-semibold text-neutral-700 uppercase tracking-wider">
                       Customer Message:
                     </label>
-                    <div className="bg-amber-50/40 p-4 sm:p-5 rounded-xl border border-amber-200/60 text-sm text-neutral-800 leading-relaxed whitespace-pre-wrap break-words font-sans max-h-60 overflow-y-auto">
+                    <div className="bg-blue-50/40 p-4 sm:p-5 rounded-xl border border-blue-200/60 text-sm text-neutral-800 leading-relaxed whitespace-pre-wrap break-words font-sans max-h-60 overflow-y-auto">
                       {selectedEnquiry.message || <span className="text-neutral-400 italic">No message content provided.</span>}
                     </div>
                   </div>

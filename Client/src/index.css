@@ -26,7 +26,26 @@
   animation: marquee 28s linear infinite;
 }
 
-.animate-marquee:hover {
+.animate-marquee:hover,
+.animate-marquee:active {
+  animation-play-state: paused;
+}
+
+/* Top Announcement Bar Slow & Human-Readable Marquee */
+@keyframes marquee-topbar {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+
+.animate-marquee-topbar {
+  display: flex;
+  width: max-content;
+  animation: marquee-topbar 50s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee-topbar:hover,
+.animate-marquee-topbar:active {
   animation-play-state: paused;
 }
 
@@ -47,4 +66,15 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollbar-none {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }

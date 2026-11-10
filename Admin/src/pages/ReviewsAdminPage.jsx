@@ -317,7 +317,7 @@ const ReviewsAdminPage = () => {
                         <div className="flex items-center justify-end gap-1.5">
                           <button
                             onClick={() => setViewingReview(r)}
-                            className="p-1.5 text-neutral-500 hover:text-brand-gold hover:bg-amber-50 border border-neutral-200 rounded transition-colors"
+                            className="p-1.5 text-neutral-500 hover:text-brand-gold hover:bg-blue-50 border border-neutral-200 rounded transition-colors"
                             title="View Full Details"
                           >
                             <Eye size={15} />

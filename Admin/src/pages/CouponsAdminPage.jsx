@@ -228,7 +228,7 @@ const CouponsAdminPage = () => {
                     <td className="px-4 py-3 text-brand-grey">₹{coupon.minOrderValue || 0}</td>
                     <td className="px-4 py-3 font-medium text-brand-text">
                       {coupon.usageLimit ? (
-                        <span className="bg-amber-50 text-amber-900 border border-amber-200/60 px-2 py-0.5 rounded text-xs font-semibold">
+                        <span className="bg-blue-50 text-[#1a175a] border border-blue-200/60 px-2 py-0.5 rounded text-xs font-semibold">
                           {coupon.usageLimit} {coupon.usageLimit === 1 ? 'use' : 'uses'} / person
                         </span>
                       ) : (

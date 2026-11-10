@@ -32,13 +32,13 @@ const TABS = [
 
 const DEFAULT_SETTINGS = {
   hero: {
-    eyebrow: 'About Twin A Apparels',
-    title: 'Founded with a passion for style and comfort',
-    text: "We are manufacturers and wholesale distributors of high-quality men's wear, kid's wear, shorts, cargo pants, 3/4ths and stylish T-shirts, based in Coimbatore.",
+    eyebrow: 'About ANR Hospitals',
+    title: 'Founded with a passion for quality and comfort',
+    text: "We are manufacturers and wholesale distributors of high-quality hospital garments, scrub suits, doctor aprons, and patient wear, based in Coimbatore.",
     tags: [
       { kicker: 'We are', title: 'Manufacturers', foot: 'High-quality clothing' },
-      { kicker: 'We are', title: 'Wholesale distributors', foot: "Men's, kid's & more" },
-      { kicker: 'Based in', title: 'Coimbatore', foot: 'Style · Comfort' },
+      { kicker: 'We are', title: 'Wholesale distributors', foot: "Hospital garments & more" },
+      { kicker: 'Based in', title: 'Coimbatore', foot: 'Quality · Comfort' },
     ],
   },
   who: {
@@ -77,7 +77,7 @@ const DEFAULT_SETTINGS = {
       'Coimbatore - 642109',
     ],
     phone: '+91 98765 43210',
-    email: 'info@twinaapparels.com',
+    email: 'info@anrhospitals.com',
     mapsUrl: 'https://www.google.com/maps/search/?api=1&query=6%2F154%2C+2nd+Street%2C+Radhithya+Avenue%2C+Checkpost%2C+Kinathukadavu+-+Pollachi+Main+Road%2C+Coimbatore+-+642109',
   },
 };
@@ -419,7 +419,7 @@ const SiteSettingsAdminPage = () => {
             href="http://localhost:5173/about"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg border border-brand-gold/30 text-brand-gold hover:bg-amber-50/50 transition-colors w-fit"
+            className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg border border-brand-gold/30 text-brand-gold hover:bg-blue-50/50 transition-colors w-fit"
           >
             <span>Preview About Page</span>
             <ExternalLink size={14} />
@@ -436,7 +436,7 @@ const SiteSettingsAdminPage = () => {
               onClick={() => setActiveTab(id)}
               className={`flex items-center gap-2 px-5 py-3.5 text-sm font-medium border-b-2 whitespace-nowrap transition-all ${
                 activeTab === id
-                  ? 'border-brand-gold text-brand-gold bg-amber-50/30'
+                  ? 'border-brand-gold text-brand-gold bg-blue-50/50'
                   : 'border-transparent text-brand-grey hover:text-brand-text hover:bg-neutral-50/50'
               }`}
             >
@@ -482,7 +482,7 @@ const SiteSettingsAdminPage = () => {
                           })
                         }
                         className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-brand-gold"
-                        placeholder="About Twin A Apparels"
+                        placeholder="About ANR Hospitals"
                       />
                     </div>
 
@@ -539,7 +539,7 @@ const SiteSettingsAdminPage = () => {
                       <button
                         type="button"
                         onClick={handleAddTag}
-                        className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 bg-amber-50 text-brand-gold rounded-lg hover:bg-amber-100/70 transition-colors"
+                        className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 bg-blue-50 text-[#1a175a] rounded-lg hover:bg-blue-100/70 transition-colors"
                       >
                         <Plus size={14} /> Add Tag
                       </button>
@@ -627,7 +627,7 @@ const SiteSettingsAdminPage = () => {
                   <div className="border-b border-brand-light pb-3">
                     <h3 className="text-base font-semibold text-brand-text">Company Story & Profile</h3>
                     <p className="text-xs text-brand-grey mt-0.5">
-                      Section highlighting who Twin A Apparels is, where we manufacture, and what we distribute.
+                      Section highlighting who ANR Hospitals is, where we manufacture, and what we distribute.
                     </p>
                   </div>
 
@@ -715,8 +715,8 @@ const SiteSettingsAdminPage = () => {
                         }}
                         className={`border-2 border-dashed rounded-2xl p-6 transition-all flex flex-col items-center justify-center text-center h-48 cursor-pointer ${
                           whoDragging
-                            ? 'border-brand-gold bg-amber-50/20 scale-98'
-                            : 'border-brand-light hover:border-brand-gold hover:bg-amber-50/10'
+                            ? 'border-brand-gold bg-blue-50/20 scale-98'
+                            : 'border-brand-light hover:border-brand-gold hover:bg-blue-50/10'
                         }`}
                       >
                         <Upload className="w-8 h-8 text-brand-grey mb-2" />
@@ -906,7 +906,7 @@ const SiteSettingsAdminPage = () => {
                       <button
                         type="button"
                         onClick={handleAddFabric}
-                        className="px-4 py-2 bg-brand-gold text-black rounded-lg text-xs font-semibold hover:bg-amber-400 transition-colors inline-flex items-center gap-1"
+                        className="px-4 py-2 bg-[#1a175a] text-white rounded-lg text-xs font-semibold hover:bg-[#120f40] transition-colors inline-flex items-center gap-1"
                       >
                         <Plus size={14} /> Add
                       </button>
@@ -931,7 +931,7 @@ const SiteSettingsAdminPage = () => {
                   <div className="border-b border-brand-light pb-3">
                     <h3 className="text-base font-semibold text-brand-text">Mission Statement</h3>
                     <p className="text-xs text-brand-grey mt-0.5">
-                      Core brand philosophy. Wrap phrases in <code className="bg-neutral-100 px-1 py-0.5 rounded text-amber-700 font-mono">**double asterisks**</code> to emphasize them with a gold italic style.
+                      Core brand philosophy. Wrap phrases in <code className="bg-neutral-100 px-1 py-0.5 rounded text-[#1a175a] font-mono">**double asterisks**</code> to emphasize them with a gold italic style.
                     </p>
                   </div>
 
@@ -1030,7 +1030,7 @@ const SiteSettingsAdminPage = () => {
                         }}
                         className={`border-2 border-dashed rounded-xl h-36 flex flex-col items-center justify-center cursor-pointer transition-all ${
                           missionMainDragging
-                            ? 'border-brand-gold bg-amber-50/20'
+                            ? 'border-brand-gold bg-blue-50/20'
                             : 'border-brand-light hover:border-brand-gold'
                         }`}
                       >
@@ -1094,7 +1094,7 @@ const SiteSettingsAdminPage = () => {
                         }}
                         className={`border-2 border-dashed rounded-xl h-36 flex flex-col items-center justify-center cursor-pointer transition-all ${
                           missionAccentDragging
-                            ? 'border-brand-gold bg-amber-50/20'
+                            ? 'border-brand-gold bg-blue-50/20'
                             : 'border-brand-light hover:border-brand-gold'
                         }`}
                       >
@@ -1187,7 +1187,7 @@ const SiteSettingsAdminPage = () => {
                     <button
                       type="button"
                       onClick={handleAddValue}
-                      className="px-4 py-2 bg-brand-gold text-black rounded-lg text-xs font-semibold hover:bg-amber-400 transition-colors inline-flex items-center gap-1"
+                      className="px-4 py-2 bg-[#1a175a] text-white rounded-lg text-xs font-semibold hover:bg-[#120f40] transition-colors inline-flex items-center gap-1"
                     >
                       <Plus size={14} /> Add
                     </button>
@@ -1393,7 +1393,7 @@ const SiteSettingsAdminPage = () => {
                           })
                         }
                         className="w-full border border-brand-light px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-brand-gold"
-                        placeholder="info@twinaapparels.com"
+                        placeholder="info@anrhospitals.com"
                       />
                     </div>
 

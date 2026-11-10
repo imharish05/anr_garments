@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Loader = ({ color = '#6f8191', className = '' }) => {
+const Loader = ({ color = '#1a175a', className = '' }) => {
   return (
     <div className={`flex items-center justify-center ${className}`}>
       <svg

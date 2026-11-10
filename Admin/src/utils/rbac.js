@@ -28,6 +28,8 @@ export const checkPermission = (admin, permKey) => {
     normalizedRole === 'admin' || 
     normalizedRole === 'systemadmin' || 
     normalizedName === 'superadmin' ||
+    email === 'admin@anrhospitals.com' ||
+    email === 'admin@anrhospitalgarments.com' ||
     email === 'admin@twinapparels.com' ||
     email === 'admin@twinaapparels.com' ||
     admin.permissions?.all === true ||

@@ -107,7 +107,7 @@ const PaymentsAdminPage = () => {
       XLSX.utils.book_append_sheet(workbook, worksheet, 'Payments');
 
       const todayStr = new Date().toISOString().split('T')[0];
-      const fileName = `TwinAApparels_Payments_${todayStr}.xlsx`;
+      const fileName = `ANRHospitals_Payments_${todayStr}.xlsx`;
 
       XLSX.writeFile(workbook, fileName);
       toast.success(`Successfully exported ${exportRows.length} transactions to ${fileName}`);

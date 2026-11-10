@@ -94,7 +94,7 @@ const VariantAttributeChips = ({ label, value, onChange, colorHex, suggestions =
       {/* Header row */}
       <div className="flex items-center gap-2 border-b border-neutral-100 pb-2.5">
         {isColor
-          ? <Palette size={16} className="text-amber-600 shrink-0" />
+          ? <Palette size={16} className="text-[#1a175a] shrink-0" />
           : <Ruler size={16} className="text-neutral-500 shrink-0" />}
         <span className="text-xs font-bold text-neutral-800 capitalize">{label}</span>
         <span className="text-red-500 font-bold text-xs">*</span>
@@ -711,7 +711,7 @@ const VariantModal = ({ variant, variants = [], onClose, onSave, products, savin
                   onDragEnter={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingMain(true); }}
                   onDragLeave={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingMain(false); }}
                   onDrop={handleMainImageDrop}
-                  className={`border-2 border-dashed ${isDraggingMain ? 'border-brand-gold bg-amber-50/60 ring-2 ring-brand-gold/30' : 'border-neutral-300 hover:border-brand-gold bg-white hover:bg-neutral-50/50'} rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer transition-all group`}
+                  className={`border-2 border-dashed ${isDraggingMain ? 'border-brand-gold bg-blue-50/60 ring-2 ring-brand-gold/30' : 'border-neutral-300 hover:border-brand-gold bg-white hover:bg-neutral-50/50'} rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer transition-all group`}
                 >
                   <div className="flex items-center gap-1.5 text-xs text-neutral-500 font-medium group-hover:text-neutral-800">
                     <Camera size={16} className={`text-neutral-400 group-hover:text-brand-gold transition-transform ${isDraggingMain ? 'text-brand-gold scale-125' : ''}`} />

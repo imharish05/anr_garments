@@ -242,7 +242,7 @@ const AdminUsersAdminPage = () => {
               setShowPassword(false);
               setShowAddModal(true);
             }}
-            className="bg-brand-gold hover:bg-yellow-500 text-neutral-950 font-bold text-xs px-4 py-2.5 rounded-xl shadow flex items-center gap-2 transition-colors self-start sm:self-auto"
+            className="bg-[#1a175a] hover:bg-[#120f40] text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow flex items-center gap-2 transition-colors self-start sm:self-auto"
           >
             <Plus size={16} /> Add Admin User
           </button>
@@ -409,7 +409,7 @@ const AdminUsersAdminPage = () => {
                   <input
                     type="email"
                     required
-                    placeholder="admin@twinapparels.com"
+                    placeholder="admin@anrhospitals.com"
                     value={form.email}
                     onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
                     className="w-full border border-neutral-300 rounded-xl p-2.5 text-xs text-neutral-900 focus:border-brand-gold focus:outline-none"
@@ -487,7 +487,7 @@ const AdminUsersAdminPage = () => {
                   <button
                     type="submit"
                     disabled={saving}
-                    className="px-5 py-2 text-xs font-semibold text-neutral-950 bg-brand-gold hover:bg-yellow-500 rounded-xl shadow flex items-center gap-2 disabled:opacity-50"
+                    className="px-5 py-2 text-xs font-semibold text-white bg-[#1a175a] hover:bg-[#120f40] rounded-xl shadow flex items-center gap-2 disabled:opacity-50"
                   >
                     {saving ? (
                       <><RefreshCw size={14} className="animate-spin" /> Saving...</>
@@ -610,7 +610,7 @@ const AdminUsersAdminPage = () => {
                   <button
                     type="submit"
                     disabled={saving}
-                    className="px-5 py-2 text-xs font-semibold text-neutral-950 bg-brand-gold hover:bg-yellow-500 rounded-xl shadow flex items-center gap-2 disabled:opacity-50"
+                    className="px-5 py-2 text-xs font-semibold text-white bg-[#1a175a] hover:bg-[#120f40] rounded-xl shadow flex items-center gap-2 disabled:opacity-50"
                   >
                     {saving ? (
                       <><RefreshCw size={14} className="animate-spin" /> Saving...</>

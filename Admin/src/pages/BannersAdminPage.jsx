@@ -479,10 +479,10 @@ const BannersAdminPage = () => {
   }, [banners]);
 
   const [aboutForm, setAboutForm] = useState({
-    title: 'Twin A',
+    title: 'ANR Hospitals',
     subtitle: 'Our Story',
     badgeText: '15',
-    description: 'Twin A Apparels is a Coimbatore-rooted fashion label dedicated to crafting authentic, contemporary garments for the whole family. Every stitch reflects our commitment to intentional silhouettes, breathable fabrics, and effortless elegance.\n\nFrom everyday modern essentials to festive occasion wear, our collections harmonize South India’s rich textile heritage with clean contemporary design.',
+    description: 'ANR Hospitals is dedicated to crafting premium, medical-grade hospital garments, scrubs, and aprons for healthcare professionals. Every stitch reflects our commitment to comfort, durability, and clinical hygiene.',
     ctaText: 'Discover Our Heritage',
     ctaLink: '/about',
     isActive: true,
@@ -520,10 +520,10 @@ const BannersAdminPage = () => {
       }
 
       setAboutForm({
-        title: aboutBanner.title || 'Twin A',
+        title: aboutBanner.title || 'ANR Hospitals',
         subtitle: aboutBanner.subtitle || 'Our Story',
         badgeText: aboutBanner.badgeText || '15',
-        description: descText || 'Twin A Apparels is a Coimbatore-rooted fashion label dedicated to crafting authentic, contemporary garments for the whole family. Every stitch reflects our commitment to intentional silhouettes, breathable fabrics, and effortless elegance.\n\nFrom everyday modern essentials to festive occasion wear, our collections harmonize South India’s rich textile heritage with clean contemporary design.',
+        description: descText || 'ANR Hospitals is dedicated to crafting premium, medical-grade hospital garments, scrubs, and aprons for healthcare professionals. Every stitch reflects our commitment to comfort, durability, and clinical hygiene.',
         ctaText: aboutBanner.ctaText || 'Discover Our Heritage',
         ctaLink: aboutBanner.ctaLink || '/about',
         isActive: aboutBanner.isActive !== false,
@@ -545,7 +545,7 @@ const BannersAdminPage = () => {
     try {
       const fd = new FormData();
       fd.append('type', 'ABOUT');
-      fd.append('title', aboutForm.title || 'Twin A');
+      fd.append('title', aboutForm.title || 'ANR Hospitals');
       fd.append('subtitle', aboutForm.subtitle || 'Our Story');
       fd.append('badgeText', aboutForm.badgeText || '15');
       const payloadDesc = JSON.stringify({
@@ -723,12 +723,12 @@ const BannersAdminPage = () => {
                   <p className="font-medium text-sm text-brand-text line-clamp-1">{banner.title || 'Untitled Banner'}</p>
                   <p className="text-xs text-brand-grey line-clamp-2">{banner.subtitle || 'No subtitle provided'}</p>
                   {banner.badgeText && (
-                    <span className="inline-block text-[10px] bg-amber-50 text-amber-700 font-semibold px-2 py-0.5 rounded mt-1">
+                    <span className="inline-block text-[10px] bg-blue-50 text-[#1a175a] font-semibold px-2 py-0.5 rounded mt-1">
                       Badge: {banner.badgeText}
                     </span>
                   )}
                   {banner.type === 'COUNTDOWN' && banner.countdown && (
-                    <div className="text-[11px] text-amber-700 bg-amber-50/80 px-2 py-1 rounded flex items-center gap-1.5 mt-1.5 font-medium border border-amber-200/50">
+                    <div className="text-[11px] text-[#1a175a] bg-blue-50/80 px-2 py-1 rounded flex items-center gap-1.5 mt-1.5 font-medium border border-blue-200/50">
                       <Clock size={12} className="flex-shrink-0" />
                       <span>Ends: {new Date(banner.countdown).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}</span>
                     </div>
@@ -861,7 +861,7 @@ const BannersAdminPage = () => {
                     type="text"
                     value={aboutForm.title}
                     onChange={(e) => setAboutForm(p => ({ ...p, title: e.target.value }))}
-                    placeholder="e.g. Twin A"
+                    placeholder="e.g. ANR Hospitals"
                     className="w-full border border-brand-light px-3.5 py-2.5 text-sm rounded-lg focus:outline-none focus:border-brand-gold"
                   />
                 </div>
@@ -1041,10 +1041,10 @@ const BannersAdminPage = () => {
                 </div>
 
                 <div className="mt-5 space-y-2">
-                  <h4 className="font-playfair text-2xl font-bold text-neutral-950">{aboutForm.title || 'Twin A'}</h4>
+                  <h4 className="font-playfair text-2xl font-bold text-neutral-950">{aboutForm.title || 'ANR Hospitals'}</h4>
                   <h5 className="font-playfair text-base text-neutral-700">{aboutForm.subtitle || 'Our Story'}</h5>
                   <p className="text-xs text-neutral-600 line-clamp-3 leading-relaxed">
-                    {aboutForm.description || 'Twin A Apparels is a Coimbatore-rooted fashion label dedicated to crafting authentic, contemporary garments...'}
+                    {aboutForm.description || 'ANR Hospitals is dedicated to crafting premium, medical-grade hospital garments...'}
                   </p>
 
                   {/* Live Progress Bars Preview */}
@@ -1225,7 +1225,7 @@ const BannersAdminPage = () => {
                     value={form.subtitle}
                     onChange={e => setForm(p => ({ ...p, subtitle: e.target.value }))}
                     className="w-full border border-brand-light px-3 py-2 text-sm focus:outline-none focus:border-brand-gold rounded-sm"
-                    placeholder="e.g. Up to 50% Off Luxury Watches & Apparel"
+                    placeholder="e.g. Up to 50% Off Medical Scrubs & Hospital Garments"
                   />
                 </div>
 

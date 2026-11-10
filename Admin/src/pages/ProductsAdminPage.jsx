@@ -168,14 +168,14 @@ const OptionTypeSelect = ({ value, onChange, usedOptions = [] }) => {
                   onClick={() => handleSelect(name)}
                   className={`w-full text-left px-3 py-2 text-xs rounded-md flex items-center justify-between transition-colors ${
                     isSelected
-                      ? 'bg-amber-100 text-amber-900 font-bold'
+                      ? 'bg-blue-50 text-[#1a175a] font-bold'
                       : isUsedByOther
                       ? 'bg-neutral-100 text-neutral-400 cursor-not-allowed line-through opacity-60'
                       : 'hover:bg-neutral-100 text-neutral-800 font-medium'
                   }`}
                 >
                   <span>{name}</span>
-                  {isSelected && <Check size={14} className="text-amber-800" />}
+                  {isSelected && <Check size={14} className="text-[#1a175a]" />}
                   {isUsedByOther && <span className="text-[9px] font-bold text-neutral-400 uppercase tracking-wider">Added</span>}
                 </button>
               );
@@ -186,7 +186,7 @@ const OptionTypeSelect = ({ value, onChange, usedOptions = [] }) => {
               <button
                 type="button"
                 onClick={() => handleSelect(searchTerm.trim())}
-                className="w-full text-left px-3 py-2 text-xs rounded-md bg-amber-50 hover:bg-amber-100 text-amber-900 font-semibold flex items-center gap-1.5 mt-1 border border-amber-200 transition-colors"
+                className="w-full text-left px-3 py-2 text-xs rounded-md bg-blue-50 hover:bg-blue-100 text-[#1a175a] font-semibold flex items-center gap-1.5 mt-1 border border-blue-200 transition-colors"
               >
                 <Plus size={13} /> Add "{searchTerm.trim()}"
               </button>
@@ -1086,7 +1086,7 @@ const ProductModal = ({ product, onClose, onSave, saving = false, uploadProgress
             {/* <button
               type="button"
               onClick={() => setPreviewOpen(true)}
-              className="px-3 py-1.5 bg-brand-gold text-black hover:bg-brand-gold/90 text-xs font-bold rounded flex items-center gap-1.5 transition-colors uppercase tracking-wider"
+              className="px-3 py-1.5 bg-[#1a175a] text-white hover:bg-[#120f40] text-xs font-bold rounded flex items-center gap-1.5 transition-colors uppercase tracking-wider"
             >
               <Eye size={14} /> Live Preview
             </button> */}
@@ -1290,7 +1290,7 @@ const ProductModal = ({ product, onClose, onSave, saving = false, uploadProgress
                   onDragEnter={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingDefault(true); }}
                   onDragLeave={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingDefault(false); }}
                   onDrop={handleDefaultImageDrop}
-                  className={`border-2 border-dashed ${isDraggingDefault ? 'border-brand-gold bg-amber-50/60 ring-2 ring-brand-gold/30' : 'border-neutral-300 hover:border-brand-gold bg-white hover:bg-neutral-50/50'} rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer transition-all group`}
+                  className={`border-2 border-dashed ${isDraggingDefault ? 'border-brand-gold bg-blue-50/60 ring-2 ring-brand-gold/30' : 'border-neutral-300 hover:border-brand-gold bg-white hover:bg-neutral-50/50'} rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer transition-all group`}
                 >
                   <div className="flex items-center gap-1.5 text-xs text-neutral-500 font-medium group-hover:text-neutral-800">
                     <Camera size={16} className={`text-neutral-400 group-hover:text-brand-gold transition-transform ${isDraggingDefault ? 'text-brand-gold scale-125' : ''}`} />
@@ -1335,7 +1335,7 @@ const ProductModal = ({ product, onClose, onSave, saving = false, uploadProgress
                     <div className="flex items-center justify-between border-b border-neutral-100 pb-2.5">
                       <div className="flex items-center gap-2">
                         {isColor ? (
-                          <Palette size={16} className="text-amber-600 shrink-0" />
+                          <Palette size={16} className="text-[#1a175a] shrink-0" />
                         ) : (
                           <Ruler size={16} className="text-neutral-500 shrink-0" />
                         )}
@@ -1473,12 +1473,12 @@ const ProductModal = ({ product, onClose, onSave, saving = false, uploadProgress
                   const galleryCount = (v.existingImages?.length || 0) + (v.newFiles?.length || 0);
 
                   return (
-                    <div key={v.id} className="bg-white p-5 border border-amber-300 rounded-xl shadow-sm space-y-4 hover:border-amber-400 transition-colors">
+                    <div key={v.id} className="bg-white p-5 border border-blue-200 rounded-xl shadow-sm space-y-4 hover:border-blue-400 transition-colors">
                       {/* Top Header: Selected Option Value Tags & Delete Action */}
                       <div className="flex items-center justify-between border-b border-neutral-100 pb-3">
                         <div className="flex items-center gap-2 flex-wrap">
                           {Object.entries(v.attributes || {}).map(([k, val]) => (
-                            <span key={k} className="text-xs font-semibold bg-amber-50 text-amber-900 border border-amber-200 px-2.5 py-1 rounded-md">
+                            <span key={k} className="text-xs font-semibold bg-blue-50 text-[#1a175a] border border-blue-200 px-2.5 py-1 rounded-md">
                               {k}: <strong className="font-bold">{val}</strong>
                             </span>
                           ))}

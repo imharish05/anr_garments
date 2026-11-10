@@ -167,6 +167,7 @@ export const fetchCategoriesTree = async () => {
         id: cat.id,
         name: cat.name,
         slug: cat.slug,
+        showHeader: cat.showHeader !== false,
         title: cat.name,
         description: cat.description || '',
         image: getImageUrl(cat.image) || 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=600&q=80',

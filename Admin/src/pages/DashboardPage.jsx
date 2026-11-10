@@ -37,7 +37,7 @@ const useCounter = (target, duration = 1200, decimals = 0) => {
 };
 
 /* Stat Card without percentage badges */
-const StatCard = ({ icon: Icon, label, value, prefix = '', suffix = '', color = '#C9A24B', index, decimals = 0 }) => {
+const StatCard = ({ icon: Icon, label, value, prefix = '', suffix = '', color = '#1a175a', index, decimals = 0 }) => {
   const animated = useCounter(typeof value === 'number' ? value : 0, 1200, decimals);
   const formattedVal = typeof value === 'number'
     ? (decimals > 0
@@ -121,7 +121,7 @@ const DashboardPage = () => {
 
   // Stat Cards (INR Only)
   const statCards = [
-    { icon: TrendingUp, label: 'Total Revenue (INR)', value: stats.totalRevenue || 0, prefix: '₹', color: '#C9A24B' },
+    { icon: TrendingUp, label: 'Total Revenue (INR)', value: stats.totalRevenue || 0, prefix: '₹', color: '#1a175a' },
     { icon: ShoppingBag, label: 'Total Orders', value: stats.totalOrders || 0, color: '#3B82F6' },
     { icon: Users, label: 'Total Customers', value: stats.totalCustomers || 0, color: '#8B5CF6' },
     { icon: Clock, label: 'Pending Orders', value: stats.pendingOrders || 0, color: '#F59E0B' },
@@ -282,14 +282,14 @@ const DashboardPage = () => {
               <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="goldGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#C9A24B" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#C9A24B" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#1a175a" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#1a175a" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#F0EEE8" />
-                <XAxis dataKey="day" tick={{ fontSize: 11, fill: '#6B6B6B' }} axisLine={false} tickLine={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
+                <XAxis dataKey="day" tick={{ fontSize: 11, fill: '#64748B' }} axisLine={false} tickLine={false} />
                 <YAxis
-                  tick={{ fontSize: 11, fill: '#6B6B6B' }}
+                  tick={{ fontSize: 11, fill: '#64748B' }}
                   axisLine={false}
                   tickLine={false}
                   tickFormatter={v => {
@@ -298,15 +298,15 @@ const DashboardPage = () => {
                 />
                 <Tooltip
                   formatter={(v) => [fmtINR(v), 'Revenue']}
-                  contentStyle={{ fontSize: 12, border: '1px solid #F0EEE8', borderRadius: 4 }}
+                  contentStyle={{ fontSize: 12, border: '1px solid #E2E8F0', borderRadius: 4 }}
                 />
                 <Area
                   type="monotone"
                   dataKey="revenue"
-                  stroke="#C9A24B"
+                  stroke="#1a175a"
                   strokeWidth={2.5}
                   fill="url(#goldGrad)"
-                  dot={{ fill: '#C9A24B', r: 3 }}
+                  dot={{ fill: '#1a175a', r: 3 }}
                   animationBegin={200}
                   animationDuration={800}
                 />

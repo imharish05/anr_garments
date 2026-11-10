@@ -308,7 +308,7 @@ const SubCategoriesAdminPage = () => {
       </div>
 
       {parentCategories.length === 0 && !loading && (
-        <div className="mb-6 p-4 bg-amber-50 border border-amber-200 text-amber-800 text-sm rounded-lg">
+        <div className="mb-6 p-4 bg-blue-50 border border-blue-200 text-[#1a175a] text-sm rounded-lg">
           Please add at least one Category before creating a sub-category.
         </div>
       )}

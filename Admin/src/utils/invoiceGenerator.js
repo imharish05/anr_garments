@@ -1,5 +1,5 @@
 /**
- * Professional GST Tax Invoice Generator for Twin A Apparels
+ * Professional GST Tax Invoice Generator for ANR Hospitals
  * Features: Complete Indian GST Compliance, UAE VAT Compatibility, Logo Header,
  * HSN/SAC Codes, Intra-State (CGST+SGST) vs Inter-State (IGST) Auto-Detection,
  * Reverse Charge Indicator, Amount in Words, and Print-Optimized Layout.
@@ -63,15 +63,15 @@ export const getSellerGstConfig = () => {
   }
 
   return {
-    companyName: jsonConfig.companyName || import.meta.env.VITE_GST_COMPANY_NAME || 'Twin A Apparels Private Limited',
+    companyName: jsonConfig.companyName || import.meta.env.VITE_GST_COMPANY_NAME || 'ANR Hospitals Private Limited',
     gstin: jsonConfig.gstin || import.meta.env.VITE_GSTIN || '33ABCDE1234F1Z5',
     pan: jsonConfig.pan || import.meta.env.VITE_GST_PAN || 'ABCDE1234F',
     state: jsonConfig.state || import.meta.env.VITE_GST_STATE || 'Tamil Nadu',
     stateCode: jsonConfig.stateCode || import.meta.env.VITE_GST_STATE_CODE || '33',
     address: jsonConfig.address || import.meta.env.VITE_GST_ADDRESS || 'Door No. 12/A, Luxury Commercial Avenue, Anna Salai, Chennai, Tamil Nadu - 600002',
-    email: jsonConfig.email || import.meta.env.VITE_GST_EMAIL || import.meta.env.VITE_SUPPORT_EMAIL || 'support@twinapparels.com',
+    email: jsonConfig.email || import.meta.env.VITE_GST_EMAIL || import.meta.env.VITE_SUPPORT_EMAIL || 'support@anrhospitals.com',
     phone: jsonConfig.phone || import.meta.env.VITE_GST_PHONE || import.meta.env.VITE_SUPPORT_PHONE || '+91 91638 24881',
-    website: jsonConfig.website || import.meta.env.VITE_GST_WEBSITE || 'www.twinapparels.com',
+    website: jsonConfig.website || import.meta.env.VITE_GST_WEBSITE || 'www.anrhospitals.com',
   };
 };
 
@@ -385,7 +385,7 @@ export const generateInvoiceHTML = (order) => {
     }
 
     .btn-print {
-      background: #c58837;
+      background: #1a175a;
       color: #ffffff;
       border: none;
       padding: 9px 22px;
@@ -398,7 +398,7 @@ export const generateInvoiceHTML = (order) => {
       gap: 8px;
       transition: background 0.2s;
     }
-    .btn-print:hover { background: #ab722a; }
+    .btn-print:hover { background: #120f40; }
 
     .invoice-wrapper {
       max-width: 860px;
@@ -415,7 +415,7 @@ export const generateInvoiceHTML = (order) => {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      border-bottom: 2px solid #c58837;
+      border-bottom: 2px solid #1a175a;
       padding-bottom: 18px;
       margin-bottom: 18px;
     }
@@ -431,7 +431,7 @@ export const generateInvoiceHTML = (order) => {
       height: 60px;
       border-radius: 50%;
       object-fit: cover;
-      border: 2px solid #c58837;
+      border: 2px solid #1a175a;
       background: #1a1a1a;
     }
 
@@ -443,13 +443,13 @@ export const generateInvoiceHTML = (order) => {
       letter-spacing: 1.5px;
       line-height: 1.1;
     }
-    .brand-name span { color: #c58837; }
+    .brand-name span { color: #1a175a; }
 
     .brand-tagline {
       font-size: 10px;
       text-transform: uppercase;
       letter-spacing: 2px;
-      color: #c58837;
+      color: #1a175a;
       font-weight: 700;
       margin-top: 2px;
     }
@@ -470,7 +470,7 @@ export const generateInvoiceHTML = (order) => {
       font-family: 'Cinzel', serif;
       font-size: 20px;
       font-weight: 800;
-      color: #c58837;
+      color: #1a175a;
       letter-spacing: 1px;
       text-transform: uppercase;
       margin-bottom: 2px;
@@ -609,7 +609,7 @@ export const generateInvoiceHTML = (order) => {
       text-transform: uppercase;
       font-weight: 800;
       letter-spacing: 1px;
-      color: #c58837;
+      color: #1a175a;
       border-bottom: 1px solid #e2e8f0;
       padding-bottom: 5px;
       margin-bottom: 8px;
@@ -738,7 +738,7 @@ export const generateInvoiceHTML = (order) => {
       font-weight: 800;
     }
     .summary-grand-total span:last-child {
-      color: #c58837;
+      color: #1a175a;
       font-size: 14px;
     }
 
@@ -864,10 +864,10 @@ export const generateInvoiceHTML = (order) => {
     <!-- Header -->
     <div class="invoice-header">
       <div class="brand-block">
-        <img src="/logo.png" onerror="this.src='/logo.jpg'; this.onerror=null;" alt="Twin A Apparels" class="brand-logo" />
+        <img src="/logo.png" onerror="this.src='/logo.jpg'; this.onerror=null;" alt="ANR Hospitals" class="brand-logo" />
         <div>
-          <div class="brand-name">TWIN A <span>APPARELS</span></div>
-          <div class="brand-tagline">Luxury Shopping Experience</div>
+          <div class="brand-name">ANR <span>HOSPITALS</span></div>
+          <div class="brand-tagline">Hospital Garments & Medical Apparel</div>
           <div class="seller-contact-meta">
             ${seller.companyName}<br/>
             ${seller.address}<br/>
@@ -980,7 +980,7 @@ export const generateInvoiceHTML = (order) => {
             <td>
               <strong style="color: #0f172a;">${item.name}</strong>
               ${item.sku ? `<span style="font-size: 9.5px; color: #64748b; font-family: monospace; display: block;">SKU: ${item.sku}</span>` : ''}
-              ${item.variantText ? `<span style="font-size: 9.5px; color: #c58837; display: block;">${item.variantText}</span>` : ''}
+              ${item.variantText ? `<span style="font-size: 9.5px; color: #1a175a; display: block;">${item.variantText}</span>` : ''}
             </td>
             <td class="text-center font-mono" style="font-size: 10px;">${item.hsnCode}</td>
             <td class="text-center font-bold">${item.qty}</td>

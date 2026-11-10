@@ -413,7 +413,7 @@ const PhoneInput = ({
                     onClick={() => handleCountrySelect(c)}
                     className={`w-full flex items-center justify-between px-3 py-2 text-xs text-left transition-colors ${
                       isSelected
-                        ? 'bg-amber-50 text-amber-900 font-semibold'
+                        ? 'bg-blue-50 text-[#1a175a] font-semibold'
                         : 'text-neutral-700 hover:bg-neutral-50'
                     }`}
                   >

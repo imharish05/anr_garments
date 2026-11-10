@@ -175,7 +175,7 @@ const SettingsAdminPage = () => {
               ) : (
                 <>
                   {/* Highlighted COD-Only Toggle Box */}
-                  <div className="p-4 bg-amber-50/70 border border-amber-200/80 rounded-xl space-y-2">
+                  <div className="p-4 bg-blue-50/70 border border-blue-200/80 rounded-xl space-y-2">
                     <label className="flex items-center gap-2.5 text-sm font-semibold text-neutral-900 cursor-pointer">
                       <input
                         type="checkbox"
@@ -223,7 +223,7 @@ const SettingsAdminPage = () => {
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-semibold text-neutral-700">Prepaid Order Value Thresholds</span>
                       {otpSettings.codOnly && (
-                        <span className="text-[11px] font-medium text-amber-800 bg-amber-100/70 px-2 py-0.5 rounded">
+                        <span className="text-[11px] font-medium text-[#1a175a] bg-blue-100/70 px-2 py-0.5 rounded">
                           Bypassed (COD Only Active)
                         </span>
                       )}
