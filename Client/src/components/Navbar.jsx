@@ -108,6 +108,16 @@ const Navbar = () => {
 
             {/* Center: Dynamic Category Navigation Links (Desktop) */}
             <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
+              <a
+                href="#shop-categories"
+                className="group relative inline-flex items-center gap-1.5 px-3 h-full text-[13px] font-bold text-amber-300 hover:text-white transition-colors"
+                title="Browse All Categories"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                <span>Categories</span>
+                <span className="absolute left-3 right-3 bottom-5 h-[2px] bg-amber-400 origin-center scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
+              </a>
+
               {mainLinks.map((link) => {
                 const hasSubs = link.subcategories && link.subcategories.length > 0;
                 const isDropdownOpen = activeDropdown === link.name;
@@ -210,36 +220,13 @@ const Navbar = () => {
                 {bulkLink.name}
               </a>
 
-              {/* Desktop Search Trigger Bar */}
-              <div
-                onClick={() => setSearchModalOpen(true)}
-                className="hidden xl:flex items-center relative w-64 mr-1 cursor-pointer group"
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => { if (e.key === 'Enter') setSearchModalOpen(true); }}
-                aria-label="Open search dialog"
-              >
-                <Search className="w-4 h-4 text-blue-300 absolute left-4 top-1/2 -translate-y-1/2 group-hover:text-amber-400 transition-colors" />
-                <input
-                  type="text"
-                  readOnly
-                  value={searchQuery}
-                  placeholder="Search scrubs, aprons..."
-                  className="w-full bg-[#110E3F] text-white placeholder-blue-300/60 pl-11 pr-16 py-2.5 rounded-full text-xs border border-white/10 group-hover:border-amber-400/60 transition-colors cursor-pointer focus:outline-none"
-                />
-                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                  <span className="text-[10px] text-blue-300/70 border border-white/15 px-1.5 py-0.5 rounded font-mono">
-                    ⌘K
-                  </span>
-                </div>
-              </div>
-
-              {/* Search Toggle Button for < xl screens */}
+              {/* Search Icon Button */}
               <button
                 type="button"
                 onClick={() => setSearchModalOpen(true)}
-                className={`${iconBtn} xl:hidden`}
-                aria-label="Open Search"
+                className={iconBtn}
+                aria-label="Open search dialog"
+                title="Search (Ctrl+K)"
               >
                 <Search className="w-5 h-5" />
               </button>
@@ -291,7 +278,7 @@ const Navbar = () => {
           </div>
 
           {/* Quick Search Button in Mobile Drawer */}
-          <div className="px-6 py-3 border-b border-white/10">
+          <div className="px-6 py-3 border-b border-white/10 space-y-2">
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
@@ -302,6 +289,19 @@ const Navbar = () => {
               <Search className="w-4 h-4 text-amber-300" />
               <span>Search scrubs, lab coats, specs...</span>
             </button>
+
+            {/* Shop by Category Quick Link in Mobile Menu */}
+            <a
+              href="#shop-categories"
+              onClick={() => setMobileMenuOpen(false)}
+              className="w-full flex items-center justify-between bg-white/10 hover:bg-white/15 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-colors group"
+            >
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-amber-400" />
+                <span>Shop by Category</span>
+              </div>
+              <ArrowRight className="w-4 h-4 text-amber-400 group-hover:translate-x-1 transition-transform" />
+            </a>
           </div>
 
           <nav className="flex-1 overflow-y-auto px-6 py-2">

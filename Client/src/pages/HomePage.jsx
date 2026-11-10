@@ -21,21 +21,16 @@ import CartDrawer from '../components/CartDrawer';
 const HomePage = () => {
   return (
     <div className="min-h-screen flex flex-col bg-white text-slate-800 font-sans antialiased selection:bg-[#1A175A] selection:text-white">
-      {/* 100vh Hero Fold: Topbar + Navbar + Hero Banner */}
-      <div className="min-h-screen lg:h-screen flex flex-col">
-        {/* 1. Top Rotating Announcement Bar with Bangalore Factory & Direct Founders Lines */}
-        <TopAnnouncementBar />
+      {/* 1. Top Rotating Announcement Bar with Bangalore Factory & Direct Founders Lines */}
+      <TopAnnouncementBar />
 
-        {/* 2. Main Navigation Header with ΛNR Brand Logo and Quick Actions */}
-        <Navbar />
-
-        {/* 3. Hero Banner: Full width, fills 100vh, cropped slightly at the top */}
-        <div className="flex-1 w-full min-h-0 relative">
-          <HeroBanner />
-        </div>
-      </div>
+      {/* 2. Main Navigation Header with ΛNR Brand Logo and Quick Actions */}
+      <Navbar />
 
       <main className="flex-1">
+        {/* 3. Hero Banner: Full width, completely uncropped */}
+        <HeroBanner />
+
         {/* 4. 5 Core Product Categories Overview */}
         <ShopByCategory />
 

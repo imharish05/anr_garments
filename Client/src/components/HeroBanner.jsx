@@ -113,14 +113,14 @@ const HeroBanner = () => {
 
   return (
     <section
-      className="relative w-full h-full bg-[#1A175A] overflow-hidden"
+      className="relative w-full bg-[#1A175A] overflow-hidden"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       aria-roledescription="carousel"
       aria-label="Featured banners"
     >
       <div
-        className="relative w-full h-full min-h-[460px] lg:min-h-0 overflow-hidden"
+        className="relative w-full overflow-hidden aspect-[16/9]"
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
@@ -137,7 +137,7 @@ const HeroBanner = () => {
                 <img
                   src={slide.src}
                   alt={slide.alt || 'ANR Hospital Garments'}
-                  className="w-full h-full object-cover object-bottom"
+                  className="w-full h-full object-cover object-center"
                   loading={i === 0 ? 'eager' : 'lazy'}
                   draggable={false}
                   onError={(e) => {
@@ -225,6 +225,15 @@ const HeroBanner = () => {
             </button>
           </>
         )}
+
+        {/* Quick jump to Shop by Category */}
+        <a
+          href="#shop-categories"
+          className="absolute bottom-3 sm:bottom-4 right-4 sm:right-8 z-10 hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/90 hover:bg-white text-[#1A175A] text-xs font-bold shadow-lg backdrop-blur-sm transition-all hover:scale-105"
+        >
+          <span>Shop by Category</span>
+          <ChevronRight className="w-3.5 h-3.5 text-amber-500 rotate-90" />
+        </a>
 
         {/* Indicators Dots */}
         {count > 1 && (

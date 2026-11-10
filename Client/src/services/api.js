@@ -115,3 +115,134 @@ export const fetchBanners = async (type = 'HERO') => {
     return [];
   }
 };
+
+/**
+ * Maps category slug to on-page anchor section
+ */
+export const getCategorySectionLink = (slug = '') => {
+  const normalized = (slug || '').toLowerCase();
+  if (normalized.includes('under')) return '#underscrubs-collection';
+  if (normalized.includes('scrub')) return '#scrubs-collection';
+  if (normalized.includes('apron') || normalized.includes('coat')) return '#aprons-collection';
+  if (normalized.includes('patient')) return '#patient-wear-collection';
+  if (normalized.includes('linen') || normalized.includes('drape') || normalized.includes('bed')) return '#bulk-inquiry';
+  return '#shop-categories';
+};
+
+/**
+ * Fetch dynamic categories tree from Admin backend
+ * Includes category images and all subcategories with images
+ */
+export const fetchCategoriesTree = async () => {
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 4000);
+
+    // Try /categories/tree first, fallback to /categories
+    let res = await fetch(`${API_BASE_URL}/categories/tree`, {
+      signal: controller.signal,
+      cache: 'no-store'
+    });
+
+    if (!res.ok) {
+      res = await fetch(`${API_BASE_URL}/categories?all=true`, {
+        signal: controller.signal,
+        cache: 'no-store'
+      });
+    }
+    clearTimeout(timeoutId);
+
+    if (!res.ok) {
+      console.warn(`[API] categories returned status ${res.status}`);
+      return [];
+    }
+
+    const data = await res.json();
+    const rawCategories = data.categories || data.rows || (Array.isArray(data) ? data : []);
+
+    return rawCategories
+      .filter((cat) => cat.isActive !== false)
+      .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
+      .map((cat) => ({
+        id: cat.id,
+        name: cat.name,
+        slug: cat.slug,
+        title: cat.name,
+        description: cat.description || '',
+        image: getImageUrl(cat.image) || 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=600&q=80',
+        href: getCategorySectionLink(cat.slug),
+        link: getCategorySectionLink(cat.slug),
+        subcategories: (cat.subcategories || [])
+          .filter((sub) => sub.isActive !== false)
+          .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
+          .map((sub) => ({
+            id: sub.id,
+            name: sub.name,
+            label: sub.name,
+            slug: sub.slug,
+            image: getImageUrl(sub.image) || getImageUrl(cat.image) || 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=400&q=80',
+            href: getCategorySectionLink(cat.slug),
+            link: getCategorySectionLink(cat.slug)
+          }))
+      }));
+  } catch (err) {
+    console.warn('[API] Failed to fetch dynamic categories tree, using fallback:', err.message);
+    return [];
+  }
+};
+
+/**
+ * Fetch dynamic products from Admin backend for live search & catalog
+ */
+export const fetchProducts = async () => {
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 4000);
+
+    const res = await fetch(`${API_BASE_URL}/products?limit=100`, {
+      signal: controller.signal,
+      cache: 'no-store'
+    });
+    clearTimeout(timeoutId);
+
+    if (!res.ok) {
+      console.warn(`[API] products returned status ${res.status}`);
+      return [];
+    }
+
+    const data = await res.json();
+    const rawProducts = data.products || data.rows || (Array.isArray(data) ? data : []);
+
+    return rawProducts
+      .filter((p) => p.isActive !== false)
+      .map((p) => {
+        let parsedImages = [];
+        try {
+          parsedImages = Array.isArray(p.images) ? p.images : JSON.parse(p.images || '[]');
+        } catch {
+          parsedImages = [];
+        }
+        const firstImg = p.defaultProductImage || parsedImages[0] || '';
+
+        return {
+          id: p.id,
+          name: p.name,
+          slug: p.slug,
+          category: p.category?.name || 'Medical Apparel',
+          price: parseFloat(p.price) || 0,
+          originalPrice: p.comparePrice ? parseFloat(p.comparePrice) : null,
+          image: getImageUrl(firstImg) || '/anr-hero-banner.jpg',
+          rating: p.rating ? parseFloat(p.rating).toFixed(1) : '4.9',
+          reviews: p.reviewCount || 18,
+          inStock: (p.stock || 0) > 0,
+          sku: p.sku || '',
+          badge: p.isBestSeller ? 'Best Seller' : p.isNewArrival ? 'New Arrival' : '',
+          sectionId: getCategorySectionLink(p.category?.slug),
+          overview: p.shortDescription || p.description || ''
+        };
+      });
+  } catch (err) {
+    console.warn('[API] Failed to fetch dynamic products, using fallback:', err.message);
+    return [];
+  }
+};
