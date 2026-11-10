@@ -229,7 +229,7 @@ const Sidebar = ({
                     }}
                     className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all border-l-2 ${
                       isOrdersSectionActive
-                        ? 'bg-blue-50/80 text-brand-gold border-brand-gold font-semibold'
+                        ? 'bg-[#1a175a]/10 text-[#1a175a] border-[#1a175a] font-semibold'
                         : 'border-transparent text-brand-grey hover:bg-brand-light hover:text-brand-text'
                     }`}
                     id="nav-orders-toggle"

@@ -34,7 +34,7 @@ export const PaginationTop = ({
               placeholder={searchPlaceholder}
               value={search || ''}
               onChange={(e) => onSearchChange(e.target.value)}
-              className="w-full pl-9 pr-3 py-1.5 border border-neutral-300 rounded-lg text-xs font-medium text-neutral-800 placeholder-neutral-400 focus:outline-none focus:border-brand-gold bg-neutral-50/50"
+              className="w-full pl-9 pr-3 py-1.5 border border-neutral-300 rounded-lg text-xs font-medium text-neutral-800 placeholder-neutral-400 focus:outline-none focus:border-[#1a175a] focus:ring-1 focus:ring-[#1a175a]/20 bg-neutral-50/50"
             />
           </div>
         ) : null}
@@ -48,7 +48,7 @@ export const PaginationTop = ({
           <select
             value={effectiveLimit}
             onChange={(e) => onLimitChange && onLimitChange(Number(e.target.value))}
-            className="border border-neutral-300 rounded-lg px-2.5 py-1 text-xs bg-neutral-50 font-semibold text-neutral-800 focus:outline-none focus:border-brand-gold cursor-pointer shadow-2xs"
+            className="border border-neutral-300 rounded-lg px-2.5 py-1 text-xs bg-neutral-50 font-semibold text-neutral-800 focus:outline-none focus:border-[#1a175a] focus:ring-1 focus:ring-[#1a175a]/20 cursor-pointer shadow-2xs"
           >
             {LIMIT_OPTIONS.map((opt) => (
               <option key={opt} value={opt}>
@@ -140,7 +140,7 @@ export const PaginationBottom = ({
               onClick={() => onPageChange && onPageChange(p)}
               className={`min-w-[30px] h-7 px-2 text-xs font-semibold rounded-lg transition-all ${
                 effectivePage === p
-                  ? 'bg-brand-gold text-white shadow-xs'
+                  ? 'bg-[#1a175a] text-white shadow-xs'
                   : 'bg-white border border-neutral-200 text-neutral-700 hover:bg-neutral-50'
               }`}
             >
