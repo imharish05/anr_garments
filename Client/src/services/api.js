@@ -247,3 +247,44 @@ export const fetchProducts = async () => {
     return [];
   }
 };
+
+/**
+ * Fetch dynamic shop-by-color palette from Admin backend
+ */
+export const fetchColorCollections = async () => {
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 4000);
+
+    const res = await fetch(`${API_BASE_URL}/colors`, {
+      signal: controller.signal,
+      cache: 'no-store',
+    });
+    clearTimeout(timeoutId);
+
+    if (!res.ok) {
+      console.warn(`[API] colors returned status ${res.status}`);
+      return [];
+    }
+
+    const data = await res.json();
+    const rawList = data.colors || (Array.isArray(data) ? data : []);
+
+    return rawList
+      .filter((c) => c.isActive !== false)
+      .map((c) => ({
+        id: c.id,
+        name: c.name,
+        hex: c.hex,
+        image: c.image ? getImageUrl(c.image) : null,
+        link: c.link || '#scrubs-collection',
+        badge: c.badge || '',
+        count: c.description || 'Top Seller for Surgery & OT',
+        popular: Boolean(c.badge && c.badge.toLowerCase().includes('most')),
+        sortOrder: c.sortOrder ?? 0,
+      }));
+  } catch (err) {
+    console.warn('[API] Failed to fetch dynamic colors, using fallback:', err.message);
+    return [];
+  }
+};

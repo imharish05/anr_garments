@@ -16,6 +16,7 @@ import ReportsAdminPage from './pages/ReportsAdminPage';
 import SettingsAdminPage from './pages/SettingsAdminPage';
 import SiteSettingsAdminPage from './pages/SiteSettingsAdminPage';
 import SliderMessagesAdminPage from './pages/SliderMessagesAdminPage';
+import ShopByColorAdminPage from './pages/ShopByColorAdminPage';
 import ReviewsAdminPage from './pages/ReviewsAdminPage';
 import ContactEnquiriesAdminPage from './pages/ContactEnquiriesAdminPage';
 import RolesPermissionsAdminPage from './pages/RolesPermissionsAdminPage';
@@ -94,6 +95,7 @@ const App = () => {
         <Route path="/contact_enquiries" element={<Navigate to="/contact-enquiries" replace />} />
         <Route path="/slider-messages" element={<Protected><SliderMessagesAdminPage /></Protected>} />
         <Route path="/banners"     element={<Protected><BannersAdminPage /></Protected>} />
+        <Route path="/shop-by-color" element={<Protected><ShopByColorAdminPage /></Protected>} />
         <Route path="/coupons"     element={<Protected><CouponsAdminPage /></Protected>} />
         <Route path="/payments"    element={<Protected><PaymentsAdminPage /></Protected>} />
         <Route path="/reports"     element={<Protected><ReportsAdminPage /></Protected>} />

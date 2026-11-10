@@ -6,7 +6,7 @@ import {
   LayoutDashboard, Package, Tag, ShoppingBag, Users, Image, Ticket,
   Warehouse, UserCheck, BarChart3, Settings, LogOut, Menu, X,
   Store, CreditCard, Gift, MessageSquare, Globe, Bell, ShoppingCart, Star, Trash2,
-  ChevronDown, ChevronRight, Truck, XCircle, MapPin, Mail, ShieldCheck, RotateCcw
+  ChevronDown, ChevronRight, Truck, XCircle, MapPin, Mail, ShieldCheck, RotateCcw, Palette
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Logo from './Logo';
@@ -118,6 +118,7 @@ const NAV_SECTIONS = [
     items: [
       { to: '/slider-messages', label: 'Slider Messages', icon: MessageSquare },
       { to: '/banners', label: 'Banners', icon: Image },
+      { to: '/shop-by-color', label: 'Shop by Color', icon: Palette },
       { to: '/coupons', label: 'Coupons', icon: Ticket },
     ],
   },

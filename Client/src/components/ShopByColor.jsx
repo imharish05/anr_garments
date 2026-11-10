@@ -1,144 +1,296 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef, useId, useCallback } from 'react';
 import { COLOR_COLLECTIONS } from '../data/mockData';
-import { Palette, Check, ArrowRight, Sparkles, Heart, Wind, Shield, RefreshCw, Move, CheckCircle2 } from 'lucide-react';
+import { fetchColorCollections } from '../services/api';
+import { ArrowRight, ChevronLeft, ChevronRight, Star } from 'lucide-react';
 
-const ShopByColor = () => {
-  const [selectedColor, setSelectedColor] = useState(COLOR_COLLECTIONS[0]);
+const isWhite = (hex) => (hex || '').toLowerCase() === '#ffffff';
+
+const shortName = (name = '') => name.split('/')[0].trim();
+
+/* ------------------------------------------------------------------ */
+/* Scrub top: one silhouette, tinted by any hex. Shading is overlaid   */
+/* with black/white alpha so every colour (even white) looks like cloth */
+/* ------------------------------------------------------------------ */
+const ScrubTop = ({ hex = '#1A175A' }) => {
+  const uid = useId().replace(/:/g, '');
+  const white = isWhite(hex);
+  const body =
+    'M160 30 L80 60 L10 150 L60 190 L95 150 L95 388 Q95 400 107 400 L293 400 Q305 400 305 388 L305 150 L340 190 L390 150 L320 60 L240 30 L200 112 Z';
 
   return (
-    <section id="shop-colors" className="py-16 bg-white border-b border-slate-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Section Header from Image 3 */}
-        <div className="text-center max-w-3xl mx-auto mb-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-[#1A175A] text-xs font-bold tracking-wider uppercase mb-3">
-            <Palette className="w-3.5 h-3.5 text-[#1A175A]" />
-            <span>Hospital Department Color Palette</span>
-          </div>
-          <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-[#1A175A] tracking-tight uppercase">
-            All Colours. <br className="sm:hidden" />
-            <span className="text-blue-700">Same Quality. Same Care.</span>
-          </h2>
-          <p className="text-slate-600 text-sm sm:text-base mt-2">
-            Premium hospital garments designed for comfort, performance, and reliability across all department color codes.
-          </p>
+    <svg viewBox="0 0 400 430" className="w-full h-full overflow-visible" role="img" aria-hidden="true">
+      <defs>
+        <clipPath id={`clip-${uid}`}>
+          <path d={body} />
+        </clipPath>
+        <linearGradient id={`shade-${uid}`} x1="0" x2="1" y1="0" y2="0">
+          <stop offset="0" stopColor="#000" stopOpacity="0.16" />
+          <stop offset="0.35" stopColor="#fff" stopOpacity="0.1" />
+          <stop offset="0.65" stopColor="#fff" stopOpacity="0.04" />
+          <stop offset="1" stopColor="#000" stopOpacity="0.2" />
+        </linearGradient>
+        <linearGradient id={`fold-${uid}`} x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0" stopColor="#fff" stopOpacity="0.14" />
+          <stop offset="0.5" stopColor="#fff" stopOpacity="0" />
+          <stop offset="1" stopColor="#000" stopOpacity="0.14" />
+        </linearGradient>
+      </defs>
 
-          {/* Color Swatch Circles Buttons */}
-          <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 mt-6">
-            {COLOR_COLLECTIONS.map((color) => {
-              const isSelected = selectedColor.name === color.name;
-              return (
-                <button
-                  key={color.name}
-                  onClick={() => setSelectedColor(color)}
-                  className={`group flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-semibold transition-all duration-200 ${
-                    isSelected
-                      ? 'border-[#1A175A] bg-[#1A175A] text-white shadow-md scale-105'
-                      : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300 hover:bg-slate-100'
-                  }`}
-                >
-                  <span
-                    className="w-3.5 h-3.5 rounded-full border border-white/40 shadow-xs flex items-center justify-center flex-shrink-0"
-                    style={{ backgroundColor: color.hex }}
-                  >
-                    {isSelected && <Check className="w-2 h-2 text-white stroke-[3]" />}
-                  </span>
-                  <span>{color.name}</span>
-                </button>
-              );
-            })}
-          </div>
+      {/* ground shadow */}
+      <ellipse cx="200" cy="415" rx="130" ry="9" fill="#0f172a" opacity="0.12" />
+
+      {/* cloth */}
+      <path
+        d={body}
+        style={{ fill: hex, transition: 'fill 600ms ease' }}
+        stroke={white ? '#cbd5e1' : 'rgba(0,0,0,0.25)'}
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+      <g clipPath={`url(#clip-${uid})`}>
+        <rect width="400" height="430" fill={`url(#shade-${uid})`} />
+        <rect width="400" height="430" fill={`url(#fold-${uid})`} />
+        {/* fabric weave */}
+        <g stroke="#000" strokeOpacity="0.035" strokeWidth="1">
+          {Array.from({ length: 46 }).map((_, i) => (
+            <line key={i} x1="0" x2="400" y1={i * 9} y2={i * 9} />
+          ))}
+        </g>
+        {/* sleeve seams */}
+        <g fill="none" stroke="rgba(0,0,0,0.22)" strokeWidth="2" strokeDasharray="5 4">
+          <path d="M95 150 L84 62" />
+          <path d="M305 150 L316 62" />
+          <path d="M95 150 Q60 165 60 190" opacity="0" />
+        </g>
+        {/* pockets */}
+        <g fill="rgba(0,0,0,0.06)" stroke="rgba(0,0,0,0.25)" strokeWidth="2" strokeDasharray="5 4">
+          <path d="M120 175 h46 v46 q0 6 -6 6 h-34 q-6 0 -6 -6 z" />
+          <path d="M118 290 h72 v62 q0 6 -6 6 h-60 q-6 0 -6 -6 z" />
+          <path d="M210 290 h72 v62 q0 6 -6 6 h-60 q-6 0 -6 -6 z" />
+        </g>
+      </g>
+
+      {/* V-neck trim */}
+      <path
+        d="M160 30 L200 112 L240 30"
+        fill="none"
+        stroke="rgba(0,0,0,0.28)"
+        strokeWidth="7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M160 30 L200 112 L240 30"
+        fill="none"
+        stroke="rgba(255,255,255,0.35)"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        transform="translate(0 -2)"
+      />
+      <path d="M160 30 Q200 10 240 30" fill="none" stroke="rgba(0,0,0,0.25)" strokeWidth="6" strokeLinecap="round" />
+    </svg>
+  );
+};
+
+const ShopByColor = () => {
+  const [colors, setColors] = useState(COLOR_COLLECTIONS);
+  const [selectedIdx, setSelectedIdx] = useState(0);
+  const chipRefs = useRef([]);
+
+  // Fetch dynamic colors from Admin backend
+  useEffect(() => {
+    let mounted = true;
+    fetchColorCollections()
+      .then((items) => {
+        if (mounted && Array.isArray(items) && items.length > 0) {
+          setColors(items);
+        }
+      })
+      .catch((err) => {
+        console.warn('Using fallback color collections:', err);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const total = colors.length;
+  const safeIdx = Math.min(Math.max(0, selectedIdx), Math.max(0, total - 1));
+  const selected = colors[safeIdx] || COLOR_COLLECTIONS[0];
+  const glow = isWhite(selected.hex) ? '#94a3b8' : selected.hex;
+
+  const pick = useCallback(
+    (idx) => {
+      if (total === 0) return;
+      setSelectedIdx((idx + total) % total);
+    },
+    [total]
+  );
+
+  const canHover = () =>
+    typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(hover: hover)').matches;
+
+  const onKeyDown = (e) => {
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      pick(selectedIdx + 1);
+      chipRefs.current[(selectedIdx + 1) % total]?.focus();
+    }
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      pick(selectedIdx - 1);
+      chipRefs.current[(selectedIdx - 1 + total) % total]?.focus();
+    }
+  };
+
+  return (
+    <section id="shop-colors" className="relative overflow-hidden py-16 sm:py-24 bg-white">
+      {/* colour-reactive ambient glow */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute left-1/2 top-[38%] h-[34rem] w-[34rem] sm:h-[48rem] sm:w-[48rem] -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl opacity-[0.16] transition-[background-color] duration-700"
+        style={{ backgroundColor: glow }}
+      />
+
+      <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
+        {/* ---------- Heading ---------- */}
+        <div className="text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-amber-600 mb-3">
+            Hospital Department Color Palette
+          </p>
+          <h2 className="text-3xl sm:text-4xl font-bold text-[#1A175A] tracking-tight">
+            All Colours. Same Quality. Same Care.
+          </h2>
+          <div className="mx-auto mt-4 h-[3px] w-12 rounded-full bg-amber-400" />
         </div>
 
-        {/* Official Banner Visual & Feature Badges from Image 3 */}
-        <div className="bg-[#1A175A] text-white rounded-3xl overflow-hidden shadow-2xl border border-white/10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 items-center">
-            
-            {/* Left Content */}
-            <div className="lg:col-span-6 p-6 sm:p-10 space-y-5">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-blue-200 text-xs font-semibold border border-white/15">
-                <span
-                  className="w-3 h-3 rounded-full border border-white"
-                  style={{ backgroundColor: selectedColor.hex }}
-                />
-                <span>Selected Shade: <strong className="text-white">{selectedColor.name}</strong></span>
-                <span className="text-white/30">|</span>
-                <span className="text-amber-300 font-bold">{selectedColor.count}</span>
+        {/* ---------- Stage ---------- */}
+        <div className="mt-12 sm:mt-16 grid lg:grid-cols-[1.05fr_1fr] items-center gap-8 lg:gap-14">
+          {/* Image stage: no circles, image keeps its own shape */}
+          <div className="relative mx-auto w-full max-w-md h-[20rem] sm:h-[26rem] flex items-center justify-center">
+            {selected.image ? (
+              <img
+                key={selected.image}
+                src={selected.image}
+                alt={selected.name}
+                className="max-w-full max-h-full w-auto h-auto object-contain rounded-3xl shadow-[0_20px_50px_-20px_rgba(15,23,42,0.35)] animate-[colorFade_0.45s_ease-out]"
+              />
+            ) : (
+              <div className="w-64 sm:w-72">
+                <ScrubTop hex={selected.hex} />
               </div>
+            )}
+          </div>
 
-              <h3 className="text-2xl sm:text-3xl font-black text-white leading-tight">
-                Consistent Color Fastness Shift After Shift
+          {/* Info card */}
+          <div className="text-center lg:text-left">
+            <div className="flex items-center justify-center lg:justify-start gap-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-slate-400">
+              <span className="font-mono text-[#1A175A]">
+                {String(safeIdx + 1).padStart(2, '0')}
+                <span className="text-slate-300"> / {String(total).padStart(2, '0')}</span>
+              </span>
+              <span className="h-px w-10 bg-slate-300" />
+              <span>Department code</span>
+            </div>
+
+            <div key={selected.name} className="animate-[colorFade_0.45s_ease-out]">
+              <h3 className="mt-4 text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-[#1A175A] leading-[1.02]">
+                {selected.name}
               </h3>
 
-              <p className="text-blue-100 text-sm leading-relaxed">
-                Whether you select Royal Blue for Surgery, Ceil Blue for Wards, Hunter Green for OT, or Doctor White for Consultation Aprons, our high-density reactive dyeing prevents fading, bleeding, and dullness through industrial autoclave laundering.
+              <p className="mt-4 text-base sm:text-lg text-slate-600 max-w-md mx-auto lg:mx-0">
+                {selected.count}
               </p>
 
-              {/* 6 Icons from Image 3 */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
-                <div className="bg-white/5 p-3 rounded-xl border border-white/10">
-                  <Heart className="w-4 h-4 text-amber-300 mb-1" />
-                  <h5 className="text-xs font-bold text-white">SOFT ON SKIN</h5>
-                  <p className="text-[10px] text-blue-200">All-day comfort</p>
-                </div>
-                <div className="bg-white/5 p-3 rounded-xl border border-white/10">
-                  <Wind className="w-4 h-4 text-amber-300 mb-1" />
-                  <h5 className="text-xs font-bold text-white">BREATHABLE</h5>
-                  <p className="text-[10px] text-blue-200">Keeps you cool</p>
-                </div>
-                <div className="bg-white/5 p-3 rounded-xl border border-white/10">
-                  <Shield className="w-4 h-4 text-amber-300 mb-1" />
-                  <h5 className="text-xs font-bold text-white">DURABLE</h5>
-                  <p className="text-[10px] text-blue-200">Shift after shift</p>
-                </div>
-                <div className="bg-white/5 p-3 rounded-xl border border-white/10">
-                  <RefreshCw className="w-4 h-4 text-amber-300 mb-1" />
-                  <h5 className="text-xs font-bold text-white">EASY CARE</h5>
-                  <p className="text-[10px] text-blue-200">Wash, wear & repeat</p>
-                </div>
-                <div className="bg-white/5 p-3 rounded-xl border border-white/10">
-                  <Move className="w-4 h-4 text-amber-300 mb-1" />
-                  <h5 className="text-xs font-bold text-white">EASY MOVEMENT</h5>
-                  <p className="text-[10px] text-blue-200">Free flexibility</p>
-                </div>
-                <div className="bg-white/5 p-3 rounded-xl border border-white/10">
-                  <CheckCircle2 className="w-4 h-4 text-amber-300 mb-1" />
-                  <h5 className="text-xs font-bold text-white">HEALTHCARE FIT</h5>
-                  <p className="text-[10px] text-blue-200">Trusted everywhere</p>
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="pt-2 flex flex-wrap items-center gap-3">
-                <a
-                  href="#scrubs-collection"
-                  className="inline-flex items-center gap-2 bg-white text-[#1A175A] hover:bg-blue-50 px-6 py-3 rounded-xl font-bold text-xs sm:text-sm shadow-md transition-all hover:scale-105"
-                >
-                  <span>Order in {selectedColor.name}</span>
-                  <ArrowRight className="w-4 h-4 text-[#1A175A]" />
-                </a>
-                <a
-                  href="#bulk-inquiry"
-                  className="text-xs font-semibold text-blue-200 hover:text-white underline underline-offset-4"
-                >
-                  Request Swatch Booklet
-                </a>
+              <div className="mt-5 flex flex-wrap items-center justify-center lg:justify-start gap-2">
+                {selected.badge ? (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 ring-1 ring-amber-200">
+                    <Star className="h-3.5 w-3.5 fill-amber-500 text-amber-500" />
+                    {selected.badge}
+                  </span>
+                ) : selected.popular ? (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 ring-1 ring-amber-200">
+                    <Star className="h-3.5 w-3.5 fill-amber-500 text-amber-500" />
+                    Most ordered
+                  </span>
+                ) : null}
+                <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
+                  Scrubs • Lab coats • Underscrubs
+                </span>
               </div>
             </div>
 
-            {/* Right Image Banner from Image 3 */}
-            <div className="lg:col-span-6 h-full relative overflow-hidden bg-slate-900 flex items-center justify-center p-4">
-              <img
-                src="/anr-colors-banner.jpg"
-                alt="ANR Hospital Garments - All Colours. Same Quality. Same Care."
-                className="w-full h-auto max-h-[480px] object-contain rounded-2xl shadow-xl"
-              />
+            {/* Small colour swatches */}
+            <div
+              role="listbox"
+              aria-label="Choose a colour"
+              onKeyDown={onKeyDown}
+              className="mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-2.5"
+            >
+              {colors.map((color, i) => {
+                const active = i === safeIdx;
+                return (
+                  <button
+                    key={`${color.id || color.name}-${i}`}
+                    ref={(el) => (chipRefs.current[i] = el)}
+                    type="button"
+                    role="option"
+                    aria-selected={active}
+                    aria-label={color.name}
+                    title={color.name}
+                    tabIndex={active ? 0 : -1}
+                    onClick={() => pick(i)}
+                    onMouseEnter={() => canHover() && pick(i)}
+                    className={`h-7 w-7 rounded-full outline-none transition-all duration-300 focus-visible:ring-2 focus-visible:ring-[#1A175A] focus-visible:ring-offset-2 ${
+                      active
+                        ? 'scale-110 ring-2 ring-[#1A175A] ring-offset-2'
+                        : 'hover:scale-110'
+                    }`}
+                    style={{
+                      backgroundColor: color.hex,
+                      boxShadow: active ? undefined : 'inset 0 0 0 1px rgba(15,23,42,0.15)',
+                    }}
+                  />
+                );
+              })}
             </div>
 
+            <div className="mt-6 flex items-center justify-center lg:justify-start gap-3">
+              <a
+                href={selected.link || '#scrubs-collection'}
+                className="group inline-flex items-center gap-2 bg-[#1A175A] hover:bg-[#282479] text-white text-sm font-semibold pl-6 pr-5 py-3.5 rounded-full transition-colors shadow-lg shadow-[#1A175A]/20"
+              >
+                Order in {shortName(selected.name)}
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              </a>
+              <button
+                type="button"
+                onClick={() => pick(safeIdx - 1)}
+                aria-label="Previous colour"
+                className="h-12 w-12 grid place-items-center rounded-full border border-slate-200 bg-white text-[#1A175A] hover:border-[#1A175A] transition-colors"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => pick(safeIdx + 1)}
+                aria-label="Next colour"
+                className="h-12 w-12 grid place-items-center rounded-full border border-slate-200 bg-white text-[#1A175A] hover:border-[#1A175A] transition-colors"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
+            </div>
           </div>
         </div>
-
       </div>
+
+      <style>{`
+        @keyframes colorFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        @media (prefers-reduced-motion: reduce) {
+          [class*="animate-[color"] { animation: none !important; }
+        }
+      `}</style>
     </section>
   );
 };

@@ -21,6 +21,8 @@ const storage = multer.diskStorage({
       subfolder = 'affiliates';
     } else if (url.includes('/returns')) {
       subfolder = 'returns';
+    } else if (url.includes('/colors')) {
+      subfolder = 'colors';
     }
 
     const dest = path.join(__dirname, '..', 'uploads', subfolder);

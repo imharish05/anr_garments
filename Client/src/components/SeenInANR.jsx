@@ -4,7 +4,7 @@ import { Star, ShieldCheck, Quote, CheckCircle2 } from 'lucide-react';
 
 const SeenInANR = () => {
   return (
-    <section className="py-20 bg-[#F8F9FE] border-b border-slate-200">
+    <section id="seen-in-anr" className="py-20 bg-[#F8F9FE] border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
@@ -81,14 +81,6 @@ const SeenInANR = () => {
 
             </div>
           ))}
-        </div>
-
-        {/* Community Banner */}
-        <div className="mt-12 text-center">
-          <p className="text-sm font-semibold text-slate-600">
-            Join 100,000+ medical professionals wearing ANR daily. Tag us on Instagram{" "}
-            <span className="text-[#1A175A] font-bold">#ANRHospitalGarments</span>
-          </p>
         </div>
 
       </div>

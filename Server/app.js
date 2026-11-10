@@ -80,6 +80,7 @@ app.use('/api/stock-status', require('./routes/stockRoutes'));
 app.use('/api/payments',     require('./routes/paymentRoutes'));
 
 app.use('/api/banners',    require('./routes/bannerRoutes'));
+app.use('/api/colors',     require('./routes/colorRoutes'));
 app.use('/api/customers',  require('./routes/customerRoutes'));
 app.use('/api/marketing-messages', require('./routes/marketingMessageRoutes'));
 app.use('/api/search',      require('./routes/searchRoutes'));

@@ -34,6 +34,7 @@ const TrendingCache     = require('./TrendingCache');
 const SiteSetting       = require('./SiteSetting');
 const InventoryMovementLog = require('./InventoryMovementLog');
 const ContactEnquiry    = require('./ContactEnquiry');
+const ColorCollection   = require('./ColorCollection');
 
 // ── Associations ─────────────────────────────────────────────────────────────
 
@@ -122,5 +123,5 @@ module.exports = {
   Wishlist,
   SupportTicket, Banner,
   Review, MarketingMessage, SearchKeyword, TrendingCache, SiteSetting, InventoryMovementLog,
-  ContactEnquiry,
+  ContactEnquiry, ColorCollection,
 };

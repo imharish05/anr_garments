@@ -59,16 +59,6 @@ const FabricTechSection = () => {
             );
           })}
         </div>
-
-        {/* Visual Cards from Image 2 */}
-        <div className="mt-14 rounded-3xl overflow-hidden shadow-2xl border border-slate-200 bg-slate-900">
-          <img
-            src="/anr-collection-cards.jpg"
-            alt="ANR Hospital Garments - Made for Healers, Designed for Comfort"
-            className="w-full h-auto object-cover max-h-[500px]"
-          />
-        </div>
-
       </div>
     </section>
   );

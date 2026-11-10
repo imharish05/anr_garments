@@ -53,7 +53,7 @@ const HomePage = () => {
         <CustomEmbroideryBanner />
 
         {/* 12. Institutions & Hospital Chains Served */}
-        <InstitutionsServed />
+        {/* <InstitutionsServed /> */}
 
         {/* 13. Fabric Science: Fabric That Works As Hard As You Do */}
         <FabricTechSection />
@@ -62,10 +62,10 @@ const HomePage = () => {
         <SeenInANR />
 
         {/* 15. Institutional Bulk Procurement Desk (Mr. Manjunath Rao & Mr. Balraj. V) */}
-        <BulkInquirySection />
+        {/* <BulkInquirySection /> */}
 
         {/* 16. Bangalore Factory Location & Google Maps Interactive Integration */}
-        <FactoryLocationSection />
+        {/* <FactoryLocationSection /> */}
 
         {/* 17. FAQs & Hospital Supply Guarantees */}
         <FaqShippingPerks />

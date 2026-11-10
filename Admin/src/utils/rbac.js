@@ -160,6 +160,7 @@ export const canAccessNav = (adminObj, path) => {
     case '/returns': return checkPermission(adminObj, 'view_orders');
     case '/coupons': return checkPermission(adminObj, 'view_coupons');
     case '/banners': return checkPermission(adminObj, 'view_banners');
+    case '/shop-by-color': return checkPermission(adminObj, 'view_banners');
     case '/slider-messages': return checkPermission(adminObj, 'view_slider_messages');
     case '/customers': return checkPermission(adminObj, 'view_customers');
     case '/contact_enquiries':
