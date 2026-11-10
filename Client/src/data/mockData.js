@@ -118,7 +118,21 @@ export const CATEGORIES = [
 ];
 
 // Product Line 1: Scrub Suits for Men & Women
-export const SCRUB_SUITS = [
+// Second photo shown on card hover. Add a real `hoverImage` (back / detail / on-model
+// shot) to any product to override. Until then we borrow a different photo from the
+// same list as a placeholder so the hover effect is visible.
+function withHover(list) {
+  return list.map((item, i) => {
+    if (item.hoverImage) return item;
+    for (let k = 1; k < list.length; k++) {
+      const other = list[(i + k) % list.length];
+      if (other.image !== item.image) return { ...item, hoverImage: other.image };
+    }
+    return item;
+  });
+}
+
+export const SCRUB_SUITS = withHover([
   {
     id: "scrub-01",
     name: "ANR Classic Unisex 5-Pocket Scrub Suit",
@@ -181,12 +195,12 @@ export const SCRUB_SUITS = [
     image: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=600&q=80",
     sectionId: "scrubs-collection",
     overview: "Sterile Operation Theatre scrub suit certified for surgical suites. Anti-glare OT Green/Blue dye, fluid splash repellent finish, and autoclaving endurance exceeding 60+ cycles.",
-    features: ["Fluid Splash Barrier", "Anti-Glare OT Green & Blue", "Fade & Shrink Proof"]
+    features: ["Fade & Shrink Proof"]
   }
-];
+]);
 
 // Product Line 2: Aprons for Men & Women (Doctor's Lab Coats & Aprons)
-export const APRONS_LIST = [
+export const APRONS_LIST = withHover([
   {
     id: "apron-01",
     name: "ANR Doctor's Full-Length Consultation Lab Coat",
@@ -233,7 +247,7 @@ export const APRONS_LIST = [
     image: "https://images.unsplash.com/photo-1594824813633-82421bd97354?auto=format&fit=crop&w=600&q=80",
     sectionId: "aprons-collection",
     overview: "Tailored slim-cut doctor apron with flattering back-belt detailing, princess seams, and non-yellowing bright white clinical weave resistant to repeated laundering.",
-    features: ["Princess Tailoring", "Back Belt Styling", "Smooth Non-Yellowing Fabric"]
+    features: ["Smooth Non-Yellowing Fabric", "Concealed Placket Closure", "Deep Pen & Tablet Pockets"]
   },
   {
     id: "apron-04",
@@ -251,10 +265,10 @@ export const APRONS_LIST = [
     overview: "Heavy-duty executive lab coat designed for diagnostic labs and pathology. Features acid/chemical splash resistance, shatterproof buttons, and side pants-pocket pass-through slits.",
     features: ["Chemical Splash Resistant", "Unbreakable Buttons", "Side Access Slits"]
   }
-];
+]);
 
 // Product Line 3: Underscrubs for Men & Women
-export const UNDERSCRUBS_LIST = [
+export const UNDERSCRUBS_LIST = withHover([
   {
     id: "us-01",
     name: "ANR Unisex Performance Long Sleeve Underscrub",
@@ -303,10 +317,10 @@ export const UNDERSCRUBS_LIST = [
     overview: "Athletic crewneck compression-fit underscrub with odor-resistant silver-ion yarn and quick-dry breathability designed for intensive surgical duties.",
     features: ["Quick-Dry Poly-Spandex", "Antimicrobial Treatment", "Tagless Collar"]
   }
-];
+]);
 
 // Product Line 4 & 5: Patient Gown & Patient Pant & Shirt
-export const PATIENT_WEAR_LIST = [
+export const PATIENT_WEAR_LIST = withHover([
   {
     id: "pw-01",
     name: "ANR Hospital Inpatient Patient Gown (Tie-Back)",
@@ -371,7 +385,7 @@ export const PATIENT_WEAR_LIST = [
     overview: "Maternity and pediatric patient gown featuring front shoulder snap closures for nursing access, tagless comfort, and non-toxic skin-safe hospital dyes.",
     features: ["Front Shoulder Snaps for Nursing", "100% Breathable Combed Cotton", "Non-Toxic Skin-Safe Dyes"]
   }
-];
+]);
 
 // Unified catalog for real-time search across all medical garment collections
 export const ALL_PRODUCTS = [

@@ -71,15 +71,22 @@ const processProductData = async (req) => {
   }
   existingImages = existingImages.map(img => toRelativeUrl(img));
 
+  let hoverImage = null;
+  if (data.hoverImageUrl && typeof data.hoverImageUrl === 'string') {
+    hoverImage = toRelativeUrl(data.hoverImageUrl);
+  }
+
   const newImages = [];
 
   if (req.files && Array.isArray(req.files)) {
     for (const file of req.files) {
       const pathString = await getUploadedUrl(file, 'products');
-      if (file.fieldname === 'images' || file.fieldname === 'variantImages') {
-        if (pathString) newImages.push(pathString);
+      if (file.fieldname === 'hoverImage' || file.fieldname === 'secondaryImage') {
+        hoverImage = pathString;
       } else if (file.fieldname === 'defaultProductImage') {
         data.defaultProductImage = pathString;
+      } else if (file.fieldname === 'images' || file.fieldname === 'variantImages') {
+        if (pathString) newImages.push(pathString);
       }
     }
   }
@@ -87,9 +94,23 @@ const processProductData = async (req) => {
   if (data.defaultProductImage) {
     data.defaultProductImage = toRelativeUrl(data.defaultProductImage);
   }
+  if (hoverImage) {
+    hoverImage = toRelativeUrl(hoverImage);
+  }
 
-  data.images = [...existingImages, ...newImages];
+  // Assemble images preserving default image at index 0 and hover image at index 1
+  const gallery = [...existingImages, ...newImages].filter(
+    img => img && img !== data.defaultProductImage && img !== hoverImage
+  );
+
+  const assembledImages = [];
+  if (data.defaultProductImage) assembledImages.push(data.defaultProductImage);
+  if (hoverImage) assembledImages.push(hoverImage);
+  assembledImages.push(...gallery);
+
+  data.images = assembledImages;
   delete data.existingImages;
+  delete data.hoverImageUrl;
 
   // Sync defaultProductImage and images array
   if (data.defaultProductImage) {
@@ -115,6 +136,13 @@ const formatProduct = (product, req) => {
 
   if (Array.isArray(json.images)) {
     json.images = json.images.map(img => toAbsoluteUrl(img, req));
+  }
+
+  // Hover image is second image in the ordered array
+  if (Array.isArray(json.images) && json.images.length > 1) {
+    json.hoverImage = json.images[1];
+  } else {
+    json.hoverImage = null;
   }
 
   if (Array.isArray(json.variants)) {

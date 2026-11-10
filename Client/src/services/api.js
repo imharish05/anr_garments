@@ -223,21 +223,56 @@ export const fetchProducts = async () => {
         } catch {
           parsedImages = [];
         }
-        const firstImg = p.defaultProductImage || parsedImages[0] || '';
+        const resolvedImages = parsedImages.map(img => getImageUrl(img)).filter(Boolean);
+        const firstImg = getImageUrl(p.defaultProductImage) || resolvedImages[0] || '/anr-hero-banner.jpg';
+        const secondImg = (p.hoverImage ? getImageUrl(p.hoverImage) : null) || resolvedImages[1] || null;
+
+        // Extract color hexes from variants or attributes
+        const variantColors = (p.variants || [])
+          .map(v => v.colorHex || v.attributes?.Color || v.attributes?.color)
+          .filter(Boolean);
+        const attributeColors = Array.isArray(p.attributes?.colors) ? p.attributes.colors : [];
+        const colors = Array.from(new Set([...variantColors, ...attributeColors]));
+
+        // Extract features from tags or attributes
+        let features = [];
+        if (Array.isArray(p.tags) && p.tags.length > 0) {
+          features = p.tags;
+        } else if (Array.isArray(p.attributes?.features)) {
+          features = p.attributes.features;
+        }
+
+        const price = parseFloat(p.price) || 0;
+        const comparePrice = p.comparePrice ? parseFloat(p.comparePrice) : null;
+        let discount = '';
+        if (comparePrice && comparePrice > price) {
+          discount = `${Math.round(((comparePrice - price) / comparePrice) * 100)}% OFF`;
+        }
+
+        const badge = p.attributes?.badge || (p.isBestSeller ? 'Best Seller' : p.isNewArrival ? 'New Arrival' : p.isFeatured ? 'Doctor Choice' : '');
 
         return {
           id: p.id,
           name: p.name,
           slug: p.slug,
+          categoryId: p.categoryId,
+          categorySlug: p.category?.slug || '',
+          subCategoryId: p.subCategoryId,
+          subCategorySlug: p.subcategory?.slug || '',
           category: p.category?.name || 'Medical Apparel',
-          price: parseFloat(p.price) || 0,
-          originalPrice: p.comparePrice ? parseFloat(p.comparePrice) : null,
-          image: getImageUrl(firstImg) || '/anr-hero-banner.jpg',
+          price,
+          originalPrice: comparePrice,
+          discount,
+          image: firstImg,
+          hoverImage: secondImg,
+          images: resolvedImages.length > 0 ? resolvedImages : [firstImg],
+          colors: colors.length > 0 ? colors : ['#1E40AF', '#1A175A', '#0F766E'],
+          features,
           rating: p.rating ? parseFloat(p.rating).toFixed(1) : '4.9',
-          reviews: p.reviewCount || 18,
+          reviews: p.reviewCount || 120,
           inStock: (p.stock || 0) > 0,
           sku: p.sku || '',
-          badge: p.isBestSeller ? 'Best Seller' : p.isNewArrival ? 'New Arrival' : '',
+          badge,
           sectionId: getCategorySectionLink(p.category?.slug),
           overview: p.shortDescription || p.description || ''
         };

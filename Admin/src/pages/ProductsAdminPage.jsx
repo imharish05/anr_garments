@@ -628,8 +628,20 @@ const ProductModal = ({ product, onClose, onSave, saving = false, uploadProgress
   const [defaultProductImagePreview, setDefaultProductImagePreview] = useState(form.defaultProductImage);
   const [isDraggingDefault, setIsDraggingDefault] = useState(false);
 
-  // Variant Gallery Images
-  const [existingVariantImages, setExistingVariantImages] = useState(product ? [...(product?.images || [])] : []);
+  // Hover / Alternate Image States
+  const [hoverImageFile, setHoverImageFile] = useState(null);
+  const [hoverImagePreview, setHoverImagePreview] = useState(
+    product?.hoverImage || (product?.images && product.images.length > 1 ? product.images[1] : null)
+  );
+  const [isDraggingHover, setIsDraggingHover] = useState(false);
+
+  // Additional Gallery Images (excluding primary and hover)
+  const [existingVariantImages, setExistingVariantImages] = useState(() => {
+    if (!product || !Array.isArray(product.images)) return [];
+    const mainImg = product.defaultProductImage || product.images[0] || null;
+    const hvrImg = product.hoverImage || (product.images.length > 1 ? product.images[1] : null);
+    return product.images.filter(img => img && img !== mainImg && img !== hvrImg);
+  });
   const [newVariantImageFiles, setNewVariantImageFiles] = useState([]);
 
   useEffect(() => {
@@ -829,6 +841,36 @@ const ProductModal = ({ product, onClose, onSave, saving = false, uploadProgress
     }
   };
 
+  const processHoverImageFile = async (file) => {
+    if (!file) return false;
+    const val = await validateImageDimensionsAndSize(file, { maxSizeMB: 5, minWidth: 200, minHeight: 200, requireSquare: false });
+    if (!val.isValid) {
+      toast.error(val.error);
+      return false;
+    }
+    setHoverImageFile(file);
+    setHoverImagePreview(URL.createObjectURL(file));
+    return true;
+  };
+
+  const handleHoverImageSelect = async (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      await processHoverImageFile(file);
+    }
+    e.target.value = '';
+  };
+
+  const handleHoverImageDrop = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDraggingHover(false);
+    const file = e.dataTransfer?.files?.[0];
+    if (file) {
+      await processHoverImageFile(file);
+    }
+  };
+
   const processVariantMainImage = async (variantId, file) => {
     if (!file) return false;
     const val = await validateImageDimensionsAndSize(file, { maxSizeMB: 5, minWidth: 200, minHeight: 200, requireSquare: false });
@@ -1001,6 +1043,12 @@ const ProductModal = ({ product, onClose, onSave, saving = false, uploadProgress
       fd.append('defaultProductImage', defaultProductImagePreview);
     }
 
+    if (hoverImageFile) {
+      fd.append('hoverImage', hoverImageFile);
+    } else if (hoverImagePreview && !isLocalPreviewUrl(hoverImagePreview)) {
+      fd.append('hoverImageUrl', hoverImagePreview);
+    }
+
     if (productVariants.length > 0) {
       fd.append('variants', JSON.stringify(productVariants.map((v, vIdx) => {
         const rawId = Number(v.id);
@@ -1039,8 +1087,9 @@ const ProductModal = ({ product, onClose, onSave, saving = false, uploadProgress
 
     fd.append('isSingleVariantEdit', productVariants.length <= 1 ? 'true' : 'false');
     const preservedImages = [
-      ...existingVariantImages.filter(img => !isLocalPreviewUrl(img)),
-      ...(defaultProductImagePreview && !isLocalPreviewUrl(defaultProductImagePreview) && !existingVariantImages.includes(defaultProductImagePreview) ? [defaultProductImagePreview] : [])
+      ...(defaultProductImagePreview && !isLocalPreviewUrl(defaultProductImagePreview) ? [defaultProductImagePreview] : []),
+      ...(hoverImagePreview && !isLocalPreviewUrl(hoverImagePreview) ? [hoverImagePreview] : []),
+      ...existingVariantImages.filter(img => !isLocalPreviewUrl(img) && img !== defaultProductImagePreview && img !== hoverImagePreview)
     ];
     fd.append('existingImages', JSON.stringify(preservedImages));
     newVariantImageFiles.forEach(file => {
@@ -1263,43 +1312,167 @@ const ProductModal = ({ product, onClose, onSave, saving = false, uploadProgress
             </div>
           </div>
 
-          {/* SECTION 3: PRODUCT IMAGE & GALLERY */}
+          {/* SECTION 3: PRODUCT IMAGES (PRIMARY & HOVER VIEW) */}
           <div className="bg-neutral-50 p-5 rounded-lg border border-brand-light space-y-4">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-[#1a175a] border-b border-neutral-200 pb-2">3. Product Image & Gallery</h3>
+            <div className="border-b border-neutral-200 pb-2 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+              <div>
+                <h3 className="text-xs font-bold uppercase tracking-wider text-[#1a175a]">3. Product Images (Front & Hover View)</h3>
+                <p className="text-[11px] text-neutral-500">
+                  Clearly define what customers see first, and what alternate image reveals when they hover over the product card.
+                </p>
+              </div>
+              <span className="text-[10px] font-semibold text-neutral-400 self-start sm:self-auto">JPG, PNG, WebP up to 5MB</span>
+            </div>
 
-            <div className="space-y-1.5">
-              <label className="block text-xs font-semibold text-neutral-700">
-                Default Listing Image * • Recommended 400×400px (1:1) • Max: 3MB
-              </label>
-
-              {defaultProductImagePreview ? (
-                <div className="relative w-32 h-32 border border-neutral-300 rounded-2xl overflow-hidden shadow-md group bg-neutral-900">
-                  <img src={getImageUrl(defaultProductImagePreview)} alt="Default Thumbnail" className="w-full h-full object-cover" />
-                  <button
-                    type="button"
-                    onClick={() => { setDefaultProductImageFile(null); setDefaultProductImagePreview(null); }}
-                    className="absolute top-2 right-2 bg-black/80 hover:bg-red-600 text-white p-1 rounded-full shadow-lg transition-colors"
-                    title="Remove Image"
-                  >
-                    <X size={14} />
-                  </button>
-                </div>
-              ) : (
-                <label
-                  onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingDefault(true); }}
-                  onDragEnter={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingDefault(true); }}
-                  onDragLeave={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingDefault(false); }}
-                  onDrop={handleDefaultImageDrop}
-                  className={`border-2 border-dashed ${isDraggingDefault ? 'border-[#1a175a] bg-blue-50/60 ring-2 ring-[#1a175a]/30' : 'border-neutral-300 hover:border-[#1a175a] bg-white hover:bg-neutral-50/50'} rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer transition-all group`}
-                >
-                  <div className="flex items-center gap-1.5 text-xs text-neutral-500 font-medium group-hover:text-neutral-800">
-                    <Camera size={16} className={`text-neutral-400 group-hover:text-[#1a175a] transition-transform ${isDraggingDefault ? 'text-[#1a175a] scale-125' : ''}`} />
-                    <span>Click to <strong>browse</strong> or <strong>drag & drop</strong></span>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Box 1: Primary Listing Image */}
+              <div className="bg-white p-4 rounded-xl border border-neutral-200 shadow-2xs space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-blue-600" />
+                    <label className="text-xs font-bold text-neutral-800 uppercase tracking-wider">
+                      Primary / Front Image *
+                    </label>
                   </div>
-                  <span className="text-[10px] text-neutral-400 mt-1">Supports JPG, PNG, WebP up to 5MB</span>
-                  <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handleDefaultImageSelect} className="hidden" />
-                </label>
-              )}
+                  <span className="text-[10px] font-semibold bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full border border-blue-200">
+                    Default View
+                  </span>
+                </div>
+                <p className="text-[11px] text-neutral-500">
+                  Displayed as the main front photo on the website product cards &amp; catalog.
+                </p>
+
+                {defaultProductImagePreview ? (
+                  <div className="relative w-full h-44 border border-neutral-200 rounded-xl overflow-hidden shadow-xs group bg-neutral-900">
+                    <img src={getImageUrl(defaultProductImagePreview)} alt="Primary Thumbnail" className="w-full h-full object-contain" />
+                    <button
+                      type="button"
+                      onClick={() => { setDefaultProductImageFile(null); setDefaultProductImagePreview(null); }}
+                      className="absolute top-2 right-2 bg-black/80 hover:bg-red-600 text-white p-1.5 rounded-full shadow-lg transition-colors"
+                      title="Remove Primary Image"
+                    >
+                      <X size={14} />
+                    </button>
+                    <span className="absolute bottom-2 left-2 bg-black/70 backdrop-blur-xs text-white text-[10px] font-semibold px-2 py-0.5 rounded">
+                      Front Photo
+                    </span>
+                  </div>
+                ) : (
+                  <label
+                    onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingDefault(true); }}
+                    onDragEnter={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingDefault(true); }}
+                    onDragLeave={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingDefault(false); }}
+                    onDrop={handleDefaultImageDrop}
+                    className={`border-2 border-dashed ${isDraggingDefault ? 'border-[#1a175a] bg-blue-50/60 ring-2 ring-[#1a175a]/30' : 'border-neutral-300 hover:border-[#1a175a] bg-neutral-50/50 hover:bg-white'} rounded-xl h-44 flex flex-col items-center justify-center cursor-pointer transition-all group p-4 text-center`}
+                  >
+                    <Camera size={22} className={`text-neutral-400 group-hover:text-[#1a175a] transition-transform ${isDraggingDefault ? 'text-[#1a175a] scale-125' : ''}`} />
+                    <span className="text-xs font-semibold text-neutral-700 mt-2">
+                      Upload Primary Image
+                    </span>
+                    <span className="text-[10px] text-neutral-400 mt-0.5">Click to browse or drag &amp; drop</span>
+                    <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handleDefaultImageSelect} className="hidden" />
+                  </label>
+                )}
+              </div>
+
+              {/* Box 2: Hover / Alternate Image */}
+              <div className="bg-white p-4 rounded-xl border border-neutral-200 shadow-2xs space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-purple-600" />
+                    <label className="text-xs font-bold text-neutral-800 uppercase tracking-wider">
+                      Hover / Alternate Image
+                    </label>
+                  </div>
+                  <span className="text-[10px] font-semibold bg-purple-50 text-purple-700 px-2 py-0.5 rounded-full border border-purple-200">
+                    On-Hover View
+                  </span>
+                </div>
+                <p className="text-[11px] text-neutral-500">
+                  Revealed automatically when customer hovers over the card on desktop or taps on mobile.
+                </p>
+
+                {hoverImagePreview ? (
+                  <div className="relative w-full h-44 border border-neutral-200 rounded-xl overflow-hidden shadow-xs group bg-neutral-900">
+                    <img src={getImageUrl(hoverImagePreview)} alt="Hover Alternate" className="w-full h-full object-contain" />
+                    <button
+                      type="button"
+                      onClick={() => { setHoverImageFile(null); setHoverImagePreview(null); }}
+                      className="absolute top-2 right-2 bg-black/80 hover:bg-red-600 text-white p-1.5 rounded-full shadow-lg transition-colors"
+                      title="Remove Hover Image"
+                    >
+                      <X size={14} />
+                    </button>
+                    <span className="absolute bottom-2 left-2 bg-purple-900/80 backdrop-blur-xs text-white text-[10px] font-semibold px-2 py-0.5 rounded">
+                      Hover View
+                    </span>
+                  </div>
+                ) : (
+                  <label
+                    onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingHover(true); }}
+                    onDragEnter={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingHover(true); }}
+                    onDragLeave={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingHover(false); }}
+                    onDrop={handleHoverImageDrop}
+                    className={`border-2 border-dashed ${isDraggingHover ? 'border-purple-600 bg-purple-50/60 ring-2 ring-purple-600/30' : 'border-neutral-300 hover:border-purple-600 bg-neutral-50/50 hover:bg-white'} rounded-xl h-44 flex flex-col items-center justify-center cursor-pointer transition-all group p-4 text-center`}
+                  >
+                    <Camera size={22} className={`text-neutral-400 group-hover:text-purple-600 transition-transform ${isDraggingHover ? 'text-purple-600 scale-125' : ''}`} />
+                    <span className="text-xs font-semibold text-neutral-700 mt-2">
+                      Upload Hover Image
+                    </span>
+                    <span className="text-[10px] text-neutral-400 mt-0.5">Click to browse or drag &amp; drop</span>
+                    <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handleHoverImageSelect} className="hidden" />
+                  </label>
+                )}
+              </div>
+            </div>
+
+            {/* Gallery Images (Optional) */}
+            <div className="bg-white p-4 rounded-xl border border-neutral-200 shadow-2xs space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold uppercase tracking-wider text-neutral-700">
+                  Additional Gallery Images (Optional)
+                </span>
+                <span className="text-[10px] font-mono font-semibold text-neutral-500">
+                  {existingVariantImages.length + newVariantImageFiles.length} / 5
+                </span>
+              </div>
+              <p className="text-[11px] text-neutral-400">
+                Extra detail shots, fabric close-ups, or back-angle views for the product page.
+              </p>
+
+              <div className="flex flex-wrap items-center gap-3 pt-1">
+                {existingVariantImages.map((imgUrl, i) => (
+                  <div key={i} className="relative w-16 h-16 rounded-lg overflow-hidden border border-neutral-300 shadow-xs group bg-neutral-100">
+                    <img src={getImageUrl(imgUrl)} alt={`Gallery ${i}`} className="w-full h-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => removeExistingVariantImage(i)}
+                      className="absolute top-1 right-1 bg-black/70 hover:bg-red-600 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X size={12} />
+                    </button>
+                  </div>
+                ))}
+                {newVariantImageFiles.map((file, i) => (
+                  <div key={`new-${i}`} className="relative w-16 h-16 rounded-lg overflow-hidden border border-blue-400 shadow-xs group bg-neutral-100">
+                    <img src={file.preview} alt={`New ${i}`} className="w-full h-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => removeNewVariantFile(i)}
+                      className="absolute top-1 right-1 bg-black/70 hover:bg-red-600 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X size={12} />
+                    </button>
+                  </div>
+                ))}
+                {existingVariantImages.length + newVariantImageFiles.length < 5 && (
+                  <label className="w-16 h-16 rounded-lg border-2 border-dashed border-neutral-300 hover:border-[#1a175a] flex flex-col items-center justify-center cursor-pointer transition-colors hover:bg-neutral-50">
+                    <Plus size={16} className="text-neutral-400" />
+                    <span className="text-[9px] font-bold text-neutral-500 mt-0.5">Add</span>
+                    <input type="file" multiple accept="image/jpeg,image/png,image/webp" onChange={handleVariantImagesSelect} className="hidden" />
+                  </label>
+                )}
+              </div>
             </div>
           </div>
 

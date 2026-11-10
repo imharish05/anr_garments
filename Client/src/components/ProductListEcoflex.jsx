@@ -1,9 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { UNDERSCRUBS_LIST } from '../data/mockData';
 import ProductCard from './ProductCard';
-import { Layers, ArrowRight, Zap, Wind } from 'lucide-react';
+import { fetchProducts } from '../services/api';
+import { Layers, ArrowRight } from 'lucide-react';
 
 const ProductListEcoflex = () => {
+  const [products, setProducts] = useState(UNDERSCRUBS_LIST);
+
+  useEffect(() => {
+    let isMounted = true;
+    fetchProducts().then((all) => {
+      if (!isMounted || !all || all.length === 0) return;
+      const matched = all.filter(
+        (p) => p.categorySlug === 'underscrubs' || p.categoryId === 18 || /underscrub/i.test(p.category)
+      );
+      if (matched.length > 0) {
+        setProducts(matched);
+      }
+    }).catch((err) => {
+      console.warn('Using fallback underscrubs:', err);
+    });
+    return () => { isMounted = false; };
+  }, []);
+
   return (
     <section id="underscrubs-collection" className="py-16 bg-white border-b border-slate-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -34,7 +53,7 @@ const ProductListEcoflex = () => {
 
         {/* Product Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {UNDERSCRUBS_LIST.map((product) => (
+          {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>

@@ -44,11 +44,6 @@ const CartDrawer = () => {
             </button>
           </div>
 
-          {/* Delivery perk banner */}
-          <div className="bg-emerald-50 px-4 py-2 border-b border-emerald-100 flex items-center gap-2 text-xs text-emerald-800 font-semibold">
-            <ShieldCheck className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-            <span>Eligible for Free Express Hospital Delivery!</span>
-          </div>
 
           {/* Items List */}
           <div className="flex-1 overflow-y-auto p-5 space-y-4">

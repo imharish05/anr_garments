@@ -53,7 +53,7 @@ const FabricTechSection = () => {
 
                 <div className="mt-6 pt-4 border-t border-slate-200 flex items-center gap-2 text-xs font-semibold text-[#1A175A]">
                   <CheckCircle className="w-4 h-4 text-emerald-600" />
-                  <span>ANR Bangalore Quality Certified</span>
+                  <span>Quality Certified</span>
                 </div>
               </div>
             );

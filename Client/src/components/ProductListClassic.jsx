@@ -1,9 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { SCRUB_SUITS } from '../data/mockData';
 import ProductCard from './ProductCard';
-import { Sparkles, ArrowRight, ShieldCheck } from 'lucide-react';
+import { fetchProducts } from '../services/api';
+import { Sparkles, ArrowRight } from 'lucide-react';
 
 const ProductListClassic = () => {
+  const [products, setProducts] = useState(SCRUB_SUITS);
+
+  useEffect(() => {
+    let isMounted = true;
+    fetchProducts().then((all) => {
+      if (!isMounted || !all || all.length === 0) return;
+      const matched = all.filter(
+        (p) => p.categorySlug === 'scrub-suits' || p.categoryId === 16 || /scrub/i.test(p.category)
+      );
+      if (matched.length > 0) {
+        setProducts(matched);
+      }
+    }).catch((err) => {
+      console.warn('Using fallback scrub suits:', err);
+    });
+    return () => { isMounted = false; };
+  }, []);
+
   return (
     <section id="scrubs-collection" className="py-16 bg-white border-b border-slate-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -34,7 +53,7 @@ const ProductListClassic = () => {
 
         {/* Product Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {SCRUB_SUITS.map((product) => (
+          {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>

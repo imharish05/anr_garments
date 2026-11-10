@@ -50,7 +50,7 @@ const HomePage = () => {
         <ProductListPatientWear />
 
         {/* 11. Mid-Page Personalization Banner: Custom Hospital Crest & Doctor Name Embroidery */}
-        <CustomEmbroideryBanner />
+        {/* <CustomEmbroideryBanner /> */}
 
         {/* 12. Institutions & Hospital Chains Served */}
         {/* <InstitutionsServed /> */}
