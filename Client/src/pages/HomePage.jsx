@@ -2,7 +2,6 @@ import React from 'react';
 import TopAnnouncementBar from '../components/TopAnnouncementBar';
 import Navbar from '../components/Navbar';
 import HeroBanner from '../components/HeroBanner';
-import FeaturesMarquee from '../components/FeaturesMarquee';
 import ShopByCategory from '../components/ShopByCategory';
 import ShopByColor from '../components/ShopByColor';
 import ProductListClassic from '../components/ProductListClassic';
@@ -22,20 +21,22 @@ import CartDrawer from '../components/CartDrawer';
 const HomePage = () => {
   return (
     <div className="min-h-screen flex flex-col bg-white text-slate-800 font-sans antialiased selection:bg-[#1A175A] selection:text-white">
-      {/* 1. Top Rotating Announcement Bar with Bangalore Factory & Direct Founders Lines */}
-      <TopAnnouncementBar />
+      {/* 100vh Hero Fold: Topbar + Navbar + Hero Banner */}
+      <div className="min-h-screen lg:h-screen flex flex-col">
+        {/* 1. Top Rotating Announcement Bar with Bangalore Factory & Direct Founders Lines */}
+        <TopAnnouncementBar />
 
-      {/* 2. Main Navigation Header with ΛNR Brand Logo and Quick Actions */}
-      <Navbar />
+        {/* 2. Main Navigation Header with ΛNR Brand Logo and Quick Actions */}
+        <Navbar />
+
+        {/* 3. Hero Banner: Full width, fills 100vh, cropped slightly at the top */}
+        <div className="flex-1 w-full min-h-0 relative">
+          <HeroBanner />
+        </div>
+      </div>
 
       <main className="flex-1">
-        {/* 3. Hero Banner: DESIGNED FOR CARE. MADE TO PERFORM. */}
-        <HeroBanner />
-
-        {/* 4. Infinite Features Marquee: COMFORT THAT CARES • QUALITY THAT LASTS */}
-        <FeaturesMarquee />
-
-        {/* 5. 5 Core Product Categories Overview */}
+        {/* 4. 5 Core Product Categories Overview */}
         <ShopByCategory />
 
         {/* 6. ALL COLOURS. SAME QUALITY. SAME CARE. Palette Showcase */}

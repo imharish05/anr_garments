@@ -113,14 +113,14 @@ const HeroBanner = () => {
 
   return (
     <section
-      className="relative bg-[#1A175A] overflow-hidden"
+      className="relative w-full h-full bg-[#1A175A] overflow-hidden"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       aria-roledescription="carousel"
       aria-label="Featured banners"
     >
       <div
-        className="relative w-full overflow-hidden aspect-[16/9]"
+        className="relative w-full h-full min-h-[460px] lg:min-h-0 overflow-hidden"
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
@@ -137,7 +137,7 @@ const HeroBanner = () => {
                 <img
                   src={slide.src}
                   alt={slide.alt || 'ANR Hospital Garments'}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover object-bottom"
                   loading={i === 0 ? 'eager' : 'lazy'}
                   draggable={false}
                   onError={(e) => {
