@@ -284,6 +284,34 @@ export const fetchProducts = async () => {
 };
 
 /**
+ * Fetch active discount coupons from Admin backend
+ */
+export const fetchCoupons = async () => {
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 4000);
+
+    const res = await fetch(`${API_BASE_URL}/coupons`, {
+      signal: controller.signal,
+      cache: 'no-store'
+    });
+    clearTimeout(timeoutId);
+
+    if (!res.ok) {
+      console.warn(`[API] coupons returned status ${res.status}`);
+      return [];
+    }
+
+    const data = await res.json();
+    const rawCoupons = data.coupons || (Array.isArray(data) ? data : []);
+    return rawCoupons.filter(c => c.isActive !== false);
+  } catch (err) {
+    console.warn('[API] Failed to fetch dynamic coupons, using fallback:', err.message);
+    return [];
+  }
+};
+
+/**
  * Fetch dynamic shop-by-color palette from Admin backend
  */
 export const fetchColorCollections = async () => {

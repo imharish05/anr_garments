@@ -8,6 +8,7 @@ import ProductListClassic from '../components/ProductListClassic';
 import ProductListLabCoats from '../components/ProductListLabCoats';
 import ProductListEcoflex from '../components/ProductListEcoflex';
 import ProductListPatientWear from '../components/ProductListPatientWear';
+import OffersSection from '../components/OffersSection';
 import CustomEmbroideryBanner from '../components/CustomEmbroideryBanner';
 import InstitutionsServed from '../components/InstitutionsServed';
 import FabricTechSection from '../components/FabricTechSection';
@@ -48,6 +49,9 @@ const HomePage = () => {
 
         {/* 10. Product Lines 4 & 5: Patient Gown • Patient Pant & Shirt */}
         <ProductListPatientWear />
+
+        {/* 11. Special Offers, Voucher Coupons & Tiered Bulk Discounts */}
+        <OffersSection />
 
         {/* 11. Mid-Page Personalization Banner: Custom Hospital Crest & Doctor Name Embroidery */}
         {/* <CustomEmbroideryBanner /> */}

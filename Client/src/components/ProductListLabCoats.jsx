@@ -30,10 +30,7 @@ const ProductListLabCoats = () => {
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 pb-4 border-b border-slate-200">
           <div>
-            <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1A175A] uppercase tracking-wider mb-2">
-              <Award className="w-4 h-4 text-amber-500" />
-              <span>Product Line 02</span>
-            </div>
+           
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#1A175A] tracking-tight">
               Aprons for Men & Women
             </h2>

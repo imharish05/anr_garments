@@ -30,10 +30,7 @@ const ProductListEcoflex = () => {
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 pb-4 border-b border-slate-200">
           <div>
-            <div className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-700 bg-blue-100/70 px-3 py-1 rounded-full uppercase tracking-wider mb-2">
-              <Layers className="w-3.5 h-3.5 text-blue-600" />
-              <span>Product Line 03</span>
-            </div>
+            
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#1A175A] tracking-tight">
               Underscrubs for Men & Women
             </h2>

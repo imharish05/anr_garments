@@ -15,7 +15,8 @@ import {
   ChevronRight,
   Plus,
   ArrowRight,
-  Sparkles
+  Sparkles,
+  Tag
 } from 'lucide-react';
 
 const Logo = ({ className = "h-12" }) => (
@@ -330,8 +331,16 @@ const Navbar = () => {
               )}
             </div>
 
-            {/* Right: Actions (Bulk Orders + Search Bar + Wishlist + Cart) */}
+            {/* Right: Actions (Offers + Bulk Orders + Search Bar + Wishlist + Cart) */}
             <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+              <a
+                href="#offers"
+                className="hidden xl:inline-flex items-center gap-1.5 px-3 py-1.5 mr-1 rounded-full bg-white/10 hover:bg-white/20 text-amber-300 text-[12px] font-bold transition-all border border-amber-400/30 shadow-xs whitespace-nowrap"
+              >
+                <Tag className="w-3.5 h-3.5 text-amber-400" />
+                <span>Offers</span>
+              </a>
+
               <a
                 href={bulkLink.href}
                 className="hidden lg:inline-flex items-center px-4 py-2 mr-1 rounded-full bg-amber-400 text-[#1A175A] text-[13px] font-bold hover:bg-amber-300 transition-colors shadow-sm whitespace-nowrap"
@@ -483,6 +492,19 @@ const Navbar = () => {
               <div className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-amber-400" />
                 <span>Shop by Category</span>
+              </div>
+              <ArrowRight className="w-4 h-4 text-amber-400 group-hover:translate-x-1 transition-transform" />
+            </a>
+
+            {/* Special Offers Link in Mobile Menu */}
+            <a
+              href="#offers"
+              onClick={() => setMobileMenuOpen(false)}
+              className="w-full flex items-center justify-between bg-amber-400/15 hover:bg-amber-400/25 text-amber-300 px-4 py-2.5 rounded-xl text-xs font-bold transition-colors border border-amber-400/20 group"
+            >
+              <div className="flex items-center gap-2">
+                <Tag className="w-4 h-4 text-amber-400" />
+                <span>Special Offers &amp; Discounts</span>
               </div>
               <ArrowRight className="w-4 h-4 text-amber-400 group-hover:translate-x-1 transition-transform" />
             </a>

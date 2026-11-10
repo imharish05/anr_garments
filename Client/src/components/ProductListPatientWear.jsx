@@ -35,10 +35,7 @@ const ProductListPatientWear = () => {
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 pb-4 border-b border-slate-200">
           <div>
-            <div className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 bg-emerald-100/70 px-3 py-1 rounded-full uppercase tracking-wider mb-2">
-              <Heart className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Product Lines 04 & 05</span>
-            </div>
+            
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#1A175A] tracking-tight">
               Patient Gown • Patient Pant & Shirt
             </h2>
