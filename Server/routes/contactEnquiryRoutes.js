@@ -12,9 +12,10 @@ const {
 } = require('../controllers/contactEnquiryController');
 const { verifyAdmin } = require('../middleware/auth');
 const { hasPermission } = require('../middleware/rbac');
+const { publicFormLimiter } = require('../middleware/rateLimiter');
 
 // Public route: Storefront contact form submit
-router.post('/', submitContactEnquiry);
+router.post('/', publicFormLimiter, submitContactEnquiry);
 
 // Admin routes
 router.post('/test-email', verifyAdmin, sendTestEmail);

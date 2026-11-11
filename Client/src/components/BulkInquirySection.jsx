@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { COMPANY_INFO } from '../data/mockData';
-import { Building, Phone, Mail, CheckCircle2, Send, Sparkles, MapPin, UserCheck } from 'lucide-react';
+import useStorefrontSetting from '../hooks/useStorefrontSetting';
+import { submitBulkEnquiry } from '../services/api';
+import { Phone, Mail, CheckCircle2, Send, Sparkles, MapPin, UserCheck, AlertCircle } from 'lucide-react';
 
 const BulkInquirySection = () => {
+  const { data: storefront } = useStorefrontSetting('storefront');
   const [formData, setFormData] = useState({
     hospitalName: '',
     contactName: '',
@@ -13,12 +15,36 @@ const BulkInquirySection = () => {
     customEmbroidery: true,
     notes: ''
   });
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
+    setSubmitting(true);
+    setSubmitError('');
+    try {
+      await submitBulkEnquiry({
+        hospitalName: formData.hospitalName,
+        contactName: formData.contactName,
+        phone: formData.phone,
+        email: formData.email,
+        estimatedQty: formData.quantity,
+        garmentType: formData.category,
+        embroideryRequired: formData.customEmbroidery,
+        notes: formData.notes,
+      });
+      setSubmitted(true);
+    } catch (err) {
+      setSubmitError(err?.message || 'Unable to submit your inquiry right now. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
+
+  const phones = Array.isArray(storefront?.phones) ? storefront.phones : [];
+  const primaryPhone = phones[0] || '';
+  const secondaryPhone = phones[1] || '';
 
   return (
     <section id="bulk-inquiry" className="py-20 bg-[#1A175A] text-white relative overflow-hidden">
@@ -30,7 +56,7 @@ const BulkInquirySection = () => {
           
           {/* Left Text & Contact Cards */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 text-amber-300 border border-white/20 text-xs font-semibold">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 text-blue-200 border border-white/20 text-xs font-semibold">
               <Sparkles className="w-3.5 h-3.5" />
               <span>Direct Factory Supply Desk</span>
             </div>
@@ -43,57 +69,69 @@ const BulkInquirySection = () => {
               We partner directly with leading hospital networks, medical colleges, nursing hostels, and diagnostic clinics. Deal directly with our founders to get factory prices, custom departmental coding, and physical sample swatch delivery.
             </p>
 
-            {/* Founders Direct Card */}
-            <div className="p-5 rounded-2xl bg-[#141247] border border-white/15 space-y-4 shadow-xl">
-              <div className="flex items-center gap-2 pb-2 border-b border-white/10">
-                <UserCheck className="w-5 h-5 text-amber-300" />
-                <h4 className="text-sm font-bold text-white uppercase tracking-wider">
-                  Direct Founders Contact
-                </h4>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                <div>
-                  <p className="font-bold text-white text-sm">Mr. Manjunath Rao G</p>
-                  <p className="text-blue-300">Executive Partner</p>
-                  <a
-                    href="tel:9986044574"
-                    className="inline-flex items-center gap-1.5 font-bold text-amber-300 hover:text-white mt-1"
-                  >
-                    <Phone className="w-3.5 h-3.5" />
-                    <span>+91 99860 44574</span>
-                  </a>
+            {/* Institutional Contact Card */}
+            {(phones.length > 0 || storefront?.email) && (
+              <div className="p-5 rounded-2xl bg-[#141247] border border-white/15 space-y-4 shadow-xl">
+                <div className="flex items-center gap-2 pb-2 border-b border-white/10">
+                  <UserCheck className="w-5 h-5 text-blue-200" />
+                  <h4 className="text-sm font-bold text-white uppercase tracking-wider">
+                    Direct Procurement Desk
+                  </h4>
                 </div>
 
-                <div>
-                  <p className="font-bold text-white text-sm">Mr. Balraj. V</p>
-                  <p className="text-blue-300">Operations Partner</p>
-                  <a
-                    href="tel:6363429113"
-                    className="inline-flex items-center gap-1.5 font-bold text-amber-300 hover:text-white mt-1"
-                  >
-                    <Phone className="w-3.5 h-3.5" />
-                    <span>+91 63634 29113</span>
-                  </a>
+                {phones.length > 0 && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                    {primaryPhone && (
+                      <div>
+                        <p className="font-bold text-white text-sm">Sales Desk</p>
+                        <p className="text-blue-300">Hospital Quotations</p>
+                        <a
+                          href={`tel:${primaryPhone}`}
+                          className="inline-flex items-center gap-1.5 font-bold text-blue-200 hover:text-white mt-1"
+                        >
+                          <Phone className="w-3.5 h-3.5" />
+                          <span>+91 {primaryPhone}</span>
+                        </a>
+                      </div>
+                    )}
+
+                    {secondaryPhone && (
+                      <div>
+                        <p className="font-bold text-white text-sm">Operations Desk</p>
+                        <p className="text-blue-300">Bulk Fulfillment</p>
+                        <a
+                          href={`tel:${secondaryPhone}`}
+                          className="inline-flex items-center gap-1.5 font-bold text-blue-200 hover:text-white mt-1"
+                        >
+                          <Phone className="w-3.5 h-3.5" />
+                          <span>+91 {secondaryPhone}</span>
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {storefront?.email && (
+                  <div className="pt-2 border-t border-white/10 flex items-center gap-2 text-xs text-blue-200">
+                    <Mail className="w-4 h-4 text-blue-200 flex-shrink-0" />
+                    <a href={`mailto:${storefront.email}`} className="hover:text-white underline">
+                      {storefront.email}
+                    </a>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Factory Address Card */}
+            {storefront?.address && (
+              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-start gap-3">
+                <MapPin className="w-5 h-5 text-blue-200 flex-shrink-0 mt-0.5" />
+                <div className="text-xs text-blue-100">
+                  <span className="font-bold text-white block mb-0.5">Manufacturing & Office:</span>
+                  <span>{storefront.address}</span>
                 </div>
               </div>
-
-              <div className="pt-2 border-t border-white/10 flex items-center gap-2 text-xs text-blue-200">
-                <Mail className="w-4 h-4 text-amber-300 flex-shrink-0" />
-                <a href={`mailto:${COMPANY_INFO.email}`} className="hover:text-white underline">
-                  {COMPANY_INFO.email}
-                </a>
-              </div>
-            </div>
-
-            {/* Bangalore Factory Address Card */}
-            <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-start gap-3">
-              <MapPin className="w-5 h-5 text-amber-300 flex-shrink-0 mt-0.5" />
-              <div className="text-xs text-blue-100">
-                <span className="font-bold text-white block mb-0.5">Manufacturing & Office:</span>
-                <span>{COMPANY_INFO.address}</span>
-              </div>
-            </div>
+            )}
           </div>
 
           {/* Right Form Card */}
@@ -106,13 +144,16 @@ const BulkInquirySection = () => {
                   </div>
                   <h3 className="text-2xl font-black text-[#1A175A]">Quotation Request Dispatched!</h3>
                   <p className="text-slate-600 text-sm max-w-md mx-auto">
-                    Thank you. Mr. Manjunath Rao or Mr. Balraj will review your specifications and contact you shortly with bulk pricing and physical swatch options.
+                    Thank you. Our procurement team will review your specifications and contact you shortly with bulk pricing and fabric swatch options.
                   </p>
-                  <div className="p-4 bg-slate-50 rounded-xl text-xs text-slate-700 max-w-sm mx-auto">
-                    <p className="font-semibold text-[#1A175A]">Immediate Inquiry?</p>
-                    <p>Call directly: <strong>9986044574</strong> or <strong>6363429113</strong></p>
-                  </div>
+                  {phones.length > 0 && (
+                    <div className="p-4 bg-slate-50 rounded-xl text-xs text-slate-700 max-w-sm mx-auto">
+                      <p className="font-semibold text-[#1A175A]">Immediate Inquiry?</p>
+                      <p>Call directly: <strong>{phones.join(' / ')}</strong></p>
+                    </div>
+                  )}
                   <button
+                    type="button"
                     onClick={() => setSubmitted(false)}
                     className="mt-4 px-6 py-2.5 rounded-xl bg-[#1A175A] text-white text-xs font-bold"
                   >
@@ -254,12 +295,20 @@ const BulkInquirySection = () => {
                     />
                   </div>
 
+                  {submitError && (
+                    <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-start gap-2">
+                      <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                      <span>{submitError}</span>
+                    </div>
+                  )}
+
                   <button
                     type="submit"
-                    className="w-full py-3.5 px-6 rounded-xl bg-[#1A175A] hover:bg-[#141247] text-white font-black text-sm shadow-xl flex items-center justify-center gap-2 transition-all hover:scale-[1.01]"
+                    disabled={submitting}
+                    className="w-full py-3.5 px-6 rounded-xl bg-[#1A175A] hover:bg-[#141247] disabled:opacity-60 text-white font-black text-sm shadow-xl flex items-center justify-center gap-2 transition-all hover:scale-[1.01]"
                   >
-                    <Send className="w-4 h-4 text-amber-300" />
-                    <span>Send Inquiry to Bangalore Factory</span>
+                    <Send className="w-4 h-4 text-blue-200" />
+                    <span>{submitting ? 'Submitting Inquiry...' : 'Send Inquiry to ANR Factory'}</span>
                   </button>
                 </form>
               )}

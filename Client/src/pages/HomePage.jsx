@@ -1,85 +1,95 @@
-import React from 'react';
+import React, { lazy } from 'react';
 import TopAnnouncementBar from '../components/TopAnnouncementBar';
 import Navbar from '../components/Navbar';
 import HeroBanner from '../components/HeroBanner';
-import ShopByCategory from '../components/ShopByCategory';
-import ShopByColor from '../components/ShopByColor';
+import LazySection from '../components/LazySection';
+import LazyCartDrawer from '../components/LazyCartDrawer';
 import ProductListClassic from '../components/ProductListClassic';
 import ProductListLabCoats from '../components/ProductListLabCoats';
 import ProductListEcoflex from '../components/ProductListEcoflex';
 import ProductListPatientWear from '../components/ProductListPatientWear';
-import OffersSection from '../components/OffersSection';
-import CustomEmbroideryBanner from '../components/CustomEmbroideryBanner';
-import InstitutionsServed from '../components/InstitutionsServed';
-import FabricTechSection from '../components/FabricTechSection';
-import SeenInANR from '../components/SeenInANR';
-import BulkInquirySection from '../components/BulkInquirySection';
-import FactoryLocationSection from '../components/FactoryLocationSection';
-import FaqShippingPerks from '../components/FaqShippingPerks';
-import Footer from '../components/Footer';
-import CartDrawer from '../components/CartDrawer';
+import { ProductCollectionSkeleton } from '../components/SkeletonLoaders';
+
+const ShopByCategory = lazy(() => import('../components/ShopByCategory'));
+const ShopByColor = lazy(() => import('../components/ShopByColor'));
+const OffersSection = lazy(() => import('../components/OffersSection'));
+const FabricTechSection = lazy(() => import('../components/FabricTechSection'));
+const SeenInANR = lazy(() => import('../components/SeenInANR'));
+const FaqShippingPerks = lazy(() => import('../components/FaqShippingPerks'));
+const Footer = lazy(() => import('../components/Footer'));
 
 const HomePage = () => {
   return (
     <div className="min-h-screen flex flex-col bg-white text-slate-800 font-sans antialiased selection:bg-[#1A175A] selection:text-white">
-      {/* 1. Top Rotating Announcement Bar with Bangalore Factory & Direct Founders Lines */}
+      {/* Above-the-fold: loaded eagerly for fast LCP */}
       <TopAnnouncementBar />
-
-      {/* 2. Main Navigation Header with ΛNR Brand Logo and Quick Actions */}
       <Navbar />
 
       <main className="flex-1">
-        {/* 3. Hero Banner: Full width, completely uncropped */}
         <HeroBanner />
 
-        {/* 4. 5 Core Product Categories Overview */}
-        <ShopByCategory />
+        <LazySection anchorId="categories" minHeight={420}>
+          <ShopByCategory />
+        </LazySection>
 
-        {/* 6. ALL COLOURS. SAME QUALITY. SAME CARE. Palette Showcase */}
-        <ShopByColor />
+        <LazySection anchorId="colors" minHeight={520}>
+          <ShopByColor />
+        </LazySection>
 
-        {/* 7. Product Line 1: Scrub Suits for Men & Women */}
-        <ProductListClassic />
+        <LazySection
+          anchorId="scrubs-collection"
+          minHeight={640}
+          fallback={<ProductCollectionSkeleton bgClass="bg-white" />}
+        >
+          <ProductListClassic />
+        </LazySection>
 
-        {/* 8. Product Line 2: Aprons for Men & Women (Doctor Lab Coats & Aprons) */}
-        <ProductListLabCoats />
+        <LazySection
+          anchorId="aprons-collection"
+          minHeight={640}
+          fallback={<ProductCollectionSkeleton bgClass="bg-[#F8F9FE]" />}
+        >
+          <ProductListLabCoats />
+        </LazySection>
 
-        {/* 9. Product Line 3: Underscrubs for Men & Women */}
-        <ProductListEcoflex />
+        <LazySection
+          anchorId="underscrubs-collection"
+          minHeight={640}
+          fallback={<ProductCollectionSkeleton bgClass="bg-white" />}
+        >
+          <ProductListEcoflex />
+        </LazySection>
 
-        {/* 10. Product Lines 4 & 5: Patient Gown • Patient Pant & Shirt */}
-        <ProductListPatientWear />
+        <LazySection
+          anchorId="patient-wear-collection"
+          minHeight={640}
+          fallback={<ProductCollectionSkeleton bgClass="bg-[#F8F9FE]" />}
+        >
+          <ProductListPatientWear />
+        </LazySection>
 
-        {/* 11. Special Offers, Voucher Coupons & Tiered Bulk Discounts */}
-        <OffersSection />
+        {/* <LazySection anchorId="offers" minHeight={420}>
+          <OffersSection />
+        </LazySection> */}
 
-        {/* 11. Mid-Page Personalization Banner: Custom Hospital Crest & Doctor Name Embroidery */}
-        {/* <CustomEmbroideryBanner /> */}
+        {/* <LazySection anchorId="fabric-tech" minHeight={360}>
+          <FabricTechSection />
+        </LazySection> */}
 
-        {/* 12. Institutions & Hospital Chains Served */}
-        {/* <InstitutionsServed /> */}
+        <LazySection anchorId="testimonials" minHeight={320}>
+          <SeenInANR />
+        </LazySection>
 
-        {/* 13. Fabric Science: Fabric That Works As Hard As You Do */}
-        <FabricTechSection />
-
-        {/* 14. Seen in ANR: Healthcare Professionals & Testimonials */}
-        <SeenInANR />
-
-        {/* 15. Institutional Bulk Procurement Desk (Mr. Manjunath Rao & Mr. Balraj. V) */}
-        {/* <BulkInquirySection /> */}
-
-        {/* 16. Bangalore Factory Location & Google Maps Interactive Integration */}
-        {/* <FactoryLocationSection /> */}
-
-        {/* 17. FAQs & Hospital Supply Guarantees */}
-        <FaqShippingPerks />
+        <LazySection anchorId="faq" minHeight={380}>
+          <FaqShippingPerks />
+        </LazySection>
       </main>
 
-      {/* 18. Comprehensive ANR Bangalore Footer */}
-      <Footer />
+      <LazySection anchorId="footer" minHeight={340} rootMargin="400px 0px">
+        <Footer />
+      </LazySection>
 
-      {/* 19. Interactive Shopping Cart Drawer */}
-      <CartDrawer />
+      <LazyCartDrawer />
     </div>
   );
 };

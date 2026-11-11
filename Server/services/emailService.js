@@ -25,43 +25,41 @@ const SANS_SERIF_FONT = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 
  * Resolves the Twin A Apparels brand logo file attachment for inline CID rendering.
  */
 const getBrandLogoAttachment = () => {
-  const clientLogoPath = path.join(__dirname, '../../Client/public/logo.png');
-  const adminLogoPath = path.join(__dirname, '../../Admin/public/logo.jpg');
-  let chosenLogoPath = null;
-  if (fs.existsSync(clientLogoPath)) {
-    chosenLogoPath = clientLogoPath;
-  } else if (fs.existsSync(adminLogoPath)) {
-    chosenLogoPath = adminLogoPath;
-  }
+  const candidatePaths = [
+    path.join(__dirname, '../../Client/public/anr-logo.jpg'),
+    path.join(__dirname, '../../Admin/public/anr-logo.jpg'),
+    path.join(__dirname, '../../Client/src/assets/anr-logo.jpg'),
+  ];
+  const chosenLogoPath = candidatePaths.find(p => fs.existsSync(p)) || null;
   if (!chosenLogoPath) return null;
   return {
-    filename: path.basename(chosenLogoPath),
+    filename: 'anr-logo.jpg',
     path: chosenLogoPath,
-    cid: 'twin-a-apparels-logo'
+    cid: 'anr-hospital-garments-logo'
   };
 };
 
 /**
  * Renders consistent Black & Gold Header with attached Brand Logo.
  */
-const getBrandHeaderHtml = (subtitle = 'Shopping Concierge') => {
+const getBrandHeaderHtml = (subtitle = 'Healthcare Professional Portal') => {
   const logoAtt = getBrandLogoAttachment();
   return `
     <tr>
-      <td style="background-color:#161616;padding:26px 40px;text-align:center;">
+      <td style="background-color:#1A175A;padding:26px 40px;text-align:center;">
         ${logoAtt ? `
-          <img src="cid:twin-a-apparels-logo" alt="Twin A Apparels" style="max-height:48px;max-width:180px;height:auto;display:inline-block;vertical-align:middle;" />
+          <img src="cid:anr-hospital-garments-logo" alt="ANR Hospital Garments" style="max-height:56px;max-width:210px;height:auto;display:inline-block;vertical-align:middle;border-radius:6px;background:#ffffff;padding:4px;" />
         ` : `
-          <p style="margin:0;font-family:${SANS_SERIF_FONT};font-size:22px;font-weight:800;color:#ffffff;letter-spacing:0.12em;">
-            TWIN A <span style="color:#C9A24B;">APPARELS</span>
+          <p style="margin:0;font-family:${SANS_SERIF_FONT};font-size:22px;font-weight:900;color:#ffffff;letter-spacing:0.12em;">
+            ANR <span style="color:#F59E0B;">HOSPITAL GARMENTS</span>
           </p>
         `}
-        <p style="margin:6px 0 0;font-size:10px;color:#A1A1A1;letter-spacing:0.18em;text-transform:uppercase;">
+        <p style="margin:8px 0 0;font-size:11px;color:#FDE68A;letter-spacing:0.18em;text-transform:uppercase;font-weight:700;">
           ${subtitle}
         </p>
       </td>
     </tr>
-    <tr><td style="background:#C9A24B;height:3px;font-size:0;line-height:0;">&nbsp;</td></tr>
+    <tr><td style="background:#F59E0B;height:3px;font-size:0;line-height:0;">&nbsp;</td></tr>
   `;
 };
 
@@ -2195,7 +2193,117 @@ const sendLowStockAdminAlert = async (lowStockItems = []) => {
   }
 };
 
+
+/**
+ * Sends a 6-digit OTP email for Customer / Doctor Login verification.
+ */
+const sendLoginOtpEmail = async (toEmail, name, otp) => {
+  const transporter = createTransporter();
+
+  const attachments = [];
+  const logoAtt = getBrandLogoAttachment();
+  if (logoAtt) {
+    attachments.push(logoAtt);
+  }
+
+  const mailOptions = {
+    from: `"ANR Hospital Garments" <${process.env.EMAIL_USER}>`,
+    to: toEmail,
+    subject: `ANR Hospital Garments: Login Verification Code - ${otp}`,
+    text: `Hello ${name || 'Healthcare Professional'},\n\nYour single-use login verification code for ANR Hospital Garments is: ${otp}\n\nThis code expires in 10 minutes.\nEnter this OTP on the login screen to access your orders and GST invoices.\n\nDirect Bangalore Factory: 9986044574 / 6363429113\nANR Hospital Garments, Banashankari, Bangalore`,
+    attachments,
+    html: `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>ANR Login Verification Code</title>
+      </head>
+      <body style="margin:0;padding:0;background:#F7F8FC;font-family:${SANS_SERIF_FONT};">
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:#F7F8FC;padding:40px 0;">
+          <tr>
+            <td align="center">
+              <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid #E2E8F0;border-radius:14px;overflow:hidden;box-shadow:0 8px 24px rgba(26,23,90,0.08);">
+                <!-- Header with ANR Logo -->
+                ${getBrandHeaderHtml('Healthcare Professional Portal • Bangalore Factory Direct')}
+
+                <!-- Body -->
+                <tr>
+                  <td style="padding:36px 40px;">
+                    <h1 style="margin:0 0 14px;font-size:22px;font-weight:800;color:#1A175A;">
+                      Login Verification Code
+                    </h1>
+                    <p style="margin:0 0 12px;font-size:14px;color:#334155;line-height:1.6;">
+                      Hello <strong style="color:#1A175A;">${name || 'Healthcare Professional'}</strong>,
+                    </p>
+                    <p style="margin:0 0 26px;font-size:14px;color:#475569;line-height:1.6;">
+                      Use the 6-digit verification code below to securely sign in to your ANR Hospital Garments account, track clinical shipments, and manage your hospital re-orders.
+                    </p>
+
+                    <!-- OTP Box -->
+                    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:26px;">
+                      <tr>
+                        <td align="center">
+                          <div style="background:#F8F9FE;border:2px dashed #1A175A;border-radius:12px;padding:24px 38px;display:inline-block;text-align:center;">
+                            <p style="margin:0 0 6px;font-size:11px;color:#D97706;text-transform:uppercase;letter-spacing:0.18em;font-weight:800;">Your Login OTP</p>
+                            <p style="margin:0;font-size:40px;font-weight:900;color:#1A175A;letter-spacing:0.25em;">${otp}</p>
+                            <p style="margin:8px 0 0;font-size:11px;color:#64748B;">Valid for 10 minutes</p>
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
+
+                    <div style="background:#FEF3C7;border-left:4px solid #F59E0B;padding:12px 16px;border-radius:6px;margin-bottom:24px;">
+                      <p style="margin:0;font-size:12px;color:#92400E;line-height:1.5;">
+                        <strong>Security Notice:</strong> Please do not share this OTP with anyone. ANR representatives will never ask for your code over phone or WhatsApp.
+                      </p>
+                    </div>
+
+                    <p style="margin:0;font-size:12px;color:#94A3B8;line-height:1.5;">
+                      If you did not request this login code, you can safely ignore this email.
+                    </p>
+                  </td>
+                </tr>
+
+                <!-- Hospital Procurement Contacts -->
+                <tr>
+                  <td style="background:#F8F9FE;padding:18px 40px;border-top:1px solid #E2E8F0;font-size:12px;color:#475569;">
+                    <p style="margin:0 0 4px;font-weight:700;color:#1A175A;">Direct Factory Assistance:</p>
+                    <p style="margin:0;line-height:1.6;">
+                      Contacts: <strong>Mr. Manjunath Rao G</strong> (9986044574) &bull; <strong>Mr. Balraj. V</strong> (6363429113)<br/>
+                      Email: <a href="mailto:anr20072010@gmail.com" style="color:#1A175A;font-weight:600;">anr20072010@gmail.com</a>
+                    </p>
+                  </td>
+                </tr>
+
+                <!-- Footer -->
+                <tr>
+                  <td style="background:#1A175A;padding:20px 40px;text-align:center;">
+                    <p style="margin:0 0 4px;color:#FDE68A;font-weight:800;letter-spacing:0.08em;font-size:12px;">
+                      ANR HOSPITAL GARMENTS
+                    </p>
+                    <p style="margin:0;font-size:11px;color:#94A3B8;line-height:1.6;">
+                      N0:1205, 12th Cross, 2nd Phase, 1st Stage, Banashankari, Girinagar, Bangalore-560085<br/>
+                      Care in every thread. &copy; ${new Date().getFullYear()} ANR Hospital Garments. All rights reserved.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </body>
+      </html>
+    `
+  };
+
+  const info = await transporter.sendMail(mailOptions);
+  return info;
+};
+
 module.exports = {
+  sendLoginOtpEmail,
   sendOtpEmail,
   sendFraudOtpEmail,
   sendOrderStatusNotification,

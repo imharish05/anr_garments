@@ -69,6 +69,127 @@ const defaultTaxSettings = {
   taxRate: 5,
 };
 
+const defaultEmbroiderySettings = {
+  enabled: true,
+  namePrice: 150,
+  logoPrice: 250,
+  maxNameLength: 30,
+  maxDeptLength: 35,
+  allowLogoUpload: true,
+};
+
+const defaultPaymentSettings = {
+  enableCod: true,
+  enableOnline: true,
+  razorpayKeyId: process.env.RAZORPAY_KEY_ID || 'rzp_test_TBPx9EL1T1aqhC',
+  codMinimumOrder: 0,
+  codMaximumOrder: 50000,
+};
+
+const defaultStorefrontSettings = {
+  brandName: 'ANR Hospital Garments',
+  slogan: 'ANR Care in every thread',
+  email: 'contact@anrhospitalgarments.com',
+  phones: ['9986044574', '6363429113'],
+  address: 'Banashankari, Bengaluru, Karnataka 560070, India',
+  workingHours: 'Mon - Sat: 9:30 AM - 7:00 PM IST',
+  googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=Banashankari+Bengaluru+Karnataka+560070',
+};
+
+const defaultFabricFeaturesSettings = {
+  eyebrow: 'Clinical Textile Engineering',
+  title: 'Engineered for 14-Hour Hospital Shifts',
+  subtitle: 'Every ANR uniform is milled from medical-grade poly-viscose and breathable cotton blends tested for hospital laundering.',
+  features: [
+    {
+      title: 'Fluid-Repellent Barrier',
+      badge: 'Hydro-Shield',
+      description: 'DWR-treated weave resists blood, saline, and clinical fluid splashes while staying soft on skin.',
+      metric: 'Antimicrobial Finish',
+    },
+    {
+      title: '4-Way Comfort Stretch',
+      badge: 'FlexWeave',
+      description: 'Ergonomic bi-directional stretch engineered for unrestricted movement in OT and ICU wards.',
+      metric: '210 GSM Twill',
+    },
+    {
+      title: 'Autoclave & High-Temp Wash',
+      badge: 'ColorLock',
+      description: 'Vat-dyed fibers retain color fastness and seam strength through repeated 60°C+ industrial sanitizing.',
+      metric: '100+ Wash Cycles',
+    },
+    {
+      title: 'Triple-Stitched Stress Points',
+      badge: 'ProSeam',
+      description: 'Reinforced pocket bar-tacks and double-needle seams carry clinical tools without tearing.',
+      metric: 'Factory QC Certified',
+    },
+  ],
+};
+
+const defaultFaqSettings = {
+  eyebrow: 'Healthcare Procurement & Support',
+  title: 'Frequently Asked Questions',
+  subtitle: 'Everything doctors, clinics, and hospital procurement teams need to know about ANR Hospital Garments.',
+  shippingPerks: [
+    { title: 'PAN INDIA', description: 'Pan-India express dispatch across hospitals and clinics.' },
+    { title: 'Direct Bangalore Manufacturing', description: 'Factory-direct pricing with strict biomedical hygiene packing.' },
+    { title: 'GST Input Tax Invoices', description: 'Compliant HSN tax invoices issued for every clinic and hospital order.' },
+    { title: 'Pre-Shipment Cancellation', description: 'Full cancellation refund anytime before courier dispatch.' },
+  ],
+  items: [
+    {
+      category: 'Products & Sizing',
+      q: 'What fabric GSM do ANR scrub suits and lab coats use?',
+      a: 'Our scrub suits use breathable 180-210 GSM poly-viscose and cotton-rich clinical twill engineered for humid Indian wards, while doctor lab coats use crisp 220+ GSM medical suiting.',
+    },
+    {
+      category: 'Products & Sizing',
+      q: 'Can I order custom name or hospital crest embroidery?',
+      a: 'Yes. On any product detail page you can add doctor name embroidery, department text, or upload your hospital logo for computerized Tajima stitching.',
+    },
+    {
+      category: 'Bulk & Hospital Procurement',
+      q: 'What is the minimum order quantity for bulk hospital pricing?',
+      a: 'Tiered institutional discounts start automatically at 25+ uniforms, with deeper brackets at 100+ and 500+ units.',
+    },
+    {
+      category: 'Bulk & Hospital Procurement',
+      q: 'Do you provide GST tax invoices for Input Tax Credit (ITC)?',
+      a: 'Yes. Enter your hospital or clinic 15-digit GSTIN during checkout or bulk enquiry to receive a compliant GST invoice.',
+    },
+    {
+      category: 'Shipping & Sanitary Policy',
+      q: 'How long does dispatch take across India?',
+      a: 'Standard unembroidered uniforms dispatch within 24-48 business hours from our Bangalore center; custom embroidered sets dispatch within 3-5 business days.',
+    },
+    {
+      category: 'Shipping & Sanitary Policy',
+      q: 'Can I cancel or return a medical uniform order?',
+      a: 'You may cancel anytime prior to dispatch from My Account -> Orders for a full refund. Once delivered, uniforms are non-returnable to uphold hospital sanitary and infection-control standards (defective items are replaced within 48 hours of delivery).',
+    },
+  ],
+};
+
+const defaultInstitutionsSettings = {
+  title: 'Trusted by Clinical Teams Across India',
+  institutions: [
+    { name: 'Multi-Specialty Hospitals', city: 'Bengaluru & Pan-India', category: 'Surgical & ICU Scrubs' },
+    { name: 'Medical Colleges & Teaching Hospitals', city: 'Karnataka & South India', category: 'Resident Doctor Aprons' },
+    { name: 'Diagnostic & Pathology Networks', city: 'Metro Hubs', category: 'Lab Coats & Underscrubs' },
+    { name: 'Dental & Specialty Clinics', city: 'Tier 1 & Tier 2 Cities', category: 'Custom Embroidered Sets' },
+  ],
+};
+
+const defaultBulkTiersSettings = {
+  tiers: [
+    { id: 'tier-1', minQty: 25, maxQty: 99, discountPercent: 10, label: 'Tier 1 (Clinics & Small Teams)' },
+    { id: 'tier-2', minQty: 100, maxQty: 499, discountPercent: 15, label: 'Tier 2 (Hospitals & Nursing Homes)' },
+    { id: 'tier-3', minQty: 500, maxQty: null, discountPercent: 20, label: 'Tier 3 (Enterprise Hospital Chains)' },
+  ],
+};
+
 /**
  * Validates and sanitizes the about page site settings.
  * Removes all legacy/unused fields so only valid website data is stored in DB.
@@ -223,6 +344,27 @@ const getSetting = async (req, res) => {
       if (key === 'tax' || key === 'gst') {
         return res.json({ success: true, key, data: defaultTaxSettings });
       }
+      if (key === 'embroidery') {
+        return res.json({ success: true, key, data: defaultEmbroiderySettings });
+      }
+      if (key === 'payment') {
+        return res.json({ success: true, key, data: defaultPaymentSettings });
+      }
+      if (key === 'bulk_tiers') {
+        return res.json({ success: true, key, data: defaultBulkTiersSettings });
+      }
+      if (key === 'storefront') {
+        return res.json({ success: true, key, data: defaultStorefrontSettings });
+      }
+      if (key === 'faqs') {
+        return res.json({ success: true, key, data: defaultFaqSettings });
+      }
+      if (key === 'fabric_features') {
+        return res.json({ success: true, key, data: defaultFabricFeaturesSettings });
+      }
+      if (key === 'institutions') {
+        return res.json({ success: true, key, data: defaultInstitutionsSettings });
+      }
       return res.json({ success: true, key, data: {} });
     }
 
@@ -254,6 +396,27 @@ const getSetting = async (req, res) => {
     }
     if (key === 'tax' || key === 'gst') {
       return res.json({ success: true, key, data: { ...defaultTaxSettings, ...parsed } });
+    }
+    if (key === 'embroidery') {
+      return res.json({ success: true, key, data: { ...defaultEmbroiderySettings, ...parsed } });
+    }
+    if (key === 'payment') {
+      return res.json({ success: true, key, data: { ...defaultPaymentSettings, ...parsed } });
+    }
+    if (key === 'bulk_tiers') {
+      return res.json({ success: true, key, data: { ...defaultBulkTiersSettings, ...parsed } });
+    }
+    if (key === 'storefront') {
+      return res.json({ success: true, key, data: { ...defaultStorefrontSettings, ...parsed } });
+    }
+    if (key === 'faqs') {
+      return res.json({ success: true, key, data: { ...defaultFaqSettings, ...parsed } });
+    }
+    if (key === 'fabric_features') {
+      return res.json({ success: true, key, data: { ...defaultFabricFeaturesSettings, ...parsed } });
+    }
+    if (key === 'institutions') {
+      return res.json({ success: true, key, data: { ...defaultInstitutionsSettings, ...parsed } });
     }
     return res.json({ success: true, key, data: parsed });
   } catch (err) {

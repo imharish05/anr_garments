@@ -584,6 +584,166 @@ const placeOrder = async (req, res) => {
   }
 };
 
+const CANCELLABLE_ORDER_STATUSES = new Set(['PENDING', 'PENDING_PAYMENT', 'CONFIRMED', 'PROCESSING']);
+
+/**
+ * Shared helper: restocks order line items inside an active DB transaction.
+ */
+const restockOrderItems = async (order, reason, transaction) => {
+  const sortedItems = [...(order.items || [])].sort((a, b) => {
+    if (a.productId !== b.productId) return a.productId - b.productId;
+    return (a.variantId || 0) - (b.variantId || 0);
+  });
+
+  for (const item of sortedItems) {
+    if (item.variantId) {
+      const variant = await ProductVariant.findOne({
+        where: { id: item.variantId },
+        lock: transaction.LOCK.UPDATE,
+        transaction
+      });
+      if (variant) {
+        await variant.increment('stock', { by: item.quantity, transaction });
+      }
+    }
+
+    const product = await Product.findOne({
+      where: { id: item.productId },
+      lock: transaction.LOCK.UPDATE,
+      transaction
+    });
+    if (product) {
+      await product.increment('stock', { by: item.quantity, transaction });
+    }
+
+    await InventoryMovementLog.create({
+      productId: item.productId,
+      variantId: item.variantId || null,
+      orderId: order.id,
+      quantity: item.quantity,
+      type: 'ORDER_CANCEL_RESTOCK',
+      reason,
+    }, { transaction });
+  }
+
+  order.inventoryProcessed = false;
+  return sortedItems;
+};
+
+/**
+ * Customer self-service pre-shipment cancellation.
+ */
+const cancelMyOrder = async (req, res) => {
+  const transaction = await sequelize.transaction();
+  try {
+    await sequelize.query('SET SESSION innodb_lock_wait_timeout = 5', { transaction });
+
+    const { id } = req.params;
+    const reason = (req.body?.reason && String(req.body.reason).trim()) || 'Customer requested pre-shipment cancellation';
+
+    const order = await Order.findOne({
+      where: { id, customerId: req.customer.id },
+      include: [{ model: OrderItem, as: 'items' }],
+      lock: transaction.LOCK.UPDATE,
+      transaction,
+    });
+
+    if (!order) {
+      await transaction.rollback();
+      return res.status(404).json({ success: false, message: 'Order not found' });
+    }
+
+    const currentStatus = String(order.status || '').toUpperCase();
+    if (!CANCELLABLE_ORDER_STATUSES.has(currentStatus)) {
+      await transaction.rollback();
+      return res.status(400).json({
+        success: false,
+        message: `Order in '${order.status}' state cannot be cancelled online. Cancellations are allowed only prior to dispatch.`,
+      });
+    }
+
+    const wasProcessed = order.inventoryProcessed === true;
+    if (wasProcessed) {
+      await restockOrderItems(order, `Customer pre-shipment cancellation: ${reason}`, transaction);
+    }
+
+    let currentTimeline = order.statusTimeline || {};
+    if (typeof currentTimeline === 'string') {
+      try { currentTimeline = JSON.parse(currentTimeline); } catch (e) { currentTimeline = {}; }
+    }
+
+    const updatedTimeline = {
+      ...currentTimeline,
+      CANCELLED: new Date().toISOString(),
+      cancellationReason: reason,
+    };
+
+    let resolvedPaymentStatus = order.paymentStatus;
+    const isPaidOnline = order.paymentStatus === 'PAID';
+    const paymentId = order.razorpay_payment_id || order.razorpay_order_id || order.paymentGatewayRef;
+    const refundAmount = parseFloat(order.totalAmount || 0);
+
+    if (isPaidOnline && paymentId && refundAmount > 0) {
+      try {
+        const gatewayResolver = require('../services/paymentGatewayResolver');
+        const gateway = gatewayResolver.getGateway(order.currency || 'INR');
+        const refundResult = await gateway.refund(paymentId, refundAmount);
+        if (refundResult.success) {
+          resolvedPaymentStatus = 'REFUNDED';
+          updatedTimeline.refundStatus = 'COMPLETED';
+          updatedTimeline.refundGatewayRef = refundResult.gatewayRef || paymentId;
+          updatedTimeline.refundAmount = refundResult.amount || refundAmount;
+        } else {
+          updatedTimeline.refundStatus = 'PENDING_MANUAL';
+        }
+      } catch (refundErr) {
+        console.error('[cancelMyOrder] Gateway refund error:', refundErr.message);
+        updatedTimeline.refundStatus = 'PENDING_MANUAL';
+      }
+    }
+
+    await order.update({
+      status: 'CANCELLED',
+      paymentStatus: resolvedPaymentStatus,
+      inventoryProcessed: order.inventoryProcessed,
+      statusTimeline: updatedTimeline,
+    }, { transaction });
+
+    await transaction.commit();
+
+    if (wasProcessed) {
+      const { syncStorefrontStock } = require('./warehouseController');
+      for (const item of order.items) {
+        syncStorefrontStock(item.productId, item.variantId || null).catch(console.error);
+      }
+    }
+
+    Order.findByPk(order.id, {
+      include: [
+        { model: OrderItem, as: 'items' },
+        { model: Customer, as: 'customer', attributes: ['id', 'name', 'email'] },
+      ],
+    }).then((fullOrder) => {
+      if (fullOrder) {
+        sendOrderStatusNotification(fullOrder, 'CANCELLED').catch((err) =>
+          console.error('[orderController] Error sending cancel email:', err.message)
+        );
+      }
+    }).catch(console.error);
+
+    res.json({
+      success: true,
+      order,
+      message: 'Order cancelled prior to dispatch successfully.',
+    });
+  } catch (err) {
+    if (transaction && !transaction.finished) {
+      try { await transaction.rollback(); } catch (rbErr) {}
+    }
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
 // Admin status update: handles restocking when order is cancelled or refunded
 const updateStatus = async (req, res) => {
   const transaction = await sequelize.transaction();
@@ -612,44 +772,11 @@ const updateStatus = async (req, res) => {
       previousProcessed === true;
 
     if (isRestockRequired) {
-      const sortedItems = [...order.items].sort((a, b) => {
-        if (a.productId !== b.productId) return a.productId - b.productId;
-        return (a.variantId || 0) - (b.variantId || 0);
-      });
-
-      for (const item of sortedItems) {
-        if (item.variantId) {
-          const variant = await ProductVariant.findOne({
-            where: { id: item.variantId },
-            lock: transaction.LOCK.UPDATE,
-            transaction
-          });
-          if (variant) {
-            await variant.increment('stock', { by: item.quantity, transaction });
-          }
-        }
-        
-        const product = await Product.findOne({
-          where: { id: item.productId },
-          lock: transaction.LOCK.UPDATE,
-          transaction
-        });
-        if (product) {
-          await product.increment('stock', { by: item.quantity, transaction });
-        }
-
-        // Log movement
-        await InventoryMovementLog.create({
-          productId: item.productId,
-          variantId: item.variantId || null,
-          orderId: order.id,
-          quantity: item.quantity,
-          type: 'ORDER_CANCEL_RESTOCK',
-          reason: `Order refunded. Status: ${status}. Previous: ${previousStatus}`
-        }, { transaction });
-      }
-
-      order.inventoryProcessed = false;
+      await restockOrderItems(
+        order,
+        `Order refunded. Status: ${status}. Previous: ${previousStatus}`,
+        transaction
+      );
     }
 
     let currentTimeline = order.statusTimeline || {};
@@ -849,5 +976,5 @@ const getStatusCounts = async (req, res) => {
   }
 };
 
-module.exports = { getAll, getOne, getMyOrders, getMyOrderById, trackOrder, placeOrder, updateStatus, getDashboardStats, getStatusCounts };
+module.exports = { getAll, getOne, getMyOrders, getMyOrderById, trackOrder, placeOrder, cancelMyOrder, updateStatus, getDashboardStats, getStatusCounts };
 

@@ -7,10 +7,11 @@
     scroll-behavior: smooth;
     color: #1e293b;
     background-color: #ffffff;
+    overflow-x: clip;
   }
-  
+
   body {
-    overflow-x: hidden;
+    overflow-x: clip;
   }
 }
 
@@ -77,4 +78,100 @@
 .scrollbar-none {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
+}
+
+/* Smooth continuous skeleton shimmer flow (no opacity blinking) */
+@keyframes skeleton-flow {
+  0% {
+    background-position: 150% 0;
+  }
+  100% {
+    background-position: -50% 0;
+  }
+}
+
+.skeleton-bone {
+  background-color: #e9eef5;
+  background-image: linear-gradient(
+    90deg,
+    #e9eef5 0%,
+    #e9eef5 36%,
+    #f8fafc 50%,
+    #e9eef5 64%,
+    #e9eef5 100%
+  );
+  background-size: 200% 100%;
+  background-repeat: repeat-x;
+  animation: skeleton-flow 1.8s linear infinite;
+  will-change: background-position;
+}
+
+.skeleton-bone-soft {
+  background-color: #f3f6fa;
+  background-image: linear-gradient(
+    90deg,
+    #f3f6fa 0%,
+    #f3f6fa 36%,
+    #ffffff 50%,
+    #f3f6fa 64%,
+    #f3f6fa 100%
+  );
+  background-size: 200% 100%;
+  background-repeat: repeat-x;
+  animation: skeleton-flow 1.8s linear infinite;
+  will-change: background-position;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-bone,
+  .skeleton-bone-soft {
+    animation: none !important;
+    background-image: none;
+  }
+}
+
+/* =========================================================
+   Brisko-Style Motion: Split-Text & Scroll Reveals
+   ========================================================= */
+
+/* Split-Text Masked Word & Character Reveal */
+.brisko-word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  margin-bottom: -0.06em;
+  padding-bottom: 0.06em;
+}
+
+.brisko-ch {
+  display: inline-block;
+}
+
+/* Scroll reveal pre-animation state to avoid FOUC */
+.brisko-reveal-pending,
+.brisko-text-pending .brisko-ch {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brisko-reveal-pending,
+  .brisko-text-pending .brisko-ch {
+    opacity: 1 !important;
+  }
+}
+
+/* Smooth tactile lift on cards */
+[data-lift] {
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-lift]:hover {
+  transform: translateY(-4px);
+}
+
+/* Exact remaining viewport height so TopAnnouncementBar + Navbar + HeroBanner = 100vh */
+.hero-viewport-height {
+  height: calc(100vh - var(--anr-topbar-height, 0px) - var(--anr-navbar-height, 80px));
+  height: calc(100dvh - var(--anr-topbar-height, 0px) - var(--anr-navbar-height, 80px));
+  min-height: 320px;
 }

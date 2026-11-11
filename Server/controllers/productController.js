@@ -238,8 +238,14 @@ const getAll = async (req, res) => {
 
 const getOne = async (req, res) => {
   try {
+    const param = req.params.slug;
+    const isNum = !isNaN(param) && Number(param) > 0;
+    const whereClause = isNum
+      ? { [Op.or]: [{ slug: param }, { id: Number(param) }], isActive: true }
+      : { slug: param, isActive: true };
+
     const product = await Product.findOne({
-      where: { slug: req.params.slug, isActive: true },
+      where: whereClause,
       include: [
         { model: Category, as: 'category' },
         { model: SubCategory, as: 'subcategory' },

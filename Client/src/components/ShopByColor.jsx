@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef, useId, useCallback } from 'react';
-import { COLOR_COLLECTIONS } from '../data/mockData';
+import { Link } from 'react-router-dom';
 import { fetchColorCollections } from '../services/api';
-import { ArrowRight, ChevronLeft, ChevronRight, Star } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight, Star, RefreshCw, Palette } from 'lucide-react';
+import { AnimatedText, ScrollReveal } from './MotionPrimitives';
 
 const isWhite = (hex) => (hex || '').toLowerCase() === '#ffffff';
 
@@ -94,31 +95,36 @@ const ScrubTop = ({ hex = '#1A175A' }) => {
 };
 
 const ShopByColor = () => {
-  const [colors, setColors] = useState(COLOR_COLLECTIONS);
+  const [colors, setColors] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [failedImages, setFailedImages] = useState({});
   const [selectedIdx, setSelectedIdx] = useState(0);
   const chipRefs = useRef([]);
 
-  // Fetch dynamic colors from Admin backend
-  useEffect(() => {
-    let mounted = true;
-    fetchColorCollections()
-      .then((items) => {
-        if (mounted && Array.isArray(items) && items.length > 0) {
-          setColors(items);
-        }
-      })
-      .catch((err) => {
-        console.warn('Using fallback color collections:', err);
-      });
-    return () => {
-      mounted = false;
-    };
+  const loadColors = useCallback(async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const items = await fetchColorCollections();
+      setColors(Array.isArray(items) ? items : []);
+      setSelectedIdx(0);
+    } catch (err) {
+      setError(err?.message || 'Unable to load color palette.');
+      setColors([]);
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    loadColors();
+  }, [loadColors]);
 
   const total = colors.length;
   const safeIdx = Math.min(Math.max(0, selectedIdx), Math.max(0, total - 1));
-  const selected = colors[safeIdx] || COLOR_COLLECTIONS[0];
-  const glow = isWhite(selected.hex) ? '#94a3b8' : selected.hex;
+  const selected = colors[safeIdx] || null;
+  const glow = selected ? (isWhite(selected.hex) ? '#94a3b8' : selected.hex) : '#1A175A';
 
   const pick = useCallback(
     (idx) => {
@@ -156,24 +162,72 @@ const ShopByColor = () => {
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
         {/* ---------- Heading ---------- */}
         <div className="text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-amber-600 mb-3">
-            Hospital Department Color Palette
-          </p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-[#1A175A] tracking-tight">
+          <ScrollReveal direction="pop" className="inline-block">
+            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-blue-700 mb-3">
+              Hospital Department Color Palette
+            </p>
+          </ScrollReveal>
+          <AnimatedText
+            as="h2"
+            className="text-3xl sm:text-4xl font-bold text-[#1A175A] tracking-tight block"
+          >
             All Colours. Same Quality. Same Care.
-          </h2>
-          <div className="mx-auto mt-4 h-[3px] w-12 rounded-full bg-amber-400" />
+          </AnimatedText>
+          <ScrollReveal direction="scale" delay={180}>
+            <div className="mx-auto mt-4 h-[3px] w-12 rounded-full bg-[#1A175A]" />
+          </ScrollReveal>
         </div>
 
         {/* ---------- Stage ---------- */}
-        <div className="mt-12 sm:mt-16 grid lg:grid-cols-[1.05fr_1fr] items-center gap-8 lg:gap-14">
+        {loading ? (
+          <div className="mt-12 sm:mt-16 grid lg:grid-cols-[1.05fr_1fr] items-center gap-8 lg:gap-14">
+            <div className="mx-auto w-full max-w-md h-[20rem] sm:h-[26rem] rounded-3xl skeleton-bone" />
+            <div className="space-y-4">
+              <div className="h-4 w-32 skeleton-bone rounded" />
+              <div className="h-12 w-64 skeleton-bone rounded" />
+              <div className="h-4 w-80 max-w-full skeleton-bone-soft rounded" />
+              <div className="flex gap-2.5 pt-2">
+                {[0, 1, 2, 3, 4].map((i) => (
+                  <div key={i} className="h-7 w-7 rounded-full skeleton-bone" />
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : error ? (
+          <div className="mt-12 rounded-2xl border border-blue-200 bg-blue-50/80 p-8 text-center max-w-xl mx-auto">
+            <p className="text-sm font-semibold text-[#1A175A] mb-3">{error}</p>
+            <button
+              type="button"
+              onClick={loadColors}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#1A175A] text-white text-xs font-bold hover:bg-blue-900 transition-colors"
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+              Retry Colors
+            </button>
+          </div>
+        ) : !selected ? (
+          <div className="mt-12 rounded-2xl border border-dashed border-slate-200 bg-slate-50/80 p-10 text-center max-w-xl mx-auto">
+            <Palette className="w-8 h-8 text-slate-400 mx-auto mb-2" />
+            <p className="text-sm font-semibold text-slate-700">No color collections configured yet.</p>
+          </div>
+        ) : (
+        <ScrollReveal
+          direction="up"
+          triggerKey={colors.length}
+          className="mt-12 sm:mt-16 grid lg:grid-cols-[1.05fr_1fr] items-center gap-8 lg:gap-14"
+        >
           {/* Image stage: no circles, image keeps its own shape */}
           <div className="relative mx-auto w-full max-w-md h-[20rem] sm:h-[26rem] flex items-center justify-center">
-            {selected.image ? (
+            {selected.image && !failedImages[selected.id || selected.image] ? (
               <img
                 key={selected.image}
                 src={selected.image}
                 alt={selected.name}
+                loading="lazy"
+                decoding="async"
+                onError={() =>
+                  setFailedImages((prev) => ({ ...prev, [selected.id || selected.image]: true }))
+                }
                 className="max-w-full max-h-full w-auto h-auto object-contain rounded-3xl shadow-[0_20px_50px_-20px_rgba(15,23,42,0.35)] animate-[colorFade_0.45s_ease-out]"
               />
             ) : (
@@ -199,19 +253,21 @@ const ShopByColor = () => {
                 {selected.name}
               </h3>
 
-              <p className="mt-4 text-base sm:text-lg text-slate-600 max-w-md mx-auto lg:mx-0">
-                {selected.count}
-              </p>
+              {(selected.description || selected.count) && (
+                <p className="mt-4 text-base sm:text-lg text-slate-600 max-w-md mx-auto lg:mx-0">
+                  {selected.description || selected.count}
+                </p>
+              )}
 
               <div className="mt-5 flex flex-wrap items-center justify-center lg:justify-start gap-2">
                 {selected.badge ? (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 ring-1 ring-amber-200">
-                    <Star className="h-3.5 w-3.5 fill-amber-500 text-amber-500" />
+                  <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-[#1A175A] ring-1 ring-blue-200">
+                    <Star className="h-3.5 w-3.5 fill-[#1A175A] text-[#1A175A]" />
                     {selected.badge}
                   </span>
                 ) : selected.popular ? (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 ring-1 ring-amber-200">
-                    <Star className="h-3.5 w-3.5 fill-amber-500 text-amber-500" />
+                  <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-[#1A175A] ring-1 ring-blue-200">
+                    <Star className="h-3.5 w-3.5 fill-[#1A175A] text-[#1A175A]" />
                     Most ordered
                   </span>
                 ) : null}
@@ -257,13 +313,13 @@ const ShopByColor = () => {
             </div>
 
             <div className="mt-6 flex items-center justify-center lg:justify-start gap-3">
-              <a
-                href={selected.link || '#scrubs-collection'}
+              <Link
+                to={selected.link && selected.link.startsWith('/') ? selected.link : `/products?color=${encodeURIComponent(selected.name || '')}`}
                 className="group inline-flex items-center gap-2 bg-[#1A175A] hover:bg-[#282479] text-white text-sm font-semibold pl-6 pr-5 py-3.5 rounded-full transition-colors shadow-lg shadow-[#1A175A]/20"
               >
                 Order in {shortName(selected.name)}
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-              </a>
+              </Link>
               <button
                 type="button"
                 onClick={() => pick(safeIdx - 1)}
@@ -282,7 +338,8 @@ const ShopByColor = () => {
               </button>
             </div>
           </div>
-        </div>
+        </ScrollReveal>
+        )}
       </div>
 
       <style>{`

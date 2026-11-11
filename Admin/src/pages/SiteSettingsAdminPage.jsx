@@ -385,10 +385,23 @@ const SiteSettingsAdminPage = () => {
   if (loading) {
     return (
       <AdminLayout title="Site Settings">
-        <div className="flex h-[60vh] items-center justify-center">
-          <div className="flex flex-col items-center gap-2">
-            <RefreshCw className="animate-spin text-[#1a175a]" size={32} />
-            <span className="text-sm text-brand-grey">Loading site settings...</span>
+        <div className="space-y-6 max-w-5xl animate-pulse">
+          <div className="flex gap-2 pb-2 border-b border-neutral-200">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="h-9 w-28 bg-neutral-200 rounded-lg" />
+            ))}
+          </div>
+          <div className="bg-white rounded-xl p-6 border border-neutral-100 shadow-sm space-y-5">
+            <div className="h-6 bg-neutral-200 rounded w-44" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div key={i} className="space-y-2">
+                  <div className="h-3 bg-neutral-200 rounded w-24" />
+                  <div className="h-10 bg-neutral-100 rounded-lg w-full" />
+                </div>
+              ))}
+            </div>
+            <div className="h-10 bg-neutral-200 rounded-xl w-32 mt-4" />
           </div>
         </div>
       </AdminLayout>

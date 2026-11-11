@@ -1,39 +1,52 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { useCart } from '../context/CartContext';
-import { ALL_PRODUCTS, CATEGORIES } from '../data/mockData';
-import { fetchCategoriesTree, fetchProducts } from '../services/api';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useCart, formatColorLabel } from '../context/CartContext';
+import { fetchCategoriesTree, fetchProducts, normalizeColorOption } from '../services/api';
+import { SearchItemSkeleton } from './SkeletonLoaders';
+import ProductImage from './ProductImage';
 import {
   Search,
   X,
   ShoppingBag,
   Check,
-  ArrowRight,
+  AlertCircle,
+  RefreshCw,
   Star
 } from 'lucide-react';
 
 const SearchModal = ({ isOpen, onClose }) => {
+  const navigate = useNavigate();
   const { addToCart, searchQuery, setSearchQuery } = useCart();
   const [activeCategoryFilter, setActiveCategoryFilter] = useState("ALL");
-  const [categories, setCategories] = useState(CATEGORIES);
-  const [productsList, setProductsList] = useState(ALL_PRODUCTS);
+  const [categories, setCategories] = useState([]);
+  const [productsList, setProductsList] = useState([]);
+  const [loadingProducts, setLoadingProducts] = useState(true);
+  const [searchError, setSearchError] = useState('');
   const [addedProductId, setAddedProductId] = useState(null);
   const inputRef = useRef(null);
 
+  const loadCatalog = useCallback(async (forceRefresh = false) => {
+    setLoadingProducts(true);
+    setSearchError('');
+    try {
+      const [liveProducts, tree] = await Promise.all([
+        fetchProducts(forceRefresh ? { forceRefresh: true } : undefined),
+        fetchCategoriesTree(forceRefresh).catch(() => []),
+      ]);
+      setProductsList(Array.isArray(liveProducts) ? liveProducts : []);
+      setCategories(Array.isArray(tree) ? tree : []);
+    } catch (err) {
+      setSearchError(err?.message || 'Unable to load catalog right now.');
+      setProductsList([]);
+    } finally {
+      setLoadingProducts(false);
+    }
+  }, []);
+
   // Fetch dynamic categories tree and live products from backend
   useEffect(() => {
-    let isMounted = true;
-    fetchProducts().then((liveProducts) => {
-      if (isMounted && liveProducts && liveProducts.length > 0) {
-        setProductsList(liveProducts);
-      }
-    });
-    fetchCategoriesTree().then((list) => {
-      if (isMounted && list && list.length > 0) {
-        setCategories(list);
-      }
-    });
-    return () => { isMounted = false; };
-  }, []);
+    loadCatalog();
+  }, [loadCatalog]);
 
   // Autofocus input on open and lock body scroll
   useEffect(() => {
@@ -85,20 +98,18 @@ const SearchModal = ({ isOpen, onClose }) => {
 
   const handleAddToCart = (product, e) => {
     e.stopPropagation();
-    addToCart(product, "#1A175A", "M");
+    const defaultColor = formatColorLabel(normalizeColorOption(product.colors?.[0]) || 'Navy Blue');
+    addToCart(product, defaultColor, product.sizes?.[0] || "M");
     setAddedProductId(product.id);
     setTimeout(() => setAddedProductId(null), 1500);
   };
 
-  const handleSelectProduct = (sectionId) => {
+  const handleSelectProduct = (product) => {
     onClose();
-    if (sectionId) {
-      setTimeout(() => {
-        const el = document.querySelector(sectionId) || document.getElementById(sectionId.replace('#', ''));
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 100);
+    if (product?.slug || product?.id) {
+      navigate(`/product/${product.slug || product.id}`);
+    } else {
+      navigate('/products');
     }
   };
 
@@ -131,7 +142,7 @@ const SearchModal = ({ isOpen, onClose }) => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search products by name, category, or fabric..."
-                className="w-full bg-[#110E3F] text-white placeholder-blue-300/60 pl-10 pr-9 py-2.5 rounded-xl text-sm border border-white/15 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all"
+                className="w-full bg-[#110E3F] text-white placeholder-blue-300/60 pl-10 pr-9 py-2.5 rounded-xl text-sm border border-white/15 focus:outline-none focus:border-blue-300 focus:ring-1 focus:ring-blue-300 transition-all"
               />
               {searchQuery && (
                 <button
@@ -161,7 +172,7 @@ const SearchModal = ({ isOpen, onClose }) => {
               onClick={() => setActiveCategoryFilter("ALL")}
               className={`px-3 py-1 rounded-lg font-semibold text-xs whitespace-nowrap transition-colors ${
                 activeCategoryFilter === "ALL"
-                  ? 'bg-amber-400 text-[#1A175A]'
+                  ? 'bg-white text-[#1A175A]'
                   : 'bg-white/10 text-blue-100 hover:bg-white/20'
               }`}
             >
@@ -176,7 +187,7 @@ const SearchModal = ({ isOpen, onClose }) => {
                   onClick={() => setActiveCategoryFilter(isActive ? "ALL" : cat.name)}
                   className={`px-3 py-1 rounded-lg font-semibold text-xs whitespace-nowrap transition-colors ${
                     isActive
-                      ? 'bg-amber-400 text-[#1A175A]'
+                      ? 'bg-white text-[#1A175A]'
                       : 'bg-white/10 text-blue-100 hover:bg-white/20'
                   }`}
                 >
@@ -189,27 +200,48 @@ const SearchModal = ({ isOpen, onClose }) => {
 
         {/* Content Body: Compact & Professional Products List */}
         <div className="flex-1 overflow-y-auto p-3 sm:p-4 bg-slate-50">
-          {filteredProducts.length > 0 ? (
+          {loadingProducts ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <SearchItemSkeleton key={i} />
+              ))}
+            </div>
+          ) : searchError ? (
+            <div className="text-center py-10 px-4 bg-white rounded-xl border border-red-200">
+              <AlertCircle className="w-8 h-8 text-red-500 mx-auto mb-2" />
+              <h3 className="text-sm font-bold text-slate-800 mb-1">
+                Unable to load catalog
+              </h3>
+              <p className="text-xs text-slate-500 mb-3 max-w-md mx-auto">
+                {searchError}
+              </p>
+              <button
+                type="button"
+                onClick={() => loadCatalog(true)}
+                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-[#1A175A] text-white text-xs font-bold hover:bg-blue-900 transition-colors"
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+                Retry Search Catalog
+              </button>
+            </div>
+          ) : filteredProducts.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               {filteredProducts.map((product) => {
                 const isAdded = addedProductId === product.id;
                 return (
                   <div
                     key={product.id}
-                    onClick={() => handleSelectProduct(product.sectionId)}
+                    onClick={() => handleSelectProduct(product)}
                     className="group bg-white rounded-xl border border-slate-200 p-2.5 hover:border-[#1A175A]/40 hover:shadow-md transition-all cursor-pointer flex items-center gap-3"
                   >
                     {/* Small Product Thumbnail */}
                     <div className="w-16 h-16 rounded-lg overflow-hidden bg-slate-100 border border-slate-200 flex-shrink-0 relative">
-                      <img
+                      <ProductImage
                         src={product.image}
                         alt={product.name}
+                        fallbackLabel=""
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-                        loading="lazy"
-                        onError={(e) => {
-                          e.currentTarget.onerror = null;
-                          e.currentTarget.src = '/anr-hero-banner.jpg';
-                        }}
+                        containerClassName="w-full h-full"
                       />
                       {product.badge && (
                         <span className="absolute bottom-0 inset-x-0 bg-[#1A175A]/85 text-white text-[8px] font-bold text-center py-0.5 truncate">
@@ -237,7 +269,7 @@ const SearchModal = ({ isOpen, onClose }) => {
                         )}
                         {product.rating && (
                           <span className="text-[10px] text-slate-500 inline-flex items-center gap-0.5 ml-auto">
-                            <Star className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />
+                            <Star className="w-2.5 h-2.5 fill-[#1A175A] text-[#1A175A]" />
                             {product.rating}
                           </span>
                         )}
@@ -283,13 +315,22 @@ const SearchModal = ({ isOpen, onClose }) => {
         </div>
 
         {/* Minimal Professional Footer */}
-        <div className="px-4 py-2.5 bg-white border-t border-slate-200 text-xs text-slate-500 flex items-center justify-between">
+        <div className="px-4 py-2.5 bg-white border-t border-slate-200 text-xs text-slate-500 flex items-center justify-between gap-3">
           <span className="text-[11px] font-medium">
             Showing <strong className="text-slate-700">{filteredProducts.length}</strong> items
           </span>
-          <span className="text-[11px]">
-            Press <kbd className="px-1.5 py-0.5 bg-slate-100 border border-slate-300 rounded text-[10px] font-mono">ESC</kbd> to close
-          </span>
+          <div className="flex items-center gap-3">
+            <Link
+              to={searchQuery.trim() ? `/products?q=${encodeURIComponent(searchQuery.trim())}` : '/products'}
+              onClick={onClose}
+              className="text-[11px] font-bold text-[#1A175A] hover:underline whitespace-nowrap"
+            >
+              Browse Full Catalog →
+            </Link>
+            <span className="text-[11px] hidden sm:inline">
+              Press <kbd className="px-1.5 py-0.5 bg-slate-100 border border-slate-300 rounded text-[10px] font-mono">ESC</kbd> to close
+            </span>
+          </div>
         </div>
       </div>
     </div>

@@ -19,8 +19,8 @@ const ThreadBackdrop = () => (
     <g fill="none" strokeLinecap="round">
       <path d="M-40 120 C 220 40, 380 240, 640 140 S 1000 40, 1240 160" stroke="#1A175A" strokeOpacity=".08" strokeWidth="2" />
       <path d="M-40 150 C 230 70, 390 270, 650 170 S 1010 70, 1240 190" stroke="#1A175A" strokeOpacity=".07" strokeWidth="1.5" strokeDasharray="9 9" />
-      <path d="M-40 600 C 240 520, 420 700, 680 580 S 1020 480, 1240 590" stroke="#E3B23C" strokeOpacity=".28" strokeWidth="2" />
-      <path d="M-40 630 C 250 550, 430 730, 690 610 S 1030 510, 1240 620" stroke="#E3B23C" strokeOpacity=".2" strokeWidth="1.5" strokeDasharray="9 9" />
+      <path d="M-40 600 C 240 520, 420 700, 680 580 S 1020 480, 1240 590" stroke="#3B4DA4" strokeOpacity=".16" strokeWidth="2" />
+      <path d="M-40 630 C 250 550, 430 730, 690 610 S 1030 510, 1240 620" stroke="#3B4DA4" strokeOpacity=".12" strokeWidth="1.5" strokeDasharray="9 9" />
     </g>
   </svg>
 );
@@ -69,7 +69,7 @@ const CustomEmbroideryBanner = () => {
                     Dr. Manjunath Rao
                   </p>
                   <p
-                    className="mt-2 text-sm font-semibold text-amber-600"
+                    className="mt-2 text-sm font-semibold text-blue-700"
                     style={{ textShadow: '0 1px 0 rgba(255,255,255,.9)' }}
                   >
                     MS · General Surgery
@@ -82,7 +82,7 @@ const CustomEmbroideryBanner = () => {
             <div className="relative mt-8 space-y-4">
               <a
                 href="#bulk-inquiry"
-                className="w-full inline-flex items-center justify-center gap-2 bg-amber-400 hover:bg-amber-300 text-[#1A175A] px-6 py-3.5 rounded-xl font-bold shadow-lg transition-colors focus:outline-none focus:ring-2 focus:ring-white"
+                className="w-full inline-flex items-center justify-center gap-2 bg-white hover:bg-blue-50 text-[#1A175A] px-6 py-3.5 rounded-xl font-bold shadow-lg transition-colors focus:outline-none focus:ring-2 focus:ring-white"
               >
                 Request Embroidery Quote
                 <ArrowRight className="w-4 h-4" />
@@ -101,7 +101,7 @@ const CustomEmbroideryBanner = () => {
                 className="bg-white p-6 rounded-3xl border border-slate-200/80 hover:border-[#1A175A]/40 hover:shadow-xl transition-all duration-300 group"
               >
                 <div className="w-12 h-12 rounded-2xl bg-[#1A175A] flex items-center justify-center mb-5 shadow-md group-hover:bg-[#141247] transition-colors">
-                  <Icon className="w-6 h-6 text-amber-300" />
+                  <Icon className="w-6 h-6 text-white" />
                 </div>
                 <h3 className="text-lg font-bold text-[#1A175A] mb-2">{title}</h3>
                 <p className="text-slate-600 text-sm leading-relaxed">{desc}</p>
@@ -111,9 +111,10 @@ const CustomEmbroideryBanner = () => {
         </div>
 
         <p className="mt-10 text-center text-sm text-slate-600">
-          Direct consultation with{' '}
-          <span className="font-semibold text-[#1A175A]">Mr. Manjunath Rao</span> and{' '}
-          <span className="font-semibold text-[#1A175A]">Mr. Balraj</span>
+          Dedicated institutional embroidery consultation via our{' '}
+          <a href="#bulk-inquiry" className="font-semibold text-[#1A175A] underline underline-offset-2">
+            Bengaluru production desk
+          </a>
         </p>
       </div>
     </section>

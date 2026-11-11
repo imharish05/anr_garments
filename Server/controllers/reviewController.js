@@ -553,6 +553,57 @@ const updateReviewStatusAdmin = async (req, res) => {
 };
 
 /**
+ * GET /api/reviews
+ * Public: Get approved product reviews for storefront display.
+ */
+const getPublicReviews = async (req, res) => {
+  try {
+    const limit = Math.min(20, Math.max(1, parseInt(req.query.limit, 10) || 6));
+    const minRating = Math.min(5, Math.max(1, parseInt(req.query.minRating, 10) || 1));
+
+    const reviews = await Review.findAll({
+      where: {
+        isApproved: true,
+        rating: { [Op.gte]: minRating },
+      },
+      include: [
+        {
+          model: Customer,
+          as: 'customer',
+          attributes: ['id', 'name'],
+        },
+        {
+          model: Product,
+          as: 'product',
+          attributes: ['id', 'name', 'slug'],
+        },
+      ],
+      order: [['rating', 'DESC'], ['createdAt', 'DESC']],
+      limit,
+    });
+
+    return res.json({
+      success: true,
+      reviews: reviews.map((r) => ({
+        id: r.id,
+        productId: r.productId,
+        productName: r.product?.name || '',
+        productSlug: r.product?.slug || '',
+        rating: r.rating,
+        title: r.title,
+        body: r.body,
+        isVerifiedPurchase: r.isVerifiedPurchase,
+        reviewerName: r.customer?.name || 'Verified Buyer',
+        createdAt: r.createdAt,
+      })),
+    });
+  } catch (error) {
+    console.error('[ReviewController] Error in getPublicReviews:', error);
+    return res.status(500).json({ success: false, message: 'Failed to fetch public reviews' });
+  }
+};
+
+/**
  * Helper to sync ratings for all products based on actual approved reviews
  */
 const syncAllProductRatings = async () => {
@@ -583,6 +634,7 @@ const syncAllProductRatings = async () => {
 };
 
 module.exports = {
+  getPublicReviews,
   getProductReviews,
   getMyDeliveredItems,
   createReview,

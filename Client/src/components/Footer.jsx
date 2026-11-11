@@ -1,18 +1,64 @@
 import React, { useState, useEffect } from 'react';
-import { COMPANY_INFO, CATEGORIES } from '../data/mockData';
-import { fetchCategoriesTree, getCategorySectionLink } from '../services/api';
+import { Link } from 'react-router-dom';
+import { fetchCategoriesTree, getCategoryPageLink } from '../services/api';
+import useStorefrontSetting from '../hooks/useStorefrontSetting';
 import anrLogo from '../assets/anr-logo.jpg';
-import {
-  Mail,
-  Phone,
-  MapPin,
-  Navigation,
-  ArrowUpRight,
-  ChevronRight
-} from 'lucide-react';
+import { Mail, Phone, MapPin, ChevronRight } from 'lucide-react';
+import { ScrollReveal } from './MotionPrimitives';
+
+// Base social platforms; WhatsApp number is dynamically derived from storefront settings
+const BASE_SOCIAL_LINKS = [
+  {
+    name: 'Instagram',
+    href: 'https://www.instagram.com/',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]">
+        <rect x="3" y="3" width="18" height="18" rx="5" />
+        <circle cx="12" cy="12" r="4" />
+        <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+      </svg>
+    ),
+  },
+  {
+    name: 'Facebook',
+    href: 'https://www.facebook.com/',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]">
+        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+      </svg>
+    ),
+  },
+  {
+    name: 'YouTube',
+    href: 'https://www.youtube.com/',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]">
+        <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z" />
+        <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" />
+      </svg>
+    ),
+  },
+];
+
+const WHATSAPP_ICON = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]">
+    <path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21" />
+    <path d="M9 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0-1 0v1a5 5 0 0 0 5 5h1a.5.5 0 0 0 0-1h-1a.5.5 0 0 0 0 1" />
+  </svg>
+);
+
+const QUICK_LINKS = [
+  { label: 'About Us', to: '/about' },
+  { label: 'Contact Us', to: '/contact' },
+  { label: 'Shipping & Delivery Policy', to: '/shipping-policy' },
+  { label: 'Cancellation & Refund Policy', to: '/cancellation-refund-policy' },
+  { label: 'Terms & Conditions', to: '/terms' },
+  { label: 'Privacy Policy', to: '/privacy-policy' },
+];
 
 const Footer = () => {
-  const [categories, setCategories] = useState(CATEGORIES);
+  const [categories, setCategories] = useState([]);
+  const { data: storefront } = useStorefrontSetting('storefront');
 
   useEffect(() => {
     let isMounted = true;
@@ -22,8 +68,8 @@ const Footer = () => {
           setCategories(tree);
         }
       })
-      .catch((err) => {
-        console.warn('Footer: failed to load categories, using fallback:', err);
+      .catch(() => {
+        if (isMounted) setCategories([]);
       });
     return () => {
       isMounted = false;
@@ -31,13 +77,10 @@ const Footer = () => {
   }, []);
 
   const resolveCategoryHref = (cat) => {
-    if (cat.href && cat.href !== '#bulk-inquiry') return cat.href;
-    if (cat.link && cat.link !== '#bulk-inquiry') return cat.link;
-    if (cat.slug) {
-      const link = getCategorySectionLink(cat.slug);
-      if (link !== '#bulk-inquiry') return link;
-    }
-    return '#shop-categories';
+    if (cat.href && cat.href.startsWith('/')) return cat.href;
+    if (cat.link && cat.link.startsWith('/')) return cat.link;
+    if (cat.slug) return getCategoryPageLink(cat.slug);
+    return '/products';
   };
 
   const getCategoryName = (cat) => {
@@ -47,171 +90,152 @@ const Footer = () => {
   return (
     <footer className="bg-[#1A175A] text-white pt-14 pb-8 sm:pt-16 sm:pb-10 border-t border-white/10 font-sans">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Main Footer Columns */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12 pb-12 border-b border-white/10">
-          
+        <ScrollReveal
+          staggerChildren
+          staggerMs={80}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12 pb-12 border-b border-white/10"
+        >
+
           {/* Col 1: Brand & About */}
           <div className="space-y-4">
-            <a href="#" className="inline-flex items-center gap-3 group">
+            <Link to="/" className="inline-flex items-center gap-3 group">
               <img
                 src={anrLogo}
                 alt="ANR Hospital Garments"
-                className="h-10 w-auto rounded bg-white p-1 shadow-sm object-contain"
+                className="h-12 sm:h-14 w-auto rounded bg-white p-1.5 shadow-sm object-contain"
               />
-              <div>
-                <span className="font-sans text-xl font-black tracking-wider text-white block">
-                  ANR
-                </span>
-                <span className="text-[10px] uppercase tracking-[0.2em] text-amber-300 font-semibold block">
-                  Hospital Garments
-                </span>
-              </div>
-            </a>
+              
+            </Link>
 
             <p className="text-xs sm:text-sm text-blue-100/80 leading-relaxed max-w-sm">
               Manufacturers of premium medical apparel, clinical scrub suits, consultation aprons, and hospital wear. Crafted for comfort, hygiene, and durability in healthcare institutions across India.
             </p>
 
             <div className="pt-1 text-xs text-blue-200/90 space-y-2">
-              <a
-                href="tel:9986044574"
-                className="flex items-center gap-2 hover:text-white transition-colors"
-              >
-                <Phone className="w-3.5 h-3.5 text-amber-300 flex-shrink-0" />
-                <span>+91 99860 44574 / 63634 29113</span>
-              </a>
-              <a
-                href={`mailto:${COMPANY_INFO.email}`}
-                className="flex items-center gap-2 hover:text-white transition-colors"
-              >
-                <Mail className="w-3.5 h-3.5 text-amber-300 flex-shrink-0" />
-                <span>{COMPANY_INFO.email}</span>
-              </a>
+              {storefront?.phones?.length ? (
+                <a
+                  href={`tel:${storefront.phones[0]}`}
+                  className="flex items-center gap-2 hover:text-white transition-colors"
+                >
+                  <Phone className="w-3.5 h-3.5 text-blue-200 flex-shrink-0" />
+                  <span>{storefront.phones.join(' / ')}</span>
+                </a>
+              ) : null}
+              {storefront?.email ? (
+                <a
+                  href={`mailto:${storefront.email}`}
+                  className="flex items-center gap-2 hover:text-white transition-colors"
+                >
+                  <Mail className="w-3.5 h-3.5 text-blue-200 flex-shrink-0" />
+                  <span>{storefront.email}</span>
+                </a>
+              ) : null}
             </div>
           </div>
 
-          {/* Col 2: Categories (Dynamic from categories) */}
+          {/* Col 2: Categories */}
           <div>
-            <h4 className="text-xs uppercase font-bold tracking-widest text-amber-300 mb-4">
+            <h4 className="text-xs uppercase font-bold tracking-widest text-blue-200 mb-4">
               Categories
             </h4>
-            <ul className="space-y-2.5 text-xs sm:text-sm text-blue-100/90">
-              {categories.map((cat, idx) => {
-                const href = resolveCategoryHref(cat);
-                const name = getCategoryName(cat);
-                return (
-                  <li key={cat.id || cat.slug || idx}>
-                    <a
-                      href={href}
-                      className="hover:text-amber-300 transition-colors inline-flex items-center gap-2 group"
-                    >
-                      <ChevronRight className="w-3 h-3 text-amber-300/60 group-hover:text-amber-300 group-hover:translate-x-0.5 transition-all" />
-                      <span>{name}</span>
-                    </a>
-                  </li>
-                );
-              })}
-            </ul>
+            {categories.length > 0 ? (
+              <ul className="space-y-2.5 text-xs sm:text-sm text-blue-100/90">
+                {categories.map((cat, idx) => {
+                  const href = resolveCategoryHref(cat);
+                  const name = getCategoryName(cat);
+                  return (
+                    <li key={cat.id || cat.slug || idx}>
+                      <Link
+                        to={href}
+                        className="hover:text-blue-200 transition-colors inline-flex items-center gap-2 group"
+                      >
+                        <ChevronRight className="w-3 h-3 text-blue-200/60 group-hover:text-blue-200 group-hover:translate-x-0.5 transition-all" />
+                        <span>{name}</span>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : (
+              <p className="text-xs text-blue-200/70">Explore our uniform catalog from the store navigation.</p>
+            )}
           </div>
 
           {/* Col 3: Quick Links */}
           <div>
-            <h4 className="text-xs uppercase font-bold tracking-widest text-amber-300 mb-4">
+            <h4 className="text-xs uppercase font-bold tracking-widest text-blue-200 mb-4">
               Quick Links
             </h4>
             <ul className="space-y-2.5 text-xs sm:text-sm text-blue-100/90">
-              <li>
-                <a
-                  href="#shop-categories"
-                  className="hover:text-amber-300 transition-colors inline-flex items-center gap-2 group"
-                >
-                  <ChevronRight className="w-3 h-3 text-amber-300/60 group-hover:text-amber-300 group-hover:translate-x-0.5 transition-all" />
-                  <span>All Categories</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#shop-colors"
-                  className="hover:text-amber-300 transition-colors inline-flex items-center gap-2 group"
-                >
-                  <ChevronRight className="w-3 h-3 text-amber-300/60 group-hover:text-amber-300 group-hover:translate-x-0.5 transition-all" />
-                  <span>Hospital Color Palette</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#custom-embroidery"
-                  className="hover:text-amber-300 transition-colors inline-flex items-center gap-2 group"
-                >
-                  <ChevronRight className="w-3 h-3 text-amber-300/60 group-hover:text-amber-300 group-hover:translate-x-0.5 transition-all" />
-                  <span>Custom Embroidery</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#fabric-tech"
-                  className="hover:text-amber-300 transition-colors inline-flex items-center gap-2 group"
-                >
-                  <ChevronRight className="w-3 h-3 text-amber-300/60 group-hover:text-amber-300 group-hover:translate-x-0.5 transition-all" />
-                  <span>Fabric Technology</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#seen-in-anr"
-                  className="hover:text-amber-300 transition-colors inline-flex items-center gap-2 group"
-                >
-                  <ChevronRight className="w-3 h-3 text-amber-300/60 group-hover:text-amber-300 group-hover:translate-x-0.5 transition-all" />
-                  <span>Healthcare Reviews</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#faq"
-                  className="hover:text-amber-300 transition-colors inline-flex items-center gap-2 group"
-                >
-                  <ChevronRight className="w-3 h-3 text-amber-300/60 group-hover:text-amber-300 group-hover:translate-x-0.5 transition-all" />
-                  <span>FAQs & Support</span>
-                </a>
-              </li>
+              {QUICK_LINKS.map((item) => (
+                <li key={item.to}>
+                  <Link
+                    to={item.to}
+                    className="hover:text-blue-200 transition-colors inline-flex items-center gap-2 group"
+                  >
+                    <ChevronRight className="w-3 h-3 text-blue-200/60 group-hover:text-blue-200 group-hover:translate-x-0.5 transition-all" />
+                    <span>{item.label}</span>
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Col 4: Bangalore Facility & Contact */}
+          {/* Col 4: Location & Social */}
           <div>
-            <h4 className="text-xs uppercase font-bold tracking-widest text-amber-300 mb-4">
-              Bangalore Facility
+            <h4 className="text-xs uppercase font-bold tracking-widest text-blue-200 mb-4">
+              Location
             </h4>
-            <ul className="space-y-3.5 text-xs sm:text-sm text-blue-100/90">
-              <li className="flex items-start gap-2.5">
-                <MapPin className="w-4 h-4 text-amber-300 flex-shrink-0 mt-0.5" />
-                <span className="leading-relaxed">{COMPANY_INFO.address}</span>
-              </li>
-              <li className="pt-1">
-                <a
-                  href={COMPANY_INFO.googleMapsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-xs font-semibold text-white transition-all shadow-sm hover:border-amber-300/50"
-                >
-                  <Navigation className="w-3.5 h-3.5 text-amber-300" />
-                  <span>View on Google Maps</span>
-                  <ArrowUpRight className="w-3.5 h-3.5 text-amber-300/80" />
-                </a>
+            <ul className="space-y-5 text-xs sm:text-sm text-blue-100/90">
+              {storefront?.address && (
+                <li className="flex items-start gap-2.5">
+                  <MapPin className="w-4 h-4 text-blue-200 flex-shrink-0 mt-0.5" />
+                  <span className="leading-relaxed">{storefront.address}</span>
+                </li>
+              )}
+              <li>
+                <p className="text-[11px] uppercase tracking-widest text-blue-200/70 mb-3">
+                  Follow us
+                </p>
+                <div className="flex items-center gap-2.5">
+                  {[
+                    ...BASE_SOCIAL_LINKS,
+                    ...(storefront?.phones?.[0]
+                      ? [{
+                          name: 'WhatsApp',
+                          href: `https://wa.me/91${String(storefront.phones[0]).replace(/\D/g, '')}`,
+                          icon: WHATSAPP_ICON,
+                        }]
+                      : []),
+                  ].map((s) => (
+                    <a
+                      key={s.name}
+                      href={s.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={s.name}
+                      title={s.name}
+                      className="w-10 h-10 rounded-full bg-white/10 border border-white/15 text-white flex items-center justify-center transition-all duration-300 hover:bg-white hover:text-[#1A175A] hover:border-white hover:-translate-y-0.5"
+                    >
+                      {s.icon}
+                    </a>
+                  ))}
+                </div>
               </li>
             </ul>
           </div>
 
-        </div>
+        </ScrollReveal>
 
         {/* Bottom Bar */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-blue-200/80 gap-4">
+        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-blue-200/80 gap-4">
           <div>
-            © {new Date().getFullYear()} ANR Hospital Garments. Bangalore, Karnataka. All rights reserved.
+            © {new Date().getFullYear()} ANR Hospital Garments. All rights reserved.
           </div>
-          <div className="text-[11px] text-amber-300 font-medium tracking-wide">
-            {COMPANY_INFO.slogan}
+          <div className="text-[11px] text-blue-200 font-medium tracking-wide">
+            {storefront?.slogan || ''}
           </div>
         </div>
 

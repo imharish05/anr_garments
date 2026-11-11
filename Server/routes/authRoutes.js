@@ -1,8 +1,13 @@
 'use strict';
 const router = require('express').Router();
-const rateLimit = require('express-rate-limit');
 const {
-  register, login, getProfile, updateProfile, changePassword,
+  authLimiter,
+  otpLimiter,
+  resetLimiter,
+  refreshTokenLimiter,
+} = require('../middleware/rateLimiter');
+const {
+  register, login, sendLoginOtp, verifyLoginOtp, getProfile, updateProfile, changePassword,
   adminLogin, adminRegister,
   refresh, getRefreshToken, getMe,
   forgotPassword, verifyOtp, resetPassword,
@@ -10,35 +15,19 @@ const {
 } = require('../controllers/authController');
 const { verifyCustomer, verifyAdmin } = require('../middleware/auth');
 
-// ── Rate Limiters ─────────────────────────────────────────────────────────────
-// Applied only to auth endpoints that risk brute-force or abuse
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 10,                   // 10 attempts per window per IP
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { success: false, message: 'Too many attempts. Please try again in 15 minutes.' },
-});
-
-const resetLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour
-  max: 5,                    // 5 attempts per window per IP
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { success: false, message: 'Too many reset attempts. Please try again in 1 hour.' },
-});
-
 // ── Customer Auth ─────────────────────────────────────────────────────────────
 router.post('/register',            authLimiter, register);
 router.post('/login',               authLimiter, login);
-router.post('/forgot-password',     authLimiter, forgotPassword);
-router.post('/verify-otp',          authLimiter, verifyOtp);
+router.post('/send-login-otp',      otpLimiter, sendLoginOtp);
+router.post('/verify-login-otp',    authLimiter, verifyLoginOtp);
+router.post('/forgot-password',     resetLimiter, forgotPassword);
+router.post('/verify-otp',          resetLimiter, verifyOtp);
 router.post('/reset-password',      resetLimiter, resetPassword);
-router.post('/send-checkout-otp',   authLimiter, sendCheckoutOtp);
+router.post('/send-checkout-otp',   otpLimiter, sendCheckoutOtp);
 router.post('/verify-checkout-otp', authLimiter, verifyCheckoutOtp);
 
-router.post('/refresh',           refresh);
-router.post('/get-refresh-token', getRefreshToken);
+router.post('/refresh',           refreshTokenLimiter, refresh);
+router.post('/get-refresh-token', refreshTokenLimiter, getRefreshToken);
 router.get('/getme',              getMe);
 router.get('/me',                 getMe);
 router.get('/profile',            verifyCustomer, getProfile);

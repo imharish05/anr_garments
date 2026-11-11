@@ -1,89 +1,57 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { Link } from 'react-router-dom';
+import { ChevronLeft, ChevronRight, RefreshCw, ImageOff } from 'lucide-react';
 import { fetchBanners } from '../services/api';
-
-// Curated default ANR banners if Admin API has no records or during server boot
-const DEFAULT_SLIDES = [
-  {
-    id: 'default-1',
-    src: '/anr-hero-banner.jpg',
-    alt: 'ANR Hospital Garments - Designed for Care. Made to Perform.',
-    href: '#scrubs-collection',
-    title: '',
-    subtitle: '',
-    badge: '',
-    ctaText: ''
-  },
-  {
-    id: 'default-2',
-    src: '/anr-banner-2.jpg',
-    alt: 'ANR Hospital Apparel Collections & Fabric Quality',
-    href: '#aprons-collection',
-    title: '',
-    subtitle: '',
-    badge: '',
-    ctaText: ''
-  },
-  {
-    id: 'default-3',
-    src: '/anr-banner-3.jpg',
-    alt: 'ANR All Colours. Same Quality. Same Care.',
-    href: '#patient-wear-collection',
-    title: '',
-    subtitle: '',
-    badge: '',
-    ctaText: ''
-  }
-];
+import { AnimatedText, ScrollReveal } from './MotionPrimitives';
 
 const AUTOPLAY_MS = 5000;
 
 const HeroBanner = () => {
-  const [slides, setSlides] = useState(DEFAULT_SLIDES);
+  const [slides, setSlides] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [failedImages, setFailedImages] = useState({});
   const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
   const touchStartX = useRef(null);
 
-  // Fetch dynamic HERO banners from Admin backend
-  useEffect(() => {
-    let isMounted = true;
-
-    const loadDynamicBanners = async () => {
-      try {
-        const dynamicList = await fetchBanners('HERO');
-        if (isMounted && dynamicList && dynamicList.length > 0) {
-          const formatted = dynamicList
-            .filter((b) => Boolean(b.image))
-            .map((b) => ({
-              id: b.id || `admin-hero-${b.position || Math.random()}`,
-              src: b.image,
-              alt: b.title || 'ANR Hospital Garments',
-              href: b.primaryHref || '#scrubs-collection',
-              title: b.title || '',
-              subtitle: b.subtitle || '',
-              badge: b.badge || '',
-              ctaText: b.primaryCta || ''
-            }));
-
-          if (formatted.length > 0) {
-            setSlides(formatted);
-            setCurrent(0);
-          }
-        }
-      } catch (err) {
-        console.warn('[HeroBanner] Using default slides fallback:', err);
-      }
-    };
-
-    loadDynamicBanners();
-    return () => {
-      isMounted = false;
-    };
+  const loadDynamicBanners = useCallback(async (forceRefresh = false) => {
+    setLoading(true);
+    setError('');
+    try {
+      const dynamicList = await fetchBanners('HERO', forceRefresh);
+      const formatted = (Array.isArray(dynamicList) ? dynamicList : [])
+        .filter((b) => Boolean(b.image))
+        .map((b, idx) => ({
+          id: b.id || `admin-hero-${idx}`,
+          src: b.image,
+          alt: b.title || 'ANR Hospital Garments',
+          href: b.ctaLink && b.ctaLink !== '#' ? b.ctaLink : '/products',
+          title: b.title || '',
+          subtitle: b.subtitle || '',
+          badge: b.badge || '',
+          ctaText: b.ctaText || ''
+        }));
+      setSlides(formatted);
+      setCurrent(0);
+    } catch (err) {
+      setError(err?.message || 'Unable to load storefront banners.');
+      setSlides([]);
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    loadDynamicBanners();
+  }, [loadDynamicBanners]);
 
   const count = slides.length;
 
-  const goTo = (i) => setCurrent((i + count) % count);
+  const goTo = (i) => {
+    if (count === 0) return;
+    setCurrent((i + count) % count);
+  };
   const next = () => goTo(current + 1);
   const prev = () => goTo(current - 1);
 
@@ -109,7 +77,38 @@ const HeroBanner = () => {
   };
 
   const arrowBtn =
-    'absolute top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#1A175A]/80 hover:bg-[#1A175A] text-white border border-white/20 flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 shadow-md';
+    'absolute top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#1A175A]/80 hover:bg-[#1A175A] text-white border border-white/20 flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white shadow-md';
+
+  if (loading) {
+    return (
+      <section className="relative w-full bg-slate-50 overflow-hidden" aria-label="Loading banners">
+        <div className="w-full hero-viewport-height skeleton-bone" />
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section
+        className="w-full hero-viewport-height bg-[#141247] text-white px-4 text-center flex flex-col items-center justify-center"
+        aria-label="Banner error"
+      >
+        <p className="text-sm text-blue-200 font-medium mb-3">{error}</p>
+        <button
+          type="button"
+          onClick={() => loadDynamicBanners(true)}
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white text-[#1A175A] text-xs font-bold hover:bg-blue-50 transition-colors"
+        >
+          <RefreshCw className="w-3.5 h-3.5" />
+          Retry Banners
+        </button>
+      </section>
+    );
+  }
+
+  if (count === 0) {
+    return null;
+  }
 
   return (
     <section
@@ -120,7 +119,7 @@ const HeroBanner = () => {
       aria-label="Featured banners"
     >
       <div
-        className="relative w-full overflow-hidden aspect-[16/9]"
+        className="relative w-full overflow-hidden hero-viewport-height"
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
@@ -131,20 +130,29 @@ const HeroBanner = () => {
         >
           {slides.map((slide, i) => {
             const hasTextOverlay = Boolean(slide.title || slide.subtitle);
+            const imgFailed = Boolean(failedImages[slide.id]);
 
             const slideContent = (
               <div className="relative w-full h-full">
-                <img
-                  src={slide.src}
-                  alt={slide.alt || 'ANR Hospital Garments'}
-                  className="w-full h-full object-cover object-center"
-                  loading={i === 0 ? 'eager' : 'lazy'}
-                  draggable={false}
-                  onError={(e) => {
-                    e.currentTarget.onerror = null;
-                    e.currentTarget.src = '/anr-hero-banner.jpg';
-                  }}
-                />
+                {imgFailed ? (
+                  <div className="w-full h-full flex flex-col items-center justify-center bg-[#141247] text-slate-300">
+                    <ImageOff className="w-10 h-10 mb-2 opacity-60" />
+                    <span className="text-xs font-medium">{slide.alt || 'Banner image unavailable'}</span>
+                  </div>
+                ) : (
+                  <img
+                    src={slide.src}
+                    alt={slide.alt || 'ANR Hospital Garments'}
+                    className="w-full h-full object-cover object-[center_70%]"
+                    loading={i === 0 ? 'eager' : 'lazy'}
+                    fetchPriority={i === 0 ? 'high' : undefined}
+                    decoding={i === 0 ? 'sync' : 'async'}
+                    draggable={false}
+                    onError={() =>
+                      setFailedImages((prev) => ({ ...prev, [slide.id]: true }))
+                    }
+                  />
+                )}
 
                 {/* Optional overlay when title / subtitle are set in Admin */}
                 {hasTextOverlay && (
@@ -152,25 +160,53 @@ const HeroBanner = () => {
                     <div className="max-w-7xl mx-auto px-6 sm:px-12 lg:px-16 w-full">
                       <div className="max-w-xl text-white">
                         {slide.badge && (
-                          <span className="inline-block px-3 py-1 rounded-full text-[11px] sm:text-xs font-semibold bg-amber-400 text-[#1A175A] mb-3 uppercase tracking-wider shadow">
-                            {slide.badge}
-                          </span>
+                          <ScrollReveal
+                            direction="pop"
+                            immediate={i === current}
+                            triggerKey={current === i ? `active-${current}` : 'idle'}
+                            delay={60}
+                            className="inline-block"
+                          >
+                            <span className="inline-block px-3 py-1 rounded-full text-[11px] sm:text-xs font-semibold bg-white text-[#1A175A] mb-3 uppercase tracking-wider shadow">
+                              {slide.badge}
+                            </span>
+                          </ScrollReveal>
                         )}
                         {slide.title && (
-                          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight mb-2 drop-shadow-md">
+                          <AnimatedText
+                            as="h2"
+                            immediate={i === current}
+                            triggerKey={current === i ? `title-${current}` : 'idle'}
+                            className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight mb-2 drop-shadow-md"
+                          >
                             {slide.title}
-                          </h2>
+                          </AnimatedText>
                         )}
                         {slide.subtitle && (
-                          <p className="text-xs sm:text-base lg:text-lg text-blue-100 font-medium mb-4 line-clamp-2 drop-shadow">
+                          <AnimatedText
+                            as="p"
+                            mode="words"
+                            immediate={i === current}
+                            triggerKey={current === i ? `sub-${current}` : 'idle'}
+                            delay={180}
+                            className="text-xs sm:text-base lg:text-lg text-blue-100 font-medium mb-4 line-clamp-2 drop-shadow"
+                          >
                             {slide.subtitle}
-                          </p>
+                          </AnimatedText>
                         )}
                         {slide.ctaText && (
-                          <span className="inline-flex items-center gap-1.5 px-4 py-2 sm:px-5 sm:py-2.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-[#1A175A] font-bold text-xs sm:text-sm shadow-md transition-all">
-                            {slide.ctaText}
-                            <ChevronRight className="w-4 h-4" />
-                          </span>
+                          <ScrollReveal
+                            direction="up"
+                            immediate={i === current}
+                            triggerKey={current === i ? `cta-${current}` : 'idle'}
+                            delay={280}
+                            className="inline-block"
+                          >
+                            <span className="inline-flex items-center gap-1.5 px-4 py-2 sm:px-5 sm:py-2.5 rounded-lg bg-white hover:bg-blue-50 text-[#1A175A] font-bold text-xs sm:text-sm shadow-md transition-all">
+                              {slide.ctaText}
+                              <ChevronRight className="w-4 h-4" />
+                            </span>
+                          </ScrollReveal>
                         )}
                       </div>
                     </div>
@@ -189,13 +225,23 @@ const HeroBanner = () => {
                 aria-label={`${i + 1} of ${count}`}
               >
                 {slide.href ? (
-                  <a
-                    href={slide.href}
-                    tabIndex={i === current ? 0 : -1}
-                    className="block w-full h-full focus:outline-none"
-                  >
-                    {slideContent}
-                  </a>
+                  slide.href.startsWith('/') ? (
+                    <Link
+                      to={slide.href}
+                      tabIndex={i === current ? 0 : -1}
+                      className="block w-full h-full focus:outline-none"
+                    >
+                      {slideContent}
+                    </Link>
+                  ) : (
+                    <a
+                      href={slide.href}
+                      tabIndex={i === current ? 0 : -1}
+                      className="block w-full h-full focus:outline-none"
+                    >
+                      {slideContent}
+                    </a>
+                  )
                 ) : (
                   slideContent
                 )}
@@ -232,7 +278,7 @@ const HeroBanner = () => {
           className="absolute bottom-3 sm:bottom-4 right-4 sm:right-8 z-10 hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/90 hover:bg-white text-[#1A175A] text-xs font-bold shadow-lg backdrop-blur-sm transition-all hover:scale-105"
         >
           <span>Shop by Category</span>
-          <ChevronRight className="w-3.5 h-3.5 text-amber-500 rotate-90" />
+          <ChevronRight className="w-3.5 h-3.5 text-[#1A175A] rotate-90" />
         </a> */}
 
         {/* Indicators Dots */}
@@ -246,7 +292,7 @@ const HeroBanner = () => {
                 aria-label={`Go to slide ${i + 1}`}
                 aria-current={i === current}
                 className={`h-2 rounded-full transition-all duration-300 ${
-                  i === current ? 'w-6 bg-amber-400' : 'w-2 bg-white/50 hover:bg-white/80'
+                  i === current ? 'w-6 bg-white' : 'w-2 bg-white/50 hover:bg-white/80'
                 }`}
               />
             ))}

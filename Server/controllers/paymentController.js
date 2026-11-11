@@ -170,7 +170,7 @@ const initiatePayment = async (req, res) => {
       key: process.env.RAZORPAY_KEY_ID,
       amount: Math.round(parseFloat(order.totalAmount) * 100),
       currency: 'INR',
-      name: 'Twin A Apparels',
+      name: process.env.STORE_NAME || 'ANR Hospital Garments',
       description: `Payment for Order ${order.orderNumber}`,
       order_id: gatewayOrder.gatewayRef,
     });

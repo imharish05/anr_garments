@@ -2,9 +2,9 @@ import anrLogo from '../assets/anr-logo.jpg';
 
 const Logo = ({ size = 'md', className = '', showText = false }) => {
   const imageSizes = {
-    sm: 'h-8 max-h-8',
-    md: 'h-10 max-h-10',
-    lg: 'h-14 max-h-14',
+    sm: 'h-9 max-h-9',
+    md: 'h-12 max-h-12',
+    lg: 'h-16 max-h-16',
   };
 
   return (

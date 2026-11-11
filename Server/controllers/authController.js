@@ -1,10 +1,12 @@
 'use strict';
+const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const { signAccessToken, signRefreshToken, verifyAccessToken, verifyRefreshToken } = require('../config/jwt');
 const { Customer, AdminUser, Role, SiteSetting } = require('../models');
 const { v4: uuidv4 } = require('uuid');
 const { validatePhoneNumber } = require('../utils/phoneValidation');
 const {
+  sendLoginOtpEmail,
   sendOtpEmail,
   sendFraudOtpEmail,
   sendWelcomeEmail,
@@ -89,6 +91,163 @@ const login = async (req, res) => {
     res.json({ success: true, token, refreshToken });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// ── Email OTP Login Store & Handlers ─────────────────────────────────────────
+const loginOtpStore = new Map(); // cleanEmail -> { hashedOtp, expiry, customerId, attempts }
+
+/**
+ * Fast Email OTP Login - Step 1:
+ * Accepts email, validates it, finds or creates customer, generates 6-digit OTP,
+ * hashes it, stores in loginOtpStore (10-minute expiry), and sends email via Nodemailer.
+ */
+const sendLoginOtp = async (req, res) => {
+  try {
+    const { email } = req.body || {};
+    if (!email) {
+      return res.status(400).json({ success: false, message: 'Please enter your email address' });
+    }
+
+    const emailValidation = validateEmail(email);
+    if (!emailValidation.isValid) {
+      return res.status(400).json({ success: false, message: emailValidation.message });
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+
+    // Find or automatically create Customer account for seamless checkout / re-orders
+    let customer = await Customer.findOne({ where: { email: cleanEmail } });
+    if (!customer) {
+      const referralCode = uuidv4().slice(0, 8).toUpperCase();
+      const randomSecret = crypto.randomBytes(32).toString('hex');
+      const hashed = await bcrypt.hash(randomSecret, 12);
+      const defaultName = cleanEmail.split('@')[0];
+
+      customer = await Customer.create({
+        name: defaultName,
+        email: cleanEmail,
+        password: hashed,
+        referralCode,
+        isActive: true
+      });
+    }
+
+    if (!customer.isActive) {
+      return res.status(403).json({ success: false, message: 'Account is suspended. Please contact ANR support.' });
+    }
+
+    // Generate cryptographically secure 6-digit OTP
+    const otp = crypto.randomInt(100000, 999999).toString();
+    const hashedOtp = crypto.createHash('sha256').update(otp).digest('hex');
+    const expiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
+    loginOtpStore.set(cleanEmail, {
+      hashedOtp,
+      expiry,
+      customerId: customer.id,
+      attempts: 0
+    });
+
+    // Send email using configured Nodemailer
+    try {
+      await sendLoginOtpEmail(cleanEmail, customer.name || 'Healthcare Professional', otp);
+    } catch (emailErr) {
+      console.error('[sendLoginOtp] Nodemailer error:', emailErr.message);
+      loginOtpStore.delete(cleanEmail);
+      return res.status(500).json({
+        success: false,
+        message: 'Could not deliver verification email. Please verify your email address or try again.'
+      });
+    }
+
+    return res.json({
+      success: true,
+      message: `Verification code sent to ${cleanEmail}`
+    });
+  } catch (err) {
+    console.error('[sendLoginOtp] Server error:', err.message);
+    return res.status(500).json({ success: false, message: err.message || 'Server error occurred' });
+  }
+};
+
+/**
+ * Fast Email OTP Login - Step 2:
+ * Verifies submitted 6-digit OTP against loginOtpStore, issues JWT tokens, returns session.
+ */
+const verifyLoginOtp = async (req, res) => {
+  try {
+    const { email, otp } = req.body || {};
+    if (!email || !otp) {
+      return res.status(400).json({ success: false, message: 'Email and 6-digit verification code are required' });
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanOtp = String(otp).trim();
+
+    const entry = loginOtpStore.get(cleanEmail);
+    if (!entry) {
+      return res.status(400).json({
+        success: false,
+        message: 'No active verification code found for this email. Please request a new code.'
+      });
+    }
+
+    if (new Date() > new Date(entry.expiry)) {
+      loginOtpStore.delete(cleanEmail);
+      return res.status(400).json({
+        success: false,
+        message: 'Verification code has expired. Please request a new code.'
+      });
+    }
+
+    entry.attempts = (entry.attempts || 0) + 1;
+    if (entry.attempts > 5) {
+      loginOtpStore.delete(cleanEmail);
+      return res.status(400).json({
+        success: false,
+        message: 'Too many incorrect attempts. Please request a new verification code.'
+      });
+    }
+
+    const inputHash = crypto.createHash('sha256').update(cleanOtp).digest('hex');
+    if (inputHash !== entry.hashedOtp) {
+      return res.status(400).json({
+        success: false,
+        message: 'Incorrect verification code. Please check your email and try again.'
+      });
+    }
+
+    // OTP is valid - clear one-time token
+    loginOtpStore.delete(cleanEmail);
+
+    const customer = await Customer.findByPk(entry.customerId, {
+      attributes: { exclude: ['password'] }
+    });
+
+    if (!customer || !customer.isActive) {
+      return res.status(403).json({ success: false, message: 'Account is inactive or not found.' });
+    }
+
+    const token = signAccessToken({ id: customer.id, type: 'CUSTOMER' });
+    const refreshToken = signRefreshToken({ id: customer.id, type: 'CUSTOMER' });
+
+    return res.json({
+      success: true,
+      message: 'Signed in successfully',
+      token,
+      refreshToken,
+      customer: {
+        id: customer.id,
+        name: customer.name,
+        email: customer.email,
+        phone: customer.phone,
+        address: customer.address
+      }
+    });
+  } catch (err) {
+    console.error('[verifyLoginOtp] Server error:', err.message);
+    return res.status(500).json({ success: false, message: err.message || 'Server error occurred' });
   }
 };
 
@@ -358,7 +517,6 @@ const adminRegister = async (req, res) => {
 };
 
 // ── Forgot / Reset Password (OTP flow) ───────────────────────────────────────
-const crypto = require('crypto');
 
 // ── Checkout Fraud Verification OTP ──────────────────────────────────────────
 const checkoutOtpStore = new Map(); // targetEmail -> { hashedOtp, expiry }
@@ -610,7 +768,7 @@ const changePassword = async (req, res) => {
 };
 
 module.exports = {
-  register, login, getProfile, updateProfile, changePassword,
+  register, login, sendLoginOtp, verifyLoginOtp, getProfile, updateProfile, changePassword,
   adminLogin, adminRegister,
   refresh, getRefreshToken, getMe,
   forgotPassword, verifyOtp, resetPassword,

@@ -1,0 +1,24 @@
+{
+  "name": "anr-hospital-garments",
+  "version": "1.0.0",
+  "description": "**ANR Hospital Garments** — Premium Hospital Garments, Medical Scrubs, Doctor Lab Coats, Aprons, Underscrubs, and Patient Wear.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/imharish05/anr_garments.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/imharish05/anr_garments/issues"
+  },
+  "homepage": "https://github.com/imharish05/anr_garments#readme",
+  "devDependencies": {
+    "playwright": "^1.65.0"
+  }
+}

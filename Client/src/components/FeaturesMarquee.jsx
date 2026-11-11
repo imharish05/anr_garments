@@ -23,10 +23,10 @@ const FeaturesMarquee = () => {
               key={index}
               className="inline-flex items-center gap-2.5 mx-6 text-white/90 text-xs sm:text-sm font-bold tracking-wider uppercase group"
             >
-              <div className="p-1 rounded bg-white/10 group-hover:bg-amber-400 group-hover:text-[#1A175A] transition-colors">
+              <div className="p-1 rounded bg-white/10 group-hover:bg-white group-hover:text-[#1A175A] transition-colors">
                 <Icon className="w-3.5 h-3.5 text-blue-300 group-hover:text-[#1A175A]" />
               </div>
-              <span className="group-hover:text-amber-300 transition-colors">{item.text}</span>
+              <span className="group-hover:text-blue-200 transition-colors">{item.text}</span>
               <span className="text-white/20 ml-4 font-light">★</span>
             </div>
           );

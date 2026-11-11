@@ -1,103 +1,74 @@
 import React, { useState, useEffect } from 'react';
-import { Tag, Sparkles, Copy, Check, Percent, ArrowRight, ShieldCheck, Building2, Truck, Award } from 'lucide-react';
-import { fetchCoupons } from '../services/api';
-
-const DEFAULT_COUPONS = [
-  {
-    id: 1,
-    code: 'WELCOME20',
-    type: 'PERCENT',
-    value: 20,
-    minOrderValue: 499,
-    description: '20% OFF on your first healthcare uniform order',
-    validUntil: '2027-12-31',
-    badge: 'First Order'
-  },
-  {
-    id: 2,
-    code: 'FESTIVE20',
-    type: 'PERCENT',
-    value: 20,
-    minOrderValue: 999,
-    description: '20% OFF on all OT Scrubs, Lab Coats & Patient Wear',
-    validUntil: '2027-12-31',
-    badge: 'Seasonal Special'
-  },
-  {
-    id: 3,
-    code: 'TWINA100',
-    type: 'FLAT',
-    value: 100,
-    minOrderValue: 799,
-    description: 'Flat ₹100 instant discount on clinical orders above ₹799',
-    validUntil: '2027-12-31',
-    badge: 'Instant Cash'
-  }
-];
-
-const BULK_TIERS = [
-  {
-    tier: 'Tier 01',
-    name: 'Clinics & OPD Practice',
-    range: '10 – 50 Sets',
-    discount: '15% Volume Off',
-    tag: 'Quick Hospital Setup',
-    perks: [
-      'Free Doctor Name & Cadre embroidery',
-      'All 13 department clinical colours available',
-      'Doorstep express delivery across India'
-    ],
-    highlight: false,
-  },
-  {
-    tier: 'Tier 02',
-    name: 'Hospitals & Nursing Homes',
-    range: '51 – 200 Sets',
-    discount: '22% Direct Factory Off',
-    tag: 'Most Popular for Wards',
-    perks: [
-      'Free Hospital Crest digitized & embroidered',
-      'Mix & match sizes (S to 2XL) per department',
-      'Anti-microbial & autoclavable certified fabric',
-      'Priority 48-hour Bangalore factory dispatch'
-    ],
-    highlight: true,
-  },
-  {
-    tier: 'Tier 03',
-    name: 'Hospital Chains & Colleges',
-    range: '200+ Sets (Institutional)',
-    discount: 'Wholesale Contract Pricing',
-    tag: 'Enterprise Procurement',
-    perks: [
-      'Custom bespoke pant-hem and sleeve tailoring',
-      'Dedicated institutional key account manager',
-      'GST Input Tax Credit (ITC) compliant invoicing',
-      'Flexible Net-30 procurement credit terms'
-    ],
-    highlight: false,
-  }
-];
+import {
+  Copy,
+  Check,
+  ArrowRight,
+  ShieldCheck,
+  Truck,
+  Award,
+  Scissors,
+  BadgePercent
+} from 'lucide-react';
+import { fetchCoupons, fetchSetting } from '../services/api';
+import { CouponCardSkeleton, BulkTierSkeleton } from './SkeletonLoaders';
+import { AnimatedText, ScrollReveal } from './MotionPrimitives';
 
 const OffersSection = () => {
-  const [coupons, setCoupons] = useState(DEFAULT_COUPONS);
+  const [coupons, setCoupons] = useState([]);
+  const [bulkTiers, setBulkTiers] = useState([]);
+  const [loadingCoupons, setLoadingCoupons] = useState(true);
+  const [loadingTiers, setLoadingTiers] = useState(true);
+  const [couponsError, setCouponsError] = useState('');
+  const [tiersError, setTiersError] = useState('');
   const [copiedCode, setCopiedCode] = useState(null);
 
   useEffect(() => {
-    let isMounted = true;
-    fetchCoupons().then((items) => {
-      if (isMounted && Array.isArray(items) && items.length > 0) {
-        setCoupons(items);
-      }
-    }).catch(err => {
-      console.warn('Using default coupons fallback:', err);
-    });
-    return () => { isMounted = false; };
+    let alive = true;
+    fetchCoupons()
+      .then((items) => {
+        if (!alive) return;
+        const list = Array.isArray(items) ? items : [];
+        setCoupons(
+          list.map((c, i) => ({
+            ...c,
+            badge: c.badge || (i === 0 ? 'First Order' : i === 1 ? 'Seasonal Special' : 'Instant Savings'),
+          }))
+        );
+      })
+      .catch((err) => {
+        if (alive) {
+          setCouponsError(err?.message || 'Unable to load offers right now.');
+          setCoupons([]);
+        }
+      })
+      .finally(() => {
+        if (alive) setLoadingCoupons(false);
+      });
+
+    fetchSetting('bulk_tiers')
+      .then((settingData) => {
+        if (!alive) return;
+        const tiers = Array.isArray(settingData?.tiers) ? settingData.tiers : [];
+        setBulkTiers(tiers);
+      })
+      .catch((err) => {
+        if (alive) {
+          setTiersError(err?.message || 'Unable to load bulk pricing tiers.');
+          setBulkTiers([]);
+        }
+      })
+      .finally(() => {
+        if (alive) setLoadingTiers(false);
+      });
+
+    return () => {
+      alive = false;
+    };
   }, []);
 
   const handleCopy = (code) => {
     if (!code) return;
-    navigator.clipboard.writeText(code);
+    navigator.clipboard?.writeText(code);
     setCopiedCode(code);
     setTimeout(() => {
       setCopiedCode(null);
@@ -105,84 +76,133 @@ const OffersSection = () => {
   };
 
   return (
-    <section id="offers" className="py-16 sm:py-20 bg-gradient-to-b from-slate-50 via-white to-slate-50 border-b border-slate-200/80 scroll-mt-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section
+      id="offers"
+      className="scroll-mt-24 py-16 sm:py-20 bg-gradient-to-b from-[#F7F8FC] via-white to-[#F7F8FC] border-b border-slate-200/80 relative overflow-hidden"
+    >
+      {/* Decorative background glow blobs */}
+      <div className="absolute -top-32 -left-32 w-80 h-80 rounded-full bg-[#1A175A]/[0.03] blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-32 -right-32 w-80 h-80 rounded-full bg-blue-500/[0.08] blur-3xl pointer-events-none" />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Section Header */}
+        {/* Section Heading */}
         <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-bold uppercase tracking-wider mb-3">
-            <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-            <span>Special Offers &amp; Bulk Procurement Privileges</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-[#1A175A] tracking-tight">
-            Institutional Discounts &amp; Active Promo Codes
-          </h2>
-          <div className="mx-auto mt-3 h-[3px] w-12 rounded-full bg-amber-400" />
-          <p className="mt-4 text-slate-600 text-sm sm:text-base">
-            Take advantage of direct-from-factory savings, active checkout voucher codes, and tiered wholesale pricing tailored for medical professionals and healthcare institutions.
-          </p>
+          <AnimatedText
+            as="h2"
+            className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#1A175A] tracking-tight block"
+          >
+            Exclusive Offers & Bulk Discounts
+          </AnimatedText>
+
+          <ScrollReveal direction="scale" delay={180}>
+            <div className="mx-auto mt-4 h-[3px] w-14 rounded-full bg-[#1A175A]" />
+          </ScrollReveal>
+
+          <AnimatedText
+            as="p"
+            mode="words"
+            delay={120}
+            className="mt-4 text-slate-600 text-sm sm:text-base leading-relaxed"
+          >
+            Apply active discount voucher codes at checkout or unlock institutional tier pricing directly.
+          </AnimatedText>
         </div>
 
-        {/* 1. Active Promo Voucher Cards */}
-        <div className="mb-14">
-          <div className="flex items-center justify-between mb-5">
-            <div className="flex items-center gap-2">
-              <Tag className="w-4 h-4 text-[#1A175A]" />
-              <h3 className="text-base sm:text-lg font-bold text-[#1A175A]">
-                Active Checkout Promo Vouchers
-              </h3>
+        {/* 1. Coupon Vouchers Grid */}
+        <ScrollReveal
+          staggerChildren
+          staggerMs={80}
+          triggerKey={loadingCoupons ? 'loading' : coupons.length}
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-14"
+        >
+          {loadingCoupons ? (
+            [1, 2, 3].map((i) => <CouponCardSkeleton key={i} />)
+          ) : couponsError ? (
+            <div className="md:col-span-3 rounded-2xl border border-blue-200 bg-blue-50/80 p-6 text-center text-sm font-medium text-[#1A175A]">
+              {couponsError}
             </div>
-            <span className="text-xs text-slate-500 font-medium hidden sm:inline">
-              Apply code during checkout for instant savings
-            </span>
-          </div>
+          ) : coupons.length === 0 ? (
+            <div className="md:col-span-3 rounded-2xl border border-dashed border-slate-300 bg-white/80 p-8 text-center text-sm text-slate-600">
+              No active discount coupons at this time.
+            </div>
+          ) : (
+            coupons.map((c) => {
+            const isCopied = copiedCode === c.code;
+            const offText =
+              c.type === 'PERCENT'
+                ? `${Math.round(c.value)}% OFF`
+                : `₹${Math.round(c.value)} OFF`;
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {coupons.map((coupon) => {
-              const isCopied = copiedCode === coupon.code;
-              const discountText = coupon.type === 'PERCENT'
-                ? `${Math.round(coupon.value)}% OFF`
-                : `₹${Math.round(coupon.value)} OFF`;
-
-              return (
-                <div
-                  key={coupon.id || coupon.code}
-                  className="relative group bg-white border border-dashed border-[#1A175A]/25 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300 hover:border-[#1A175A]"
-                >
-                  {/* Decorative Ticket Cutouts */}
-                  <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-slate-50 rounded-full border-r border-slate-300 pointer-events-none" />
-                  <div className="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-slate-50 rounded-full border-l border-slate-300 pointer-events-none" />
-
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <span className="inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 mb-2">
-                        {coupon.badge || (coupon.type === 'PERCENT' ? 'Percentage Off' : 'Flat Discount')}
-                      </span>
-                      <h4 className="text-2xl font-black text-[#1A175A] tracking-tight">
-                        {discountText}
-                      </h4>
-                    </div>
-                    <div className="w-10 h-10 rounded-full bg-[#1A175A]/5 text-[#1A175A] flex items-center justify-center flex-shrink-0">
-                      <Percent className="w-5 h-5" />
-                    </div>
+            return (
+              <div
+                key={c.id || c.code}
+                className="group relative flex flex-col sm:flex-row rounded-3xl bg-white border border-slate-200 shadow-sm hover:shadow-xl hover:shadow-[#1A175A]/10 transition-all duration-300 overflow-hidden"
+              >
+                {/* Left Ticket Stub (Navy with Perforation Effect) */}
+                <div className="relative bg-[#1A175A] text-white p-5 flex flex-col justify-between items-center sm:items-start text-center sm:text-left sm:w-36 flex-shrink-0">
+                  <div className="w-full flex items-center justify-between sm:justify-start gap-1.5 text-blue-200">
+                    <BadgePercent className="w-4 h-4" />
+                    <span className="text-[10px] font-extrabold uppercase tracking-widest">
+                      {c.badge || 'Voucher'}
+                    </span>
                   </div>
 
-                  <p className="mt-2 text-xs text-slate-600 line-clamp-2 min-h-[32px]">
-                    {coupon.description || `Applicable on orders with minimum cart value of ₹${coupon.minOrderValue || 0}.`}
-                  </p>
+                  <div className="my-3 sm:my-0">
+                    <span className="block text-2xl sm:text-3xl font-black text-white tracking-tight leading-none">
+                      {offText}
+                    </span>
+                    <span className="block text-[10px] text-blue-200 font-medium mt-1 uppercase tracking-wider">
+                      Factory Coupon
+                    </span>
+                  </div>
 
-                  <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between gap-2">
-                    <div className="font-mono text-xs font-bold tracking-widest text-[#1A175A] bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200 select-all">
-                      {coupon.code}
+                  <div className="hidden sm:flex items-center gap-1 text-[10px] text-blue-300/80">
+                    <Scissors className="w-3 h-3 rotate-90" />
+                    <span>Clip &amp; Apply</span>
+                  </div>
+
+                  {/* Semicircle Ticket Cutouts for perforation look on desktop */}
+                  <div className="hidden sm:block absolute -right-3 top-[-10px] w-6 h-6 rounded-full bg-[#F7F8FC] border border-slate-200/60" />
+                  <div className="hidden sm:block absolute -right-3 bottom-[-10px] w-6 h-6 rounded-full bg-[#F7F8FC] border border-slate-200/60" />
+                </div>
+
+                {/* Right Details Stub with Dashed Border */}
+                <div className="flex-1 p-5 sm:p-6 flex flex-col justify-between sm:border-l-2 sm:border-dashed sm:border-slate-200 bg-white">
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-2">
+                      {/* <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
+                        Active Today
+                      </span> */}
+
+                      {c.minOrderValue > 0 && (
+                        <span className="text-[11px] font-semibold text-slate-500">
+                          Min. Order ₹{Number(c.minOrderValue).toLocaleString()}
+                        </span>
+                      )}
                     </div>
+
+                    <p className="text-xs sm:text-sm font-bold text-slate-800 leading-snug line-clamp-2">
+                      {c.description}
+                    </p>
+                  </div>
+
+                  {/* Copy Coupon Action Button */}
+                  <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+                    <div className="font-mono text-xs font-black tracking-widest text-[#1A175A] bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200 select-all">
+                      {c.code}
+                    </div>
+
                     <button
                       type="button"
-                      onClick={() => handleCopy(coupon.code)}
-                      className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all ${
+                      onClick={() => handleCopy(c.code)}
+                      className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 shadow-xs ${
                         isCopied
-                          ? 'bg-emerald-600 text-white'
-                          : 'bg-[#1A175A] text-white hover:bg-[#282479]'
+                          ? 'bg-emerald-600 text-white scale-105'
+                          : 'bg-[#1A175A] hover:bg-blue-700 text-white'
                       }`}
+                      aria-label={`Copy discount code ${c.code}`}
                     >
                       {isCopied ? (
                         <>
@@ -192,124 +212,190 @@ const OffersSection = () => {
                       ) : (
                         <>
                           <Copy className="w-3.5 h-3.5" />
-                          <span>Copy Code</span>
+                          <span>Copy</span>
                         </>
                       )}
                     </button>
                   </div>
-
-                  {coupon.minOrderValue > 0 && (
-                    <div className="mt-2 text-[10px] text-slate-400">
-                      Min. Cart Value: ₹{Number(coupon.minOrderValue).toLocaleString()}
-                    </div>
-                  )}
                 </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* 2. Volume & Institutional Bulk Tier Pricing */}
-        <div>
-          <div className="flex items-center gap-2 mb-5">
-            <Building2 className="w-4 h-4 text-[#1A175A]" />
-            <h3 className="text-base sm:text-lg font-bold text-[#1A175A]">
-              Tiered Volume Discounts for Clinics &amp; Hospital Chains
-            </h3>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {BULK_TIERS.map((tier) => (
-              <div
-                key={tier.tier}
-                className={`relative rounded-2xl p-6 sm:p-7 flex flex-col justify-between transition-all duration-300 ${
-                  tier.highlight
-                    ? 'bg-[#1A175A] text-white shadow-xl shadow-[#1A175A]/20 scale-[1.02] border-2 border-amber-400'
-                    : 'bg-white border border-slate-200 text-slate-800 shadow-sm hover:shadow-md'
-                }`}
-              >
-                {tier.highlight && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-400 text-[#1A175A] text-[10px] font-black uppercase tracking-wider px-3 py-0.5 rounded-full shadow-sm">
-                    Recommended for Hospitals
-                  </span>
-                )}
-
-                <div>
-                  <div className="flex items-center justify-between gap-2 mb-2">
-                    <span className={`text-xs font-bold uppercase tracking-wider ${tier.highlight ? 'text-amber-300' : 'text-[#1A175A]'}`}>
-                      {tier.tier}
-                    </span>
-                    <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${tier.highlight ? 'bg-white/10 text-white' : 'bg-slate-100 text-slate-600'}`}>
-                      {tier.tag}
-                    </span>
-                  </div>
-
-                  <h4 className="text-xl font-bold tracking-tight mb-1">
-                    {tier.name}
-                  </h4>
-                  <div className={`text-xs font-medium mb-4 ${tier.highlight ? 'text-blue-200' : 'text-slate-500'}`}>
-                    Order Volume: <strong className={tier.highlight ? 'text-white' : 'text-slate-800'}>{tier.range}</strong>
-                  </div>
-
-                  <div className={`p-3 rounded-xl mb-5 text-center font-black text-lg ${
-                    tier.highlight ? 'bg-white/10 text-amber-300' : 'bg-emerald-50 text-emerald-800 border border-emerald-200'
-                  }`}>
-                    {tier.discount}
-                  </div>
-
-                  <ul className="space-y-2.5 mb-6">
-                    {tier.perks.map((perk, i) => (
-                      <li key={i} className="flex items-start gap-2 text-xs leading-relaxed">
-                        <Check className={`w-4 h-4 flex-shrink-0 mt-0.5 ${tier.highlight ? 'text-amber-400' : 'text-emerald-600'}`} />
-                        <span className={tier.highlight ? 'text-slate-100' : 'text-slate-600'}>{perk}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <a
-                  href="#bulk-inquiry"
-                  className={`inline-flex items-center justify-center gap-2 w-full py-3 rounded-xl text-xs sm:text-sm font-bold transition-all ${
-                    tier.highlight
-                      ? 'bg-amber-400 text-[#1A175A] hover:bg-amber-300 shadow-md'
-                      : 'bg-[#1A175A] text-white hover:bg-[#282479]'
-                  }`}
-                >
-                  <span>Request Custom Quote</span>
-                  <ArrowRight className="w-4 h-4" />
-                </a>
               </div>
-            ))}
+            );
+          }))}
+        </ScrollReveal>
+
+        {/* 2. Institutional Bulk Volume Procurement Tiers (Hospital Ward Supply) */}
+        <div className="mb-14">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 pb-3 border-b border-slate-200">
+            <div>
+              <ScrollReveal direction="pop" className="inline-block">
+                <p className="text-xs font-bold text-blue-700 uppercase tracking-widest">
+                  Hospital Procurement
+                </p>
+              </ScrollReveal>
+              <AnimatedText
+                as="h3"
+                className="text-2xl sm:text-3xl font-black text-[#1A175A] tracking-tight mt-1 block"
+              >
+                Tiered Hospital Bulk Pricing
+              </AnimatedText>
+            </div>
+
           </div>
+
+          <ScrollReveal
+            staggerChildren
+            staggerMs={90}
+            triggerKey={loadingTiers ? 'loading' : bulkTiers.length}
+            className="grid grid-cols-1 md:grid-cols-3 gap-6"
+          >
+            {loadingTiers ? (
+              [1, 2, 3].map((i) => <BulkTierSkeleton key={i} />)
+            ) : tiersError ? (
+              <div className="md:col-span-3 rounded-2xl border border-blue-200 bg-blue-50/80 p-6 text-center text-sm font-medium text-[#1A175A]">
+                {tiersError}
+              </div>
+            ) : bulkTiers.length === 0 ? (
+              <div className="md:col-span-3 rounded-2xl border border-dashed border-slate-300 bg-white/80 p-8 text-center text-sm text-slate-600">
+                Contact our institutional sales desk for custom hospital volume brackets.
+              </div>
+            ) : (
+              bulkTiers.map((tier, tierIdx) => {
+                const isPopular = tier.popular ?? tierIdx === 1;
+                const volumeLabel =
+                  tier.volume ||
+                  (tier.maxQty
+                    ? `${tier.minQty} – ${tier.maxQty} Units`
+                    : `${tier.minQty}+ Units`);
+                const discountLabel =
+                  tier.discount || `${tier.discountPercent}% Volume Off`;
+                const tierTitle = tier.name || tier.label || `Tier ${tierIdx + 1}`;
+                const tierTag = tier.tag || (isPopular ? 'Most Popular' : 'Direct Institutional');
+                const tierCode = tier.tier || `Tier 0${tierIdx + 1}`;
+
+                return (
+                  <div
+                    key={tier.id || tierCode}
+                    className={`relative rounded-3xl p-6 sm:p-7 flex flex-col justify-between transition-all duration-300 ${
+                      isPopular
+                        ? 'bg-[#1A175A] text-white shadow-xl shadow-[#1A175A]/20 ring-2 ring-blue-500'
+                        : 'bg-white text-slate-800 border border-slate-200 hover:border-[#1A175A]/40 shadow-xs hover:shadow-md'
+                    }`}
+                  >
+                    {isPopular && (
+                      <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-white text-[#1A175A] ring-1 ring-blue-200 text-[10px] font-black uppercase tracking-wider shadow-md">
+                        ★ {tierTag}
+                      </span>
+                    )}
+
+                    <div>
+                      <div className="flex justify-between items-start mb-3">
+                        <span
+                          className={`text-[11px] font-bold uppercase tracking-wider ${
+                            isPopular ? 'text-blue-200' : 'text-slate-500'
+                          }`}
+                        >
+                          {tierCode} {!isPopular && `• ${tierTag}`}
+                        </span>
+                        <span
+                          className={`text-xs font-extrabold px-2.5 py-0.5 rounded-full ${
+                            isPopular
+                              ? 'bg-white/15 text-white'
+                              : 'bg-slate-100 text-slate-700'
+                          }`}
+                        >
+                          {volumeLabel}
+                        </span>
+                      </div>
+
+                      <h4
+                        className={`text-lg sm:text-xl font-black tracking-tight ${
+                          isPopular ? 'text-white' : 'text-slate-900'
+                        }`}
+                      >
+                        {tierTitle}
+                      </h4>
+
+                      <div className="mt-3 mb-5">
+                        <span
+                          className={`inline-block text-xl sm:text-2xl font-black tracking-tight ${
+                            isPopular ? 'text-blue-200' : 'text-emerald-600'
+                          }`}
+                        >
+                          {discountLabel}
+                        </span>
+                      </div>
+
+                      {Array.isArray(tier.perks) && tier.perks.length > 0 && (
+                        <ul className="space-y-2.5 mb-8">
+                          {tier.perks.map((perk, idx) => (
+                            <li key={idx} className="flex items-start gap-2.5 text-xs leading-relaxed">
+                              <Check
+                                className={`w-4 h-4 flex-shrink-0 mt-0.5 ${
+                                  isPopular ? 'text-blue-200' : 'text-emerald-600'
+                                }`}
+                              />
+                              <span className={isPopular ? 'text-blue-100' : 'text-slate-600'}>
+                                {perk}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+
+                    <a
+                      href="/bulk-order"
+                      className={`w-full py-3.5 px-4 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all ${
+                        isPopular
+                          ? 'bg-white hover:bg-blue-50 text-[#1A175A] shadow-md'
+                          : 'bg-[#1A175A] hover:bg-[#141247] text-white shadow-xs'
+                      }`}
+                    >
+                      <span>Request Tier Quote</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </a>
+                  </div>
+                );
+              })
+            )}
+          </ScrollReveal>
         </div>
 
-        {/* 3. Reassurance Perks Bar */}
-        <div className="mt-12 bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center sm:text-left">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#1A175A]/5 text-[#1A175A] flex items-center justify-center flex-shrink-0">
-              <Truck className="w-5 h-5" />
+        {/* 3. Reassurance Perks & Factory Quality Guarantees Bar */}
+        <div className="bg-white border border-slate-200/90 rounded-3xl p-6 sm:p-7 shadow-sm grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-[#1A175A]/5 text-[#1A175A] flex items-center justify-center flex-shrink-0">
+              <Truck className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-xs font-bold text-slate-800">Direct Bangalore Factory Dispatch</p>
-              <p className="text-[11px] text-slate-500">Zero middleman markup, genuine manufacturer pricing</p>
+              <h5 className="text-sm font-bold text-slate-900">Direct Bangalore Factory Dispatch</h5>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Zero middleman markup, genuine Bangalore manufacturer wholesale pricing.
+              </p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#1A175A]/5 text-[#1A175A] flex items-center justify-center flex-shrink-0">
-              <ShieldCheck className="w-5 h-5" />
+
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-[#1A175A]/5 text-[#1A175A] flex items-center justify-center flex-shrink-0">
+              <ShieldCheck className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-xs font-bold text-slate-800">Autoclavable Guarantee</p>
-              <p className="text-[11px] text-slate-500">60+ wash autoclave test endurance certified</p>
+              <h5 className="text-sm font-bold text-slate-900">60+ Autoclave Wash Guarantee</h5>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Steam sterilization tested endurance, shrink-proof &amp; anti-microbial fabric weave.
+              </p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#1A175A]/5 text-[#1A175A] flex items-center justify-center flex-shrink-0">
-              <Award className="w-5 h-5" />
+
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-[#1A175A]/5 text-[#1A175A] flex items-center justify-center flex-shrink-0">
+              <Award className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-xs font-bold text-slate-800">GST Input Tax Credit Compliant</p>
-              <p className="text-[11px] text-slate-500">Official commercial tax invoices for institutional claims</p>
+              <h5 className="text-sm font-bold text-slate-900">Official GST ITC Compliant</h5>
+              <p className="text-xs text-slate-500 mt-0.5">
+                GST commercial tax invoices issued for hospital input tax credit claims.
+              </p>
             </div>
           </div>
         </div>

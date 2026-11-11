@@ -9,7 +9,13 @@ const helmet = require('helmet');
 const app = express();
 
 // Trust reverse proxy (Nginx, Webuzo, Cloudflare) for accurate HTTPS detection
-app.set('trust proxy', true);
+// Trust configured proxy hop count rather than permissive boolean `true`
+// so req.ip & express-rate-limit remain safe against X-Forwarded-For spoofing.
+const trustProxyValue =
+  process.env.TRUST_PROXY === 'false'
+    ? false
+    : (Number(process.env.TRUST_PROXY) || 1);
+app.set('trust proxy', trustProxyValue);
 
 // ── Security & Logging ────────────────────────────────────────────────────────
 app.use(helmet({ crossOriginResourcePolicy: false, contentSecurityPolicy: false }));
@@ -62,7 +68,10 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
   setHeaders: fixImageContentType,
 }));
 
+const { generalApiLimiter } = require('./middleware/rateLimiter');
+
 // ── API Routes ────────────────────────────────────────────────────────────────
+app.use('/api', generalApiLimiter);
 app.use('/api/auth',       require('./routes/authRoutes'));
 try {
   app.use('/mob-api', require('./mob-api'));
