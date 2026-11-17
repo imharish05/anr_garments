@@ -831,9 +831,20 @@ const ProductsPage = () => {
       const tree = await fetchCategoriesTree(forceRefresh).catch(() => []);
       const safeTree = Array.isArray(tree) ? tree : [];
       const normalize = (value) => String(value || '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-      const targetCategory = categorySlug && categorySlug !== 'all'
-        ? safeTree.find((category) => normalize(category.slug) === normalize(categorySlug) || normalize(category.name) === normalize(categorySlug))
+      const normCatSlug = normalize(categorySlug);
+      let targetCategory = categorySlug && categorySlug !== 'all'
+        ? safeTree.find((category) => normalize(category.slug) === normCatSlug || normalize(category.name) === normCatSlug)
         : null;
+
+      if (!targetCategory && categorySlug && categorySlug !== 'all') {
+        targetCategory = safeTree.find((category) => {
+          const cSlug = normalize(category.slug);
+          const cName = normalize(category.name);
+          return normCatSlug.includes(cSlug) || cSlug.includes(normCatSlug) ||
+                 normCatSlug.includes(cName) || cName.includes(normCatSlug);
+        }) || null;
+      }
+
       const targetSubcategory = subCategorySlug
         ? (targetCategory?.subcategories || safeTree.flatMap((category) => category.subcategories || []))
             .find((subcategory) => normalize(subcategory.slug) === normalize(subCategorySlug) || normalize(subcategory.name) === normalize(subCategorySlug))
@@ -863,10 +874,17 @@ const ProductsPage = () => {
   const activeCategoryObj = useMemo(() => {
     if (!categorySlug || categorySlug === 'all') return null;
     const target = normalizeSlug(categorySlug);
+    const exact = categoriesTree.find(
+      (c) => normalizeSlug(c.slug) === target || normalizeSlug(c.name) === target
+    );
+    if (exact) return exact;
     return (
-      categoriesTree.find(
-        (c) => normalizeSlug(c.slug) === target || normalizeSlug(c.name) === target
-      ) || null
+      categoriesTree.find((c) => {
+        const cSlug = normalizeSlug(c.slug);
+        const cName = normalizeSlug(c.name);
+        return target.includes(cSlug) || cSlug.includes(target) ||
+               target.includes(cName) || cName.includes(target);
+      }) || null
     );
   }, [categoriesTree, categorySlug]);
 

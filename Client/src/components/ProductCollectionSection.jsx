@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, PackageOpen, RefreshCw } from 'lucide-react';
-import { fetchProducts } from '../services/api';
+import { fetchCategoriesTree, fetchProducts, getCategoryPageLink } from '../services/api';
 import ProductCard from './ProductCard';
 import { ProductCardSkeleton } from './SkeletonLoaders';
 import { AnimatedText, ScrollReveal } from './MotionPrimitives';
@@ -24,12 +24,41 @@ const ProductCollectionSection = ({
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [dynamicCtaTo, setDynamicCtaTo] = useState(ctaTo);
 
-  const primarySlug = categorySlugs.length === 1 ? categorySlugs[0] : undefined;
   const slugsKey = categorySlugs.join(',');
   const idsKey = categoryIds.join(',');
   const patternSource = namePattern ? namePattern.source : '';
   const patternFlags = namePattern ? namePattern.flags : '';
+
+  // Dynamically resolve button link to live category page URL
+  useEffect(() => {
+    let isMounted = true;
+    const resolveLink = async () => {
+      try {
+        const tree = await fetchCategoriesTree().catch(() => []);
+        if (!Array.isArray(tree) || tree.length === 0) return;
+        const slugs = slugsKey ? slugsKey.split(',') : EMPTY_LIST;
+        const ids = idsKey ? idsKey.split(',').map(Number) : EMPTY_LIST;
+        const regex = patternSource ? new RegExp(patternSource, patternFlags) : null;
+
+        const matched = tree.find((c) => {
+          if (slugs.includes(c.slug)) return true;
+          if (ids.includes(c.id)) return true;
+          if (regex && (regex.test(c.name || '') || regex.test(c.slug || ''))) return true;
+          return false;
+        });
+
+        if (matched && matched.slug && isMounted) {
+          setDynamicCtaTo(getCategoryPageLink(matched.slug));
+        }
+      } catch {
+        // Fallback to default ctaTo
+      }
+    };
+    resolveLink();
+    return () => { isMounted = false; };
+  }, [slugsKey, idsKey, patternSource, patternFlags, ctaTo]);
 
   const loadProducts = useCallback(async (forceRefresh = false) => {
     setLoading(true);
@@ -63,6 +92,9 @@ const ProductCollectionSection = ({
       }
 
       setProducts(list.slice(0, limit));
+      if (list.length > 0 && list[0]?.categorySlug) {
+        setDynamicCtaTo(getCategoryPageLink(list[0].categorySlug));
+      }
     } catch (err) {
       setError(err?.message || 'Unable to load products right now.');
       setProducts([]);
@@ -105,9 +137,9 @@ const ProductCollectionSection = ({
             )}
           </div>
 
-          {ctaTo && (
+          {(dynamicCtaTo || ctaTo) && (
             <Link
-              to={ctaTo}
+              to={dynamicCtaTo || ctaTo}
               className="mt-2 md:mt-0 inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-[#1A175A] hover:text-blue-700 transition-colors group shrink-0"
             >
               <span>{ctaText}</span>

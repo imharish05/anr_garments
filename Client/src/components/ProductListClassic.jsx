@@ -2,6 +2,7 @@ import React from 'react';
 import ProductCollectionSection from './ProductCollectionSection';
 
 const SCRUB_SLUGS = ['scrub-suits', 'scrubs', 'scrub-suits-for-men-women'];
+const SCRUB_IDS = [14];
 const SCRUB_PATTERN = /scrub/i;
 
 const ProductListClassic = () => (
@@ -14,6 +15,7 @@ const ProductListClassic = () => (
     ctaText="View all scrub products"
     ctaTo="/products/scrub-suits"
     categorySlugs={SCRUB_SLUGS}
+    categoryIds={SCRUB_IDS}
     namePattern={SCRUB_PATTERN}
   />
 );
