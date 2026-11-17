@@ -740,7 +740,7 @@ const FilterDrawer = ({
                   </span>
                 )}
               </div>
-              <p className="text-xs text-slate-500">Price, colour, size & availability</p>
+              <p className="text-xs text-slate-500">Price, colour & size</p>
             </div>
           </div>
 
@@ -821,9 +821,6 @@ const ProductsPage = () => {
   const selectedColor = searchParams.get('color') || '';
   const selectedSize = searchParams.get('size') || '';
   const selectedSort = searchParams.get('sort') || 'featured';
-  const stockParam = searchParams.get('stock') || ''; // '' | '1' (in stock) | 'out'
-  const inStockOnly = stockParam === '1';
-  const outOfStockOnly = stockParam === 'out';
   const rawMinPriceParam = searchParams.get('minPrice');
   const rawMaxPriceParam = searchParams.get('maxPrice');
 
@@ -929,12 +926,6 @@ const ProductsPage = () => {
     return { all: allProducts.length, cat, sub };
   }, [allProducts, categoriesTree]);
 
-  // Availability counts for the current category scope
-  const stockCounts = useMemo(() => {
-    const inStock = scopedProducts.filter((p) => Number(p.stock) > 0).length;
-    return { all: scopedProducts.length, in: inStock, out: scopedProducts.length - inStock };
-  }, [scopedProducts]);
-
   // Aggregate unique Admin color swatches present across scoped products (or full catalog)
   const availableColors = useMemo(() => {
     const source = scopedProducts.length > 0 ? scopedProducts : allProducts;
@@ -983,7 +974,7 @@ const ProductsPage = () => {
   const sliderMaxPrice = priceDraft ? priceDraft[1] : urlMaxPrice;
   const hasPriceFilter = sliderMinPrice > priceBounds.min || sliderMaxPrice < priceBounds.max;
 
-  // Apply search, colour, size, price, stock filters & sorting
+  // Apply search, colour, size, price filters & sorting
   const filteredProducts = useMemo(() => {
     const q = searchQ.trim().toLowerCase();
     const colorQ = selectedColor.trim().toLowerCase();
@@ -1034,9 +1025,6 @@ const ProductsPage = () => {
         }
       }
 
-      if (inStockOnly && Number(p.stock) <= 0) return false;
-      if (outOfStockOnly && Number(p.stock) > 0) return false;
-
       return true;
     });
 
@@ -1067,8 +1055,6 @@ const ProductsPage = () => {
     searchQ,
     selectedColor,
     selectedSize,
-    inStockOnly,
-    outOfStockOnly,
     selectedSort,
     hasPriceFilter,
     sliderMinPrice,
@@ -1180,7 +1166,7 @@ const ProductsPage = () => {
 
   const pageTitle = activeSubcategoryName || activeCategoryName;
 
-  const activeDrawerCount = [hasPriceFilter, selectedColor, selectedSize, stockParam].filter(Boolean).length;
+  const activeDrawerCount = [hasPriceFilter, selectedColor, selectedSize].filter(Boolean).length;
   const hasFacetFilters = Boolean(searchQ || activeDrawerCount > 0);
 
   const crumbs = [{ label: 'Products', to: categorySlug && categorySlug !== 'all' ? '/products' : null }];
@@ -1204,7 +1190,7 @@ const ProductsPage = () => {
       : `Up to ${inr(sliderMaxPrice)}`
     : '';
 
-  // Sidebar: price, colour, size, availability (categories live in the rail above)
+  // Sidebar: price, colour and size (categories live in the rail above)
   const filterPanels = (
     <div>
       <PriceFilter
@@ -1224,19 +1210,6 @@ const ProductsPage = () => {
 
       <SizeFilter selected={selectedSize} onSelect={(v) => updateParam('size', v)} />
 
-      <FilterGroup title="Availability" onReset={stockParam ? () => updateParam('stock', '') : null}>
-        <div role="radiogroup" aria-label="Availability">
-          <Option active={!stockParam} onClick={() => updateParam('stock', '')} count={stockCounts.all}>
-            All products
-          </Option>
-          <Option active={inStockOnly} onClick={() => updateParam('stock', '1')} count={stockCounts.in}>
-            In stock
-          </Option>
-          <Option active={outOfStockOnly} onClick={() => updateParam('stock', 'out')} count={stockCounts.out}>
-            Out of stock
-          </Option>
-        </div>
-      </FilterGroup>
     </div>
   );
 
@@ -1371,12 +1344,6 @@ const ProductsPage = () => {
                 {selectedSize && (
                   <button type="button" onClick={() => updateParam('size', '')} className={chipBase} aria-label={`Remove size ${selectedSize}`}>
                     Size {selectedSize}
-                    <X className="w-3.5 h-3.5 text-slate-400" />
-                  </button>
-                )}
-                {stockParam && (
-                  <button type="button" onClick={() => updateParam('stock', '')} className={chipBase} aria-label="Remove availability filter">
-                    {outOfStockOnly ? 'Out of stock' : 'In stock'}
                     <X className="w-3.5 h-3.5 text-slate-400" />
                   </button>
                 )}
