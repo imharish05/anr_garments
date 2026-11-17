@@ -8,6 +8,13 @@ const fs = require('fs');
  */
 const isCloudinaryEnabled = () => {
   if (process.env.STORAGE_TYPE === 'local') return false;
+  if (process.env.STORAGE_TYPE === 'cloudinary') {
+    return Boolean(
+      process.env.CLOUDINARY_CLOUD_NAME &&
+      process.env.CLOUDINARY_API_KEY &&
+      process.env.CLOUDINARY_API_SECRET
+    );
+  }
   return Boolean(
     process.env.CLOUDINARY_CLOUD_NAME &&
     process.env.CLOUDINARY_API_KEY &&
@@ -88,11 +95,16 @@ const deleteFromCloudinary = async (imageUrl) => {
 const getUploadedUrl = async (file, folder = 'others') => {
   if (!file) return null;
 
+  if (process.env.STORAGE_TYPE === 'cloudinary' && !isCloudinaryEnabled()) {
+    throw new Error('STORAGE_TYPE is cloudinary, but Cloudinary credentials are incomplete.');
+  }
+
   if (isCloudinaryEnabled()) {
     try {
       const cloudUrl = await uploadToCloudinary(file.path, folder);
       if (cloudUrl) return cloudUrl;
     } catch (err) {
+      if (process.env.STORAGE_TYPE === 'cloudinary') throw err;
       console.error(`[Cloudinary Upload Error, falling back to local storage]:`, err.message);
     }
   }

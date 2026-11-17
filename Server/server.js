@@ -62,74 +62,9 @@ const start = async () => {
       console.log('⚠️ Pre-sync Embroidery alter note:', embAlterErr.message);
     }
 
-    // Drop deprecated tables if they still exist in the database (safely handling foreign keys)
-    const tablesToDrop = [
-      'ReturnRequests',
-      'returnrequests',
-      'StockAlerts',
-      'stockalerts',
-      'WarehouseStocks',
-      'WarehouseStock',
-      'warehousestocks',
-      'warehousestock',
-      'Warehouses',
-      'warehouses',
-      'PersonalShopperRequests',
-      'personalshopperrequests',
-      'LoyaltyLedgers',
-      'loyaltyledgers',
-      'DeliveryZones',
-      'deliveryzones',
-      'Affiliates',
-      'affiliates',
-      'Vendors',
-      'vendors'
-    ];
-    for (const tbl of tablesToDrop) {
-      try {
-        await sequelize.query(`DROP TABLE IF EXISTS ${tbl}`);
-      } catch (e) {}
-    }
-
     // 2. Sync all active models
     await sequelize.sync();
     console.log('✅ Models synced');
-
-    // Clean up deprecated columns from remaining tables
-    const columnsToDrop = [
-      { table: 'OrderItems', column: 'returnStatus' },
-      { table: 'Products', column: 'priceAED' },
-      { table: 'Products', column: 'comparePriceAED' },
-      { table: 'Products', column: 'vendorId' },
-      { table: 'Products', column: 'warehouseId' },
-      { table: 'Products', column: 'has360View' },
-      { table: 'Products', column: 'hasVideo' },
-      { table: 'Products', column: 'videoUrl' },
-      { table: 'Products', column: 'spinImagePath' },
-      { table: 'Products', column: 'spinImageCount' },
-      { table: 'Products', column: 'spinImageExt' },
-      { table: 'Products', column: 'showAuthenticity' },
-      { table: 'Products', column: 'spin_images' },
-      { table: 'Products', column: 'model_3d_url' },
-      { table: 'ProductVariants', column: 'priceAED' },
-      { table: 'ProductVariants', column: 'mrpAED' },
-      { table: 'ProductVariants', column: 'warehouseId' },
-      { table: 'Orders', column: 'affiliateId' },
-      { table: 'Orders', column: 'loyaltyDiscount' },
-      { table: 'Orders', column: 'redeemedPoints' },
-      { table: 'Orders', column: 'isGiftWrap' },
-      { table: 'Orders', column: 'giftWrapFee' },
-      { table: 'Customers', column: 'loyaltyPoints' },
-      { table: 'InventoryMovementLogs', column: 'warehouseId' },
-      { table: 'InventoryMovementLogs', column: 'toWarehouseId' }
-    ];
-    for (const item of columnsToDrop) {
-      try {
-        await sequelize.query(`ALTER TABLE ${item.table} DROP COLUMN ${item.column}`);
-      } catch (e) {
-        // Ignored: column does not exist or already dropped
-      }
-    }
 
     // Run manual database alters for Banners table
     try {

@@ -23,8 +23,8 @@ app.use(morgan('dev'));
 
 // ── CORS ─────────────────────────────────────────────────────────────────────
 const allowedOrigins = [
-  process.env.CLIENT_URL,
-  process.env.ADMIN_URL,
+  ...(process.env.CLIENT_URL || '').split(',').map((origin) => origin.trim()).filter(Boolean),
+  ...(process.env.ADMIN_URL || '').split(',').map((origin) => origin.trim()).filter(Boolean),
   'http://localhost:5173',
   'http://localhost:5174',
   'http://localhost:3000',
@@ -36,8 +36,7 @@ const allowedOrigins = [
 app.use((req, res, next) => {
   const origin = req.headers.origin;
   if (origin) {
-    const isAllowed = allowedOrigins.includes(origin) || 
-      allowedOrigins.some(o => origin.startsWith(o)) ||
+    const isAllowed = allowedOrigins.includes(origin) ||
       process.env.NODE_ENV !== 'production';
 
     if (isAllowed) {
