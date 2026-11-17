@@ -250,7 +250,7 @@ const ProductCard = ({ product }) => {
         {/* View Product Button */}
         <Link
           to={productLink}
-          className="mt-2.5 sm:mt-4 flex w-full items-center justify-center gap-1.5 sm:gap-2 rounded-lg sm:rounded-xl px-2 py-2 sm:py-2.5 text-xs sm:text-[13px] font-bold text-white bg-[#1A175A] shadow-md shadow-[#1A175A]/20 transition-all duration-200 hover:bg-[#282479] hover:shadow-lg hover:shadow-[#1A175A]/25 active:scale-[0.98]"
+          className="mt-auto pt-2.5 sm:pt-3 flex w-full items-center justify-center gap-1.5 sm:gap-2 rounded-lg sm:rounded-xl px-2 py-2 sm:py-2.5 text-xs sm:text-[13px] font-bold text-white bg-[#1A175A] shadow-md shadow-[#1A175A]/20 transition-all duration-200 hover:bg-[#282479] hover:shadow-lg hover:shadow-[#1A175A]/25 active:scale-[0.98]"
         >
           <Eye className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-none" />
           <span>View Product</span>

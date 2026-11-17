@@ -107,6 +107,11 @@ const ProductCollectionSection = ({
     loadProducts();
   }, [loadProducts]);
 
+  // Gracefully hide section if category has no products or was deleted
+  if (!loading && products.length === 0) {
+    return null;
+  }
+
   return (
     <section id={id} className={`py-16 ${bgClass} border-b border-slate-100 `}>
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
