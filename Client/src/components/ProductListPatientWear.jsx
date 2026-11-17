@@ -1,8 +1,8 @@
 import React from 'react';
 import ProductCollectionSection from './ProductCollectionSection';
 
-const PATIENT_SLUGS = ['patient-gown', 'patient-pant-shirt'];
-const PATIENT_IDS = [19, 20];
+const PATIENT_SLUGS = ['patient-gown', 'patient-pant-shirt', 'patient-wear'];
+const PATIENT_IDS = [17, 18, 19];
 const PATIENT_PATTERN = /patient/i;
 
 const ProductListPatientWear = () => (

@@ -21,7 +21,7 @@ const STATIC_REVIEWS = [
     title: 'Tailored Fit & Zero Color Fade',
     body: 'The women’s contoured scrub fit and crisp computerized department embroidery look sharp on ward rounds. Even after repeated high-temperature hospital laundering, there is no shrinkage or color bleeding.',
     productName: 'Women’s Tailored Scrub Set & Lab Coat',
-    productHref: '/products/aprons-lab-coats',
+    productHref: '/products/aprons',
     reviewerName: 'Dr. Meenakshi S.',
     role: 'Chief Resident, OBGYN · Multi-Speciality Hospital',
     isVerifiedPurchase: true,
