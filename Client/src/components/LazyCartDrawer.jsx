@@ -1,27 +1,12 @@
-import React, { Suspense, lazy, useState } from 'react';
-import { useCart } from '../context/CartContext';
-
-const CartDrawer = lazy(() => import('./CartDrawer'));
+import React from 'react';
+import CartDrawer from './CartDrawer';
 
 /**
- * Defers downloading and mounting CartDrawer until the cart is first opened,
- * then keeps it mounted so open/close transitions work smoothly.
+ * Direct smooth CartDrawer mount so enter/exit slide transitions
+ * execute immediately with zero chunk-fetching lag or Suspense flicker.
  */
 const LazyCartDrawer = () => {
-  const { isCartOpen } = useCart();
-  const [hasOpened, setHasOpened] = useState(isCartOpen);
-
-  if (isCartOpen && !hasOpened) {
-    setHasOpened(true);
-  }
-
-  if (!hasOpened) return null;
-
-  return (
-    <Suspense fallback={null}>
-      <CartDrawer />
-    </Suspense>
-  );
+  return <CartDrawer />;
 };
 
 export default LazyCartDrawer;

@@ -2,7 +2,7 @@ import { getImageUrl } from '../utils/imageUrl';
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Search, Edit2, Trash2, X, Upload, ChevronLeft, ChevronRight, ChevronDown, Check, Eye, Play, Pause, RotateCw, RefreshCw, Sparkles, Box, ShieldCheck, Tag, Camera, Palette, Ruler, Lightbulb } from 'lucide-react';
+import { Plus, Search, Edit2, Trash2, X, Upload, ChevronLeft, ChevronRight, ChevronDown, Check, Eye, Play, Pause, RotateCw, RefreshCw, Sparkles, Box, ShieldCheck, Tag, Camera, Palette, Ruler, Lightbulb, Layers } from 'lucide-react';
 import AdminLayout from '../components/AdminLayout';
 import Switch from '../components/Switch';
 import { PaginationTop, PaginationBottom } from '../components/Pagination';
@@ -44,11 +44,13 @@ const resolveColor = (name = '') => {
 const PRESET_OPTION_NAMES = [
   'Size',
   'Color',
+  'Pocket Style',
 ];
 
 const PRESET_VALUES_BY_OPTION = {
   Size: ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL', 'FREE SIZE'],
   Color: ['Black', 'White', 'Red', 'Blue', 'Green', 'Gray', 'Navy', 'Pink', 'Gold', 'Brown'],
+  'Pocket Style': ['2-Pocket Classic', '3-Pocket', '4-Pocket Tactical', '5-Pocket Functional', '6-Pocket Cargo', 'No Pocket'],
 };
 
 const resolvePresetValues = (optName = '') => {
@@ -1509,6 +1511,8 @@ const ProductModal = ({ product, onClose, onSave, saving = false, uploadProgress
                       <div className="flex items-center gap-2">
                         {isColor ? (
                           <Palette size={16} className="text-[#1a175a] shrink-0" />
+                        ) : optName.toLowerCase().includes('pocket') ? (
+                          <Layers size={16} className="text-[#1a175a] shrink-0" />
                         ) : (
                           <Ruler size={16} className="text-neutral-500 shrink-0" />
                         )}

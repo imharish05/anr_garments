@@ -94,7 +94,7 @@ const NotFoundPage = () => {
                 className="inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-slate-300 hover:border-[#1A175A] text-slate-800 hover:text-[#1A175A] text-xs sm:text-sm font-bold transition-colors"
               >
                 <ShoppingBag className="w-4 h-4" />
-                <span>Shopping Bag</span>
+                <span>Shopping Cart</span>
               </Link>
 
               <Link

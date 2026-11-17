@@ -165,11 +165,15 @@ const ShopByColorAdminPage = () => {
   const processFile = (file) => {
     if (!file) return;
     if (!file.type.match(/^image\/(jpeg|jpg|png|webp)$/i)) {
-      setUploadError('Only JPEG, PNG, or WebP images are allowed.');
+      const msg = 'Only JPEG, PNG, or WebP images are allowed.';
+      setUploadError(msg);
+      toast.error(msg);
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
-      setUploadError('File size exceeds 5MB limit.');
+      const msg = 'File size exceeds 5MB limit.';
+      setUploadError(msg);
+      toast.error(msg);
       return;
     }
     setUploadError(null);
@@ -181,11 +185,15 @@ const ShopByColorAdminPage = () => {
   const handleSave = async (e) => {
     e.preventDefault();
     if (!form.name.trim()) {
-      setUploadError('Color name is required.');
+      const msg = 'Color name is required.';
+      setUploadError(msg);
+      toast.error(msg);
       return;
     }
     if (!form.hex.trim()) {
-      setUploadError('Color Hex code is required.');
+      const msg = 'Color Hex code is required.';
+      setUploadError(msg);
+      toast.error(msg);
       return;
     }
 
@@ -211,33 +219,62 @@ const ShopByColorAdminPage = () => {
         await api.put(`/colors/${editing.id}`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
-        toast.success(`Color "${form.name}" updated!`);
+        toast.success(`Color "${form.name.trim()}" updated successfully!`);
       } else {
         await api.post('/colors', formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
-        toast.success(`Color "${form.name}" created!`);
+        toast.success(`Color "${form.name.trim()}" created successfully!`);
       }
 
       setModalOpen(false);
       loadColors();
     } catch (err) {
       console.error(err);
-      setUploadError(err.response?.data?.message || 'Error saving color.');
+      const msg = err.response?.data?.message || 'Error saving color.';
+      setUploadError(msg);
+      toast.error(msg);
     } finally {
       setSaving(false);
     }
   };
 
-  const handleDelete = async (id, name) => {
-    if (!window.confirm(`Are you sure you want to delete the color "${name}"?`)) return;
+  const executeDelete = async (id, name) => {
     try {
       await api.delete(`/colors/${id}`);
-      toast.success('Color deleted successfully.');
+      toast.success(`Color "${name}" deleted successfully.`);
       loadColors();
     } catch (err) {
-      toast.error('Failed to delete color.');
+      toast.error(err.response?.data?.message || err.message || 'Failed to delete color.');
     }
+  };
+
+  const handleDelete = (id, name) => {
+    toast((t) => (
+      <div className="flex flex-col items-center text-center gap-2 p-1">
+        <p className="text-sm font-semibold text-neutral-800">Confirm Deletion</p>
+        <p className="text-xs text-neutral-600 max-w-sm">
+          Are you sure you want to delete the color &quot;{name}&quot;? This action cannot be undone.
+        </p>
+        <div className="flex justify-center items-center gap-3 mt-2 w-full">
+          <button
+            onClick={() => {
+              toast.dismiss(t.id);
+              executeDelete(id, name);
+            }}
+            className="px-3.5 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold uppercase tracking-wider transition-colors rounded shadow-sm"
+          >
+            Yes, Delete
+          </button>
+          <button
+            onClick={() => toast.dismiss(t.id)}
+            className="px-3.5 py-1.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 text-xs font-semibold uppercase tracking-wider transition-colors rounded border border-neutral-200"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    ), { duration: 10000, position: 'top-center', style: { minWidth: '340px' } });
   };
 
   // Filter by search
@@ -326,8 +363,8 @@ const ShopByColorAdminPage = () => {
                     <th className="px-4 py-3.5 w-20">Image</th>
                     <th className="px-4 py-3.5 w-32">Color</th>
                     <th className="px-4 py-3.5">Name & Description</th>
-                    <th className="px-4 py-3.5 w-36">Badge</th>
-                    <th className="px-4 py-3.5 w-40">Target Link</th>
+                    <th className="px-4 py-3.5 w-40 whitespace-nowrap">Badge</th>
+                    <th className="px-4 py-3.5 w-44 whitespace-nowrap">Target Link</th>
                     <th className="px-4 py-3.5 w-28 text-center">Status</th>
                     <th className="px-4 py-3.5 w-24 text-right">Actions</th>
                   </tr>
@@ -367,10 +404,12 @@ const ShopByColorAdminPage = () => {
                         {/* Color Swatch & Hex */}
                         <td className="px-4 py-3.5">
                           <div className="flex items-center gap-2">
-                            <span
-                              className="w-6 h-6 rounded-full border border-black/10 shrink-0 shadow-xs"
-                              style={{ backgroundColor: color.hex }}
-                            />
+                            <span className="w-6 h-6 rounded-full border border-black bg-white flex items-center justify-center p-[2px] shrink-0 shadow-2xs">
+                              <span
+                                className="w-full h-full rounded-full"
+                                style={{ backgroundColor: color.hex }}
+                              />
+                            </span>
                             <span className="font-mono text-xs font-semibold text-neutral-800 bg-neutral-100 px-2 py-0.5 rounded">
                               {color.hex.toUpperCase()}
                             </span>
@@ -388,11 +427,11 @@ const ShopByColorAdminPage = () => {
                         </td>
 
                         {/* Badge */}
-                        <td className="px-4 py-3.5">
+                        <td className="px-4 py-3.5 whitespace-nowrap">
                           {color.badge ? (
-                            <span className="inline-flex items-center gap-1 text-[11px] font-semibold bg-amber-50 text-amber-800 border border-amber-200 px-2.5 py-0.5 rounded-full">
-                              <Sparkles size={11} className="text-amber-600" />
-                              {color.badge}
+                            <span className="inline-flex items-center gap-1.5 whitespace-nowrap text-[11px] font-semibold bg-amber-50 text-amber-800 border border-amber-200 px-2.5 py-1 rounded-full shadow-2xs">
+                              <Sparkles size={11} className="text-amber-600 shrink-0" />
+                              <span>{color.badge}</span>
                             </span>
                           ) : (
                             <span className="text-xs text-neutral-400">—</span>
@@ -402,7 +441,7 @@ const ShopByColorAdminPage = () => {
                         {/* Link */}
                         <td className="px-4 py-3.5">
                           <span
-                            className="text-xs font-mono text-neutral-600 bg-neutral-50 border border-neutral-200 px-2 py-1 rounded max-w-[140px] truncate block"
+                            className="text-xs font-mono text-neutral-600 bg-neutral-50 border border-neutral-200 px-2.5 py-1 rounded max-w-[170px] truncate block"
                             title={color.link}
                           >
                             {color.link || '#scrubs-collection'}
@@ -552,22 +591,31 @@ const ShopByColorAdminPage = () => {
                   {/* Preset Swatches */}
                   <div className="flex items-center gap-1.5 flex-wrap mt-2.5">
                     <span className="text-[11px] text-neutral-400 font-medium mr-1">Presets:</span>
-                    {PRESET_COLORS.map((preset) => (
-                      <button
-                        key={preset.name}
-                        type="button"
-                        onClick={() =>
-                          setForm((p) => ({
-                            ...p,
-                            hex: preset.hex,
-                            name: p.name ? p.name : preset.name,
-                          }))
-                        }
-                        title={`${preset.name} (${preset.hex})`}
-                        className="w-5 h-5 rounded-full border border-black/15 transition-transform hover:scale-125 focus:outline-none"
-                        style={{ backgroundColor: preset.hex }}
-                      />
-                    ))}
+                    {PRESET_COLORS.map((preset) => {
+                      const isSelected = form.hex?.toLowerCase() === preset.hex.toLowerCase();
+                      return (
+                        <button
+                          key={preset.name}
+                          type="button"
+                          onClick={() =>
+                            setForm((p) => ({
+                              ...p,
+                              hex: preset.hex,
+                              name: p.name ? p.name : preset.name,
+                            }))
+                          }
+                          title={`${preset.name} (${preset.hex})`}
+                          className={`w-6 h-6 rounded-full bg-white flex items-center justify-center p-[2px] transition-transform hover:scale-110 focus:outline-none ${
+                            isSelected ? 'border-2 border-black' : 'border border-neutral-300 hover:border-black'
+                          }`}
+                        >
+                          <span
+                            className="w-full h-full rounded-full"
+                            style={{ backgroundColor: preset.hex }}
+                          />
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
@@ -653,9 +701,17 @@ const ShopByColorAdminPage = () => {
 
                 {/* Badge Field */}
                 <div>
-                  <label className="block text-xs font-semibold text-neutral-700 mb-1.5" htmlFor="color-badge">
-                    Badge Tag (Optional)
-                  </label>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-xs font-semibold text-neutral-700" htmlFor="color-badge">
+                      Badge Tag (Optional)
+                    </label>
+                    {form.badge?.trim() && (
+                      <span className="inline-flex items-center gap-1.5 whitespace-nowrap text-[11px] font-semibold bg-amber-50 text-amber-800 border border-amber-200 px-2.5 py-0.5 rounded-full">
+                        <Sparkles size={10} className="text-amber-600 shrink-0" />
+                        <span>{form.badge.trim()}</span>
+                      </span>
+                    )}
+                  </div>
                   <input
                     id="color-badge"
                     type="text"

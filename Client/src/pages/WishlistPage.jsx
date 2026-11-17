@@ -100,7 +100,7 @@ const WishlistPage = () => {
                         className="w-full py-2.5 px-3 rounded-xl bg-[#1A175A] hover:bg-[#141247] text-white text-xs font-bold shadow-sm flex items-center justify-center gap-1.5 transition-colors"
                       >
                         <ShoppingBag className="w-3.5 h-3.5 text-blue-200" />
-                        <span>Move to Bag</span>
+                        <span>Move to Cart</span>
                       </button>
 
                       <Link

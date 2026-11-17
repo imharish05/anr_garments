@@ -23,6 +23,8 @@ const storage = multer.diskStorage({
       subfolder = 'returns';
     } else if (url.includes('/colors')) {
       subfolder = 'colors';
+    } else if (url.includes('/embroidery') || url.includes('/upload-embroidery-logo')) {
+      subfolder = 'embroidery';
     }
 
     const dest = path.join(__dirname, '..', 'uploads', subfolder);

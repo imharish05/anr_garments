@@ -77,7 +77,7 @@ const HeroBanner = () => {
   };
 
   const arrowBtn =
-    'absolute top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#1A175A]/80 hover:bg-[#1A175A] text-white border border-white/20 flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white shadow-md';
+    'absolute top-1/2 -translate-y-1/2 z-10 w-7 h-7 sm:w-11 sm:h-11 rounded-full bg-[#1A175A]/80 hover:bg-[#1A175A] text-white border border-white/20 flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white shadow-md';
 
   if (loading) {
     return (
@@ -143,7 +143,7 @@ const HeroBanner = () => {
                   <img
                     src={slide.src}
                     alt={slide.alt || 'ANR Hospital Garments'}
-                    className="w-full h-full object-cover object-[center_70%]"
+                    className="w-full h-full object-cover object-center"
                     loading={i === 0 ? 'eager' : 'lazy'}
                     fetchPriority={i === 0 ? 'high' : undefined}
                     decoding={i === 0 ? 'sync' : 'async'}
@@ -256,18 +256,18 @@ const HeroBanner = () => {
             <button
               type="button"
               onClick={prev}
-              className={`${arrowBtn} left-3 sm:left-5`}
+              className={`${arrowBtn} left-2 sm:left-5`}
               aria-label="Previous slide"
             >
-              <ChevronLeft className="w-5 h-5" />
+              <ChevronLeft className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
             </button>
             <button
               type="button"
               onClick={next}
-              className={`${arrowBtn} right-3 sm:right-5`}
+              className={`${arrowBtn} right-2 sm:right-5`}
               aria-label="Next slide"
             >
-              <ChevronRight className="w-5 h-5" />
+              <ChevronRight className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
             </button>
           </>
         )}
@@ -283,7 +283,7 @@ const HeroBanner = () => {
 
         {/* Indicators Dots */}
         {count > 1 && (
-          <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#1A175A]/70 backdrop-blur-sm border border-white/10">
+          <div className="absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 sm:gap-2 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full bg-[#1A175A]/70 backdrop-blur-sm border border-white/10">
             {slides.map((_, i) => (
               <button
                 key={i}
@@ -291,8 +291,8 @@ const HeroBanner = () => {
                 onClick={() => goTo(i)}
                 aria-label={`Go to slide ${i + 1}`}
                 aria-current={i === current}
-                className={`h-2 rounded-full transition-all duration-300 ${
-                  i === current ? 'w-6 bg-white' : 'w-2 bg-white/50 hover:bg-white/80'
+                className={`h-1.5 sm:h-2 rounded-full transition-all duration-300 ${
+                  i === current ? 'w-4 sm:w-6 bg-white' : 'w-1.5 sm:w-2 bg-white/50 hover:bg-white/80'
                 }`}
               />
             ))}

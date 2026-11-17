@@ -245,35 +245,30 @@ const ShopByColor = () => {
                 <span className="text-slate-300"> / {String(total).padStart(2, '0')}</span>
               </span>
               <span className="h-px w-10 bg-slate-300" />
-              <span>Department code</span>
+              <span>Selected colour</span>
             </div>
 
             <div key={selected.name} className="animate-[colorFade_0.45s_ease-out]">
-              <h3 className="mt-4 text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-[#1A175A] leading-[1.02]">
-                {selected.name}
+              <h3 className="mt-4 whitespace-nowrap text-[clamp(1rem,2.4vw,1.75rem)] font-black tracking-tight text-[#1A175A] leading-tight">
+                Scrubs <span className="text-blue-600">•</span> Lab coats <span className="text-blue-600">•</span> Underscrubs
               </h3>
 
-              {(selected.description || selected.count) && (
-                <p className="mt-4 text-base sm:text-lg text-slate-600 max-w-md mx-auto lg:mx-0">
-                  {selected.description || selected.count}
-                </p>
-              )}
+              <p className="mt-4 text-base sm:text-lg font-semibold text-slate-600 max-w-md mx-auto lg:mx-0">
+                {selected.name}
+              </p>
 
               <div className="mt-5 flex flex-wrap items-center justify-center lg:justify-start gap-2">
                 {selected.badge ? (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-[#1A175A] ring-1 ring-blue-200">
-                    <Star className="h-3.5 w-3.5 fill-[#1A175A] text-[#1A175A]" />
-                    {selected.badge}
+                  <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-[#1A175A] ring-1 ring-blue-200">
+                    <Star className="h-3.5 w-3.5 fill-[#1A175A] text-[#1A175A] shrink-0" />
+                    <span>{selected.badge}</span>
                   </span>
                 ) : selected.popular ? (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-[#1A175A] ring-1 ring-blue-200">
-                    <Star className="h-3.5 w-3.5 fill-[#1A175A] text-[#1A175A]" />
-                    Most ordered
+                  <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-[#1A175A] ring-1 ring-blue-200">
+                    <Star className="h-3.5 w-3.5 fill-[#1A175A] text-[#1A175A] shrink-0" />
+                    <span>Most ordered</span>
                   </span>
                 ) : null}
-                <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
-                  Scrubs • Lab coats • Underscrubs
-                </span>
               </div>
             </div>
 
@@ -298,16 +293,20 @@ const ShopByColor = () => {
                     tabIndex={active ? 0 : -1}
                     onClick={() => pick(i)}
                     onMouseEnter={() => canHover() && pick(i)}
-                    className={`h-7 w-7 rounded-full outline-none transition-all duration-300 focus-visible:ring-2 focus-visible:ring-[#1A175A] focus-visible:ring-offset-2 ${
+                    className={`h-8 w-8 rounded-full bg-white flex items-center justify-center p-[2.5px] outline-none transition-all duration-300 cursor-pointer ${
                       active
-                        ? 'scale-110 ring-2 ring-[#1A175A] ring-offset-2'
-                        : 'hover:scale-110'
+                        ? 'border-2 border-black scale-110 shadow-sm'
+                        : 'border border-slate-300 hover:border-black/60 hover:scale-105'
                     }`}
-                    style={{
-                      backgroundColor: color.hex,
-                      boxShadow: active ? undefined : 'inset 0 0 0 1px rgba(15,23,42,0.15)',
-                    }}
-                  />
+                  >
+                    <span
+                      className="w-full h-full rounded-full"
+                      style={{
+                        backgroundColor: color.hex,
+                        boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.1)',
+                      }}
+                    />
+                  </button>
                 );
               })}
             </div>

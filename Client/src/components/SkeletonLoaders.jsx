@@ -165,33 +165,33 @@ export const BulkTierSkeleton = () => {
  */
 export const ProductCardSkeleton = () => {
   return (
-    <div className="relative flex h-full flex-col rounded-2xl bg-white p-3 shadow-sm ring-1 ring-slate-200/70">
-      <div className="aspect-[4/5] rounded-xl skeleton-bone w-full mb-3" />
-      <div className="space-y-2 flex-1">
+    <div className="relative flex h-full flex-col rounded-xl sm:rounded-2xl bg-white p-2 sm:p-3 shadow-sm ring-1 ring-slate-200/70">
+      <div className="aspect-[4/5] rounded-lg sm:rounded-xl skeleton-bone w-full mb-2 sm:mb-3" />
+      <div className="space-y-1.5 sm:space-y-2 flex-1">
         <div className="flex justify-between items-center">
-          <div className="h-3 skeleton-bone rounded w-24" />
-          <div className="h-3 skeleton-bone rounded w-12" />
+          <div className="h-2.5 sm:h-3 skeleton-bone rounded w-16 sm:w-24" />
+          <div className="h-2.5 sm:h-3 skeleton-bone rounded w-8 sm:w-12" />
         </div>
-        <div className="h-4 skeleton-bone rounded w-full" />
-        <div className="h-4 skeleton-bone rounded w-3/4" />
-        <div className="flex items-baseline gap-2 pt-1">
-          <div className="h-6 skeleton-bone rounded w-20" />
-          <div className="h-4 skeleton-bone rounded w-14" />
+        <div className="h-3.5 sm:h-4 skeleton-bone rounded w-full" />
+        <div className="h-3.5 sm:h-4 skeleton-bone rounded w-3/4" />
+        <div className="flex items-baseline gap-1.5 sm:gap-2 pt-1">
+          <div className="h-5 sm:h-6 skeleton-bone rounded w-14 sm:w-20" />
+          <div className="h-3 sm:h-4 skeleton-bone rounded w-10 sm:w-14" />
         </div>
       </div>
-      <div className="pt-3 space-y-2 border-t border-slate-100 mt-2">
-        <div className="flex gap-1.5">
+      <div className="pt-2 sm:pt-3 space-y-1.5 sm:space-y-2 border-t border-slate-100 mt-2">
+        <div className="flex gap-1 sm:gap-1.5">
           {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="w-4 h-4 rounded-full skeleton-bone" />
+            <div key={i} className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full skeleton-bone" />
           ))}
         </div>
-        <div className="flex gap-1">
+        <div className="flex gap-0.5 sm:gap-1">
           {['S', 'M', 'L', 'XL', '2X'].map((size) => (
-            <div key={size} className="flex-1 h-7 rounded-md skeleton-bone" />
+            <div key={size} className="flex-1 h-5 sm:h-7 rounded sm:rounded-md skeleton-bone" />
           ))}
         </div>
       </div>
-      <div className="h-10 skeleton-bone rounded-xl w-full mt-3" />
+      <div className="h-8 sm:h-10 skeleton-bone rounded-lg sm:rounded-xl w-full mt-2.5 sm:mt-3" />
     </div>
   );
 };
@@ -203,7 +203,7 @@ export const ProductCardSkeleton = () => {
 export const ProductCollectionSkeleton = ({ bgClass = 'bg-white' }) => {
   return (
     <section className={`py-16 ${bgClass} border-b border-slate-100`} aria-label="Loading product collection">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
           <div className="space-y-2.5">
             <div className="h-3 w-36 rounded skeleton-bone" />
@@ -212,7 +212,7 @@ export const ProductCollectionSkeleton = ({ bgClass = 'bg-white' }) => {
           </div>
           <div className="h-4 w-32 rounded skeleton-bone" />
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-x-2.5 sm:gap-x-6 gap-y-4 sm:gap-y-8">
           {[0, 1, 2, 3].map((idx) => (
             <ProductCardSkeleton key={idx} />
           ))}

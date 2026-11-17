@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { X, MapPin, CreditCard, Truck, FileText, Package, Check, Circle, Phone, Mail, Gift, Copy, Printer, AlertTriangle, Ban } from 'lucide-react';
+import { X, MapPin, CreditCard, Truck, FileText, Package, Check, Circle, Phone, Mail, Gift, Copy, Printer, AlertTriangle, Ban, Scissors, Download, ExternalLink, Sparkles } from 'lucide-react';
 import currencyJs from 'currency.js';
 import toast from 'react-hot-toast';
 import { getImageUrl } from '../utils/imageUrl';
@@ -231,7 +231,7 @@ const AdminOrderDetailsModal = ({ order, onClose, onStatusUpdate }) => {
                   {(order.items || []).map((item, idx) => {
                     const variantObj = parseJsonObj(item.selectedVariant);
                     // Exclude internal keys that are not human-readable variant attributes
-                    const EXCLUDE_KEYS = new Set(['id', 'sku', 'variantId', 'productId', 'stock', 'price', 'mrp']);
+                    const EXCLUDE_KEYS = new Set(['id', 'sku', 'variantId', 'productId', 'stock', 'price', 'mrp', 'customEmbroidery', 'embroidery']);
                     const variantEntries = variantObj
                       ? Object.entries(variantObj).filter(([k, v]) =>
                           !EXCLUDE_KEYS.has(k) && v !== undefined && v !== null && v !== ''
@@ -240,36 +240,142 @@ const AdminOrderDetailsModal = ({ order, onClose, onStatusUpdate }) => {
 
                     return (
                       <tr key={item.id || idx} className="hover:bg-neutral-50/50">
-                        <td className="py-3 px-4">
-                          <div className="flex items-center gap-3">
+                        <td className="py-3.5 px-4 align-top">
+                          <div className="flex items-start gap-3.5">
                             <img
                               src={getImageUrl(item.productImage || item.image) || getPlaceholderSvg(item.productName || item.name || 'Product')}
                               alt={item.productName || item.name}
-                              className="w-12 h-14 object-cover rounded border border-neutral-200 flex-shrink-0"
+                              className="w-12 h-14 object-cover rounded border border-neutral-200 flex-shrink-0 mt-0.5"
                               onError={(e) => { e.target.onerror = null; e.target.src = getPlaceholderSvg(item.productName || item.name || 'Product'); }}
                             />
-                            <div>
-                              <p className="font-semibold text-neutral-900 text-xs">{item.productName || item.name || 'Product'}</p>
+                            <div className="flex-1 min-w-0">
+                              <p className="font-bold text-neutral-900 text-xs">{item.productName || item.name || 'Product'}</p>
                               {item.sku && <p className="text-[10px] text-neutral-400 font-mono">SKU: {item.sku}</p>}
                               
                               {/* Variant Attributes Badges */}
                               {variantEntries.length > 0 ? (
-                                <div className="flex flex-wrap gap-1 mt-1">
+                                <div className="flex flex-wrap gap-1.5 mt-1">
                                   {variantEntries.map(([k, v]) => (
-                                    <span key={k} className="text-[10px] bg-neutral-100 text-neutral-700 px-1.5 py-0.5 rounded font-medium border border-neutral-200">
-                                      <span className="capitalize">{k}</span>: {v}
+                                    <span key={k} className="text-[10px] bg-neutral-100 text-neutral-700 px-2 py-0.5 rounded font-medium border border-neutral-200">
+                                      <span className="capitalize text-neutral-400">{k}:</span> {v}
                                     </span>
                                   ))}
                                 </div>
                               ) : (
                                 <span className="text-[10px] text-neutral-400 italic block mt-0.5">Standard Variant</span>
                               )}
+
+                              {/* Custom Embroidery Specification (Clean editorial layout, no nested boxes) */}
+                              {(() => {
+                                const emb = parseJsonObj(item.embroidery) || parseJsonObj(variantObj?.customEmbroidery) || parseJsonObj(variantObj?.embroidery);
+                                if (!emb || (!emb.doctorName && !emb.designation && !emb.hasLogo && !emb.logoUrl && !emb.logoFileName)) {
+                                  return null;
+                                }
+
+                                const logoDownloadUrl = getImageUrl(emb.logoUrl);
+
+                                return (
+                                  <div className="mt-2.5 pl-3 border-l-2 border-[#1a175a]/40 space-y-2 max-w-xl">
+                                    <div className="flex items-center gap-2">
+                                      <Scissors size={13} className="text-[#1a175a]" />
+                                      <span className="font-bold text-[#1a175a] text-xs">Custom Computerized Embroidery</span>
+                                      {emb.price > 0 && (
+                                        <span className="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">
+                                          +₹{emb.price} Add-on
+                                        </span>
+                                      )}
+                                    </div>
+
+                                    {/* Clean 2-column key-value grid (NO boxes around items) */}
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1.5 text-xs">
+                                      <div>
+                                        <span className="text-[9.5px] font-bold text-neutral-400 uppercase tracking-wider block">Line 1: Doctor / Staff Name</span>
+                                        <span className="font-semibold text-neutral-900 block">
+                                          {emb.doctorName || <span className="text-neutral-400 font-normal italic">None</span>}
+                                        </span>
+                                      </div>
+
+                                      <div>
+                                        <span className="text-[9.5px] font-bold text-neutral-400 uppercase tracking-wider block">Line 2: Department / Specialty</span>
+                                        <span className="font-semibold text-neutral-900 block">
+                                          {emb.designation || <span className="text-neutral-400 font-normal italic">None</span>}
+                                        </span>
+                                      </div>
+
+                                      <div>
+                                        <span className="text-[9.5px] font-bold text-neutral-400 uppercase tracking-wider block">Thread Color</span>
+                                        <span className="font-semibold text-neutral-800 block">
+                                          {emb.threadColor || 'Clinical White'}
+                                        </span>
+                                      </div>
+
+                                      <div>
+                                        <span className="text-[9.5px] font-bold text-neutral-400 uppercase tracking-wider block">Placement Location</span>
+                                        <span className="font-semibold text-neutral-800 block capitalize">
+                                          {emb.placement ? String(emb.placement).replace(/-/g, ' ') : 'Left Chest'}
+                                        </span>
+                                      </div>
+                                    </div>
+
+                                    {/* Hospital Crest Logo (Seamless inline row, NO nested card) */}
+                                    {(emb.hasLogo || emb.logoUrl || emb.logoFileName) && (
+                                      <div className="pt-2 border-t border-neutral-200/60 flex items-center justify-between gap-3 flex-wrap">
+                                        <div className="flex items-center gap-2.5 min-w-0">
+                                          {emb.logoUrl ? (
+                                            <a
+                                              href={logoDownloadUrl}
+                                              target="_blank"
+                                              rel="noopener noreferrer"
+                                              className="block shrink-0 group"
+                                              title="Click to view full image in new tab"
+                                            >
+                                              <img
+                                                src={logoDownloadUrl}
+                                                alt="Logo Thumbnail"
+                                                className="w-10 h-10 object-contain rounded bg-neutral-50 border border-neutral-200 p-1 group-hover:ring-1 group-hover:ring-[#1a175a] transition-all"
+                                                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                                              />
+                                            </a>
+                                          ) : (
+                                            <div className="w-10 h-10 rounded bg-blue-50 border border-blue-200 flex items-center justify-center shrink-0 text-[#1a175a]">
+                                              <FileText size={18} />
+                                            </div>
+                                          )}
+                                          <div className="min-w-0">
+                                            <p className="font-bold text-neutral-900 text-xs truncate max-w-[200px] sm:max-w-[280px]">
+                                              {emb.logoFileName || 'Hospital Crest File'}
+                                            </p>
+                                            <span className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1 mt-0.5">
+                                              <Check size={11} className="shrink-0" />
+                                              <span>Verified Crest for Tajima Digitization</span>
+                                            </span>
+                                          </div>
+                                        </div>
+
+                                        {emb.logoUrl && (
+                                          <a
+                                            href={logoDownloadUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            download={emb.logoFileName || 'hospital-crest-logo'}
+                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#1a175a] hover:bg-blue-900 text-white rounded-lg text-xs font-bold shrink-0 transition-colors shadow-2xs"
+                                            title="Download logo file for embroidery digitizer"
+                                          >
+                                            <Download size={12} />
+                                            <span>Download</span>
+                                          </a>
+                                        )}
+                                      </div>
+                                    )}
+                                  </div>
+                                );
+                              })()}
                             </div>
                           </div>
                         </td>
-                        <td className="py-3 px-4 text-center font-medium text-neutral-700">× {item.quantity}</td>
-                        <td className="py-3 px-4 text-right text-neutral-600">{fmt(item.unitPrice || item.price, currency)}</td>
-                        <td className="py-3 px-4 text-right font-bold text-[#1a175a]">{fmt(item.totalPrice || (item.quantity * (item.unitPrice || item.price)), currency)}</td>
+                        <td className="py-3.5 px-4 text-center font-medium text-neutral-700 align-top">× {item.quantity}</td>
+                        <td className="py-3.5 px-4 text-right text-neutral-600 align-top">{fmt(item.unitPrice || item.price, currency)}</td>
+                        <td className="py-3.5 px-4 text-right font-bold text-[#1a175a] align-top">{fmt(item.totalPrice || (item.quantity * (item.unitPrice || item.price)), currency)}</td>
                       </tr>
                     );
                   })}

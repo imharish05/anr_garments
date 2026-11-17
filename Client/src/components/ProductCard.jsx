@@ -46,10 +46,10 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <article className="group relative flex h-full flex-col rounded-2xl bg-white p-3 shadow-sm ring-1 ring-slate-900/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#1A175A]/10">
+    <article className="group relative flex h-full flex-col rounded-xl sm:rounded-2xl bg-white p-2 sm:p-3 shadow-sm ring-1 ring-slate-900/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#1A175A]/10">
       {/* ---------- Image (hover / tap swaps to 2nd photo) ---------- */}
       <div
-        className="relative aspect-[4/5] cursor-pointer overflow-hidden rounded-xl bg-white"
+        className="relative aspect-[4/5] cursor-pointer overflow-hidden rounded-lg sm:rounded-xl bg-white"
         onClick={() => altImage && setShowAlt((v) => !v)}
       >
         {/* primary */}
@@ -94,7 +94,7 @@ const ProductCard = ({ product }) => {
         {/* Badge */}
         {product.badge && (
           <span
-            className={`absolute left-3 top-3 z-10 rounded-full bg-white/95 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[#1A175A] shadow-sm transition-opacity duration-200 ${
+            className={`absolute left-2 top-2 sm:left-3 sm:top-3 z-10 rounded-full bg-white/95 px-2 py-0.5 sm:px-2.5 sm:py-1 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-[#1A175A] shadow-sm transition-opacity duration-200 ${
               altImage ? `${showAlt ? 'opacity-0' : ''} [@media(hover:hover)]:group-hover:opacity-0` : ''
             }`}
           >
@@ -108,30 +108,30 @@ const ProductCard = ({ product }) => {
           onClick={handleWishlist}
           aria-label={isLiked ? 'Remove from wishlist' : 'Add to wishlist'}
           aria-pressed={isLiked}
-          className={`absolute right-3 top-3 z-10 grid h-8 w-8 place-items-center rounded-full shadow-sm transition-transform duration-150 ${
+          className={`absolute right-2 top-2 sm:right-3 sm:top-3 z-10 grid h-7 w-7 sm:h-8 sm:w-8 place-items-center rounded-full shadow-sm transition-transform duration-150 ${
             isLiked
               ? 'scale-105 bg-rose-50 text-rose-600'
               : 'bg-white/95 text-slate-600 hover:scale-110 hover:text-rose-500'
           }`}
         >
-          <Heart className={`h-4 w-4 ${isLiked ? 'fill-rose-500 text-rose-500' : ''}`} />
+          <Heart className={`h-3.5 w-3.5 sm:h-4 sm:w-4 ${isLiked ? 'fill-rose-500 text-rose-500' : ''}`} />
         </button>
 
         {/* Discount */}
         {product.discount && (
           <span
-            className={`absolute bottom-3 left-3 z-10 inline-flex items-center gap-1 rounded-full bg-emerald-500 px-2.5 py-0.5 text-[10px] font-bold text-white shadow-md transition-opacity duration-300 ${
+            className={`absolute bottom-2 left-2 sm:bottom-3 sm:left-3 z-10 inline-flex items-center gap-0.5 sm:gap-1 rounded-full bg-emerald-500 px-1.5 sm:px-2.5 py-0.5 text-[9px] sm:text-[10px] font-bold text-white shadow-md transition-opacity duration-300 ${
               altImage ? `${showAlt ? 'opacity-0' : ''} [@media(hover:hover)]:group-hover:opacity-0` : ''
             }`}
           >
-            <BadgePercent className="h-3 w-3" />
+            <BadgePercent className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
             {product.discount}
           </span>
         )}
 
         {/* Photo indicator dots */}
         {altImage && (
-          <div className="absolute bottom-3 right-3 z-10 flex items-center gap-1" aria-hidden="true">
+          <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 z-10 flex items-center gap-1" aria-hidden="true">
             <span
               className={`h-1.5 rounded-full bg-white shadow transition-all duration-300 ${
                 showAlt ? 'w-1.5 opacity-60' : 'w-3.5'
@@ -147,54 +147,54 @@ const ProductCard = ({ product }) => {
       </div>
 
       {/* ---------- Details ---------- */}
-      <div className="flex flex-1 flex-col pt-3.5 pb-1">
+      <div className="flex flex-1 flex-col pt-2.5 sm:pt-3.5 pb-0.5 sm:pb-1">
         {/* category + rating */}
-        <div className="flex items-center justify-between gap-2">
-          <span className="truncate text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-400">
+        <div className="flex items-center justify-between gap-1.5 sm:gap-2">
+          <span className="truncate text-[9px] sm:text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">
             {product.category}
           </span>
           {Number(product.rating) > 0 ? (
-            <span className="inline-flex flex-none items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-bold text-[#1A175A]">
+            <span className="inline-flex flex-none items-center gap-0.5 sm:gap-1 rounded-full bg-blue-50 px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] font-bold text-[#1A175A]">
               <Star className="h-2.5 w-2.5 fill-[#1A175A] text-[#1A175A]" />
               {product.rating}
-              {Number(product.reviews) > 0 ? <span className="font-medium text-blue-700/70">({product.reviews})</span> : null}
+              {Number(product.reviews) > 0 ? <span className="font-medium text-blue-700/70 hidden min-[420px]:inline">({product.reviews})</span> : null}
             </span>
           ) : null}
         </div>
 
         {/* title */}
-        <h3 className="mt-1.5 line-clamp-2 min-h-[2.4rem] text-[14px] font-bold leading-snug text-slate-900 transition-colors group-hover:text-[#1A175A]">
+        <h3 className="mt-1 sm:mt-1.5 line-clamp-2 min-h-[2rem] sm:min-h-[2.4rem] text-xs sm:text-[14px] font-bold leading-tight sm:leading-snug text-slate-900 transition-colors group-hover:text-[#1A175A]">
           <Link to={`/product/${product.slug || product.id}`} className="hover:underline">
             {product.name}
           </Link>
         </h3>
 
         {/* price */}
-        <div className="mt-2.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-          <span className="text-xl font-black tracking-tight text-[#1A175A]">
+        <div className="mt-1.5 sm:mt-2.5 flex flex-wrap items-baseline gap-x-1.5 sm:gap-x-2 gap-y-0.5">
+          <span className="text-base sm:text-xl font-black tracking-tight text-[#1A175A]">
             ₹{product.price.toLocaleString()}
           </span>
           {product.originalPrice && (
-            <span className="text-xs font-medium text-slate-400 line-through">
+            <span className="text-[10px] sm:text-xs font-medium text-slate-400 line-through">
               ₹{product.originalPrice.toLocaleString()}
             </span>
           )}
           {savings > 0 && (
-            <span className="text-[10px] font-semibold text-emerald-600">
+            <span className="text-[9px] sm:text-[10px] font-semibold text-emerald-600 block sm:inline">
               Save ₹{savings.toLocaleString()}
             </span>
           )}
         </div>
 
         {/* options */}
-        <div className="mt-3 space-y-2.5 border-t border-slate-100 pt-3">
+        <div className="mt-2 sm:mt-3 space-y-2 sm:space-y-2.5 border-t border-slate-100 pt-2 sm:pt-3">
           {/* Colors shown in circles, no color code */}
           {allColors.length > 0 && (
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+              <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-400">
                 Colour:
               </span>
-              <div className="flex items-center gap-1.5 flex-wrap">
+              <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap">
                 {visibleColors.map((colorObj, idx) => {
                   const active = idx === safeColorIdx;
                   return (
@@ -205,16 +205,23 @@ const ProductCard = ({ product }) => {
                       title={colorObj.name}
                       aria-label={`Select colour ${colorObj.name}`}
                       aria-pressed={active}
-                      className={`h-5 w-5 rounded-full border border-slate-300 transition-all duration-150 ${
+                      className={`h-4 w-4 sm:h-5 sm:w-5 rounded-full transition-all duration-150 cursor-pointer ${
                         active
-                          ? 'ring-2 ring-[#1A175A] ring-offset-2 scale-110 shadow-xs'
-                          : 'hover:scale-110 opacity-90 hover:opacity-100'
+                          ? 'bg-white p-[1px] sm:p-[1.5px] border-2 border-[#1A175A] shadow-xs'
+                          : 'border border-slate-300 hover:border-slate-500 hover:scale-105'
                       }`}
-                      style={{
-                        backgroundColor: colorObj.hex,
-                        boxShadow: active ? undefined : 'inset 0 0 0 1px rgba(15,23,42,0.16)',
-                      }}
-                    />
+                      style={active ? undefined : { backgroundColor: colorObj.hex }}
+                    >
+                      {active ? (
+                        <span
+                          className="w-full h-full rounded-full block"
+                          style={{
+                            backgroundColor: colorObj.hex,
+                            boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.08)',
+                          }}
+                        />
+                      ) : null}
+                    </button>
                   );
                 })}
                 {extraColors > 0 && (
@@ -222,7 +229,7 @@ const ProductCard = ({ product }) => {
                     type="button"
                     onClick={() => setShowAllColors(true)}
                     aria-label={`Show ${extraColors} more colours`}
-                    className="grid h-5 px-2 place-items-center rounded-full bg-slate-100 text-[10px] font-bold text-slate-600 hover:bg-[#1A175A] hover:text-white transition-colors"
+                    className="grid h-4 sm:h-5 px-1.5 sm:px-2 place-items-center rounded-full bg-slate-100 text-[9px] sm:text-[10px] font-bold text-slate-600 hover:bg-[#1A175A] hover:text-white transition-colors"
                   >
                     +{extraColors}
                   </button>
@@ -232,19 +239,19 @@ const ProductCard = ({ product }) => {
           )}
 
           {/* Compact Size Selector */}
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between text-[10px]">
+          <div className="space-y-1 sm:space-y-1.5">
+            <div className="flex items-center justify-between text-[9px] sm:text-[10px]">
               <span className="font-bold uppercase tracking-wider text-slate-400">Size</span>
               <span className="font-semibold text-slate-500">Selected: <strong className="text-[#1A175A]">{selectedSize}</strong></span>
             </div>
-            <div className="grid grid-cols-5 gap-1">
+            <div className="grid grid-cols-5 gap-0.5 sm:gap-1">
               {SIZES.map((sz) => (
                 <button
                   key={sz}
                   type="button"
                   onClick={() => setSelectedSize(sz)}
                   aria-pressed={selectedSize === sz}
-                  className={`rounded-md py-1 text-xs font-bold transition-all duration-150 ${
+                  className={`rounded sm:rounded-md py-0.5 sm:py-1 text-[10px] sm:text-xs font-bold transition-all duration-150 ${
                     selectedSize === sz
                       ? 'border border-[#1A175A] bg-[#1A175A] text-white shadow-xs'
                       : 'border border-slate-200 bg-white text-slate-600 hover:border-[#1A175A] hover:text-[#1A175A]'
@@ -261,7 +268,7 @@ const ProductCard = ({ product }) => {
         <button
           type="button"
           onClick={handleAddToCart}
-          className={`mt-4 flex w-full items-center justify-center gap-1.5 rounded-xl px-2 py-2.5 text-xs xl:text-[13px] font-bold text-white shadow-md whitespace-nowrap transition-all duration-200 active:scale-[0.98] ${
+          className={`mt-2.5 sm:mt-4 flex w-full items-center justify-center gap-1 sm:gap-1.5 rounded-lg sm:rounded-xl px-1.5 sm:px-2 py-2 sm:py-2.5 text-[11px] sm:text-xs xl:text-[13px] font-bold text-white shadow-md transition-all duration-200 active:scale-[0.98] ${
             isAdded
               ? 'bg-emerald-600 shadow-emerald-600/25'
               : 'bg-[#1A175A] shadow-[#1A175A]/20 hover:bg-[#282479] hover:shadow-lg hover:shadow-[#1A175A]/25'
@@ -269,13 +276,13 @@ const ProductCard = ({ product }) => {
         >
           {isAdded ? (
             <>
-              <Check className="h-4 w-4" />
-              <span>Added • Size {selectedSize}</span>
+              <Check className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-none" />
+              <span className="truncate">Added <span className="hidden min-[420px]:inline">• Size {selectedSize}</span></span>
             </>
           ) : (
             <>
-              <ShoppingBag className="h-4 w-4" />
-              <span>Add to Cart • Size {selectedSize}</span>
+              <ShoppingBag className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-none" />
+              <span className="truncate">Add to Cart <span className="hidden min-[420px]:inline">• Size {selectedSize}</span></span>
             </>
           )}
         </button>

@@ -31,7 +31,8 @@ const ContactPage = () => {
   const [successMsg, setSuccessMsg] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
-  const phones = Array.isArray(storefront?.phones) ? storefront.phones : [];
+  const phones = ['9986044574', '6363429113'];
+  const email = 'anr20072010@gmail.com';
   const primaryPhone = phones[0] || '';
 
   const handleSubmit = async (e) => {
@@ -72,8 +73,8 @@ const ContactPage = () => {
         'Hello ANR Hospital Garments, I would like to enquire about medical uniforms and hospital apparel.'
       )}`
     : '';
-  const mapsAddress = storefront?.address || '';
-  const googleMapsUrl = storefront?.googleMapsUrl || (mapsAddress ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapsAddress)}` : '');
+  const mapsAddress = 'N0:1205, 12th Cross, 2nd Phase, 1st Stage, Banashankari, Girinagar, Bangalore-560085.';
+  const googleMapsUrl = 'https://share.google/kBUb7fNh4v7FJm2yp';
   const mapEmbedUrl = mapsAddress ? `https://maps.google.com/maps?q=${encodeURIComponent(mapsAddress)}&t=&z=15&ie=UTF8&iwloc=&output=embed` : '';
 
   return (
@@ -205,7 +206,7 @@ const ContactPage = () => {
                   </div>
                 </div>
 
-                {storefront?.email && (
+                {email && (
                   <div className="flex items-start gap-3 pt-3 border-t border-slate-100">
                     <div className="w-9 h-9 rounded-xl bg-[#1A175A]/5 text-[#1A175A] flex items-center justify-center shrink-0 mt-0.5">
                       <Mail className="w-5 h-5 text-[#1A175A]" />
@@ -215,10 +216,10 @@ const ContactPage = () => {
                         Official Inquiries
                       </h4>
                       <a
-                        href={`mailto:${storefront.email}`}
+                        href={`mailto:${email}`}
                         className="text-sm font-semibold text-[#1A175A] hover:underline mt-1 block"
                       >
-                        {storefront.email}
+                        {email}
                       </a>
                     </div>
                   </div>

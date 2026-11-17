@@ -45,6 +45,23 @@ const start = async () => {
       console.log('⚠️ Pre-sync StockAlerts alter note:', alterErr.message);
     }
 
+    // Run safe pre-sync alters for OrderItems and CartItems embroidery columns
+    try {
+      const queryInterface = sequelize.getQueryInterface();
+      const orderItemsTableDesc = await queryInterface.describeTable('OrderItems').catch(() => null);
+      if (orderItemsTableDesc && !orderItemsTableDesc.embroidery) {
+        await sequelize.query("ALTER TABLE OrderItems ADD COLUMN embroidery JSON NULL");
+        console.log('✅ OrderItems table embroidery column added');
+      }
+      const cartItemsTableDesc = await queryInterface.describeTable('CartItems').catch(() => null);
+      if (cartItemsTableDesc && !cartItemsTableDesc.embroidery) {
+        await sequelize.query("ALTER TABLE CartItems ADD COLUMN embroidery JSON NULL");
+        console.log('✅ CartItems table embroidery column added');
+      }
+    } catch (embAlterErr) {
+      console.log('⚠️ Pre-sync Embroidery alter note:', embAlterErr.message);
+    }
+
     // Drop deprecated tables if they still exist in the database (safely handling foreign keys)
     const tablesToDrop = [
       'ReturnRequests',

@@ -1,6 +1,7 @@
 'use strict';
 const router = require('express').Router();
-const { getAll, getOne, getMyOrders, getMyOrderById, trackOrder, placeOrder, cancelMyOrder, updateStatus, getDashboardStats, getStatusCounts } = require('../controllers/orderController');
+const { uploadEmbroideryLogo, getAll, getOne, getMyOrders, getMyOrderById, trackOrder, placeOrder, cancelMyOrder, updateStatus, getDashboardStats, getStatusCounts } = require('../controllers/orderController');
+const upload = require('../middleware/upload');
 const { verifyCustomer, verifyAdmin, optionalCustomer } = require('../middleware/auth');
 const { hasPermission } = require('../middleware/rbac');
 const { orderLimiter } = require('../middleware/rateLimiter');
@@ -12,6 +13,7 @@ router.get('/my', verifyCustomer, getMyOrders);
 router.get('/my/:id', verifyCustomer, getMyOrderById);
 router.post('/my/:id/cancel', orderLimiter, verifyCustomer, cancelMyOrder);
 router.post('/:id/cancel', orderLimiter, verifyCustomer, cancelMyOrder);
+router.post('/upload-embroidery-logo', upload.single('logo'), uploadEmbroideryLogo);
 router.post('/', orderLimiter, optionalCustomer, placeOrder); // allow optional guest order placement
 router.get('/', verifyAdmin, hasPermission('view_orders'), getAll);
 router.get('/:id', verifyAdmin, hasPermission('view_orders'), getOne);

@@ -173,12 +173,18 @@ const Option = ({ active, onClick, children, count, swatch }) => {
       </span>
       {swatch && (
         <span
-          className="h-4 w-4 shrink-0 rounded-full"
-          style={{
-            backgroundColor: swatch,
-            boxShadow: light ? 'inset 0 0 0 1px #cbd5e1' : 'inset 0 0 0 1px rgba(0,0,0,0.1)',
-          }}
-        />
+          className={`h-5 w-5 shrink-0 rounded-full bg-white flex items-center justify-center p-[2px] ${
+            active ? 'border-2 border-black' : 'border border-slate-300'
+          }`}
+        >
+          <span
+            className="h-full w-full rounded-full"
+            style={{
+              backgroundColor: swatch,
+              boxShadow: light ? 'inset 0 0 0 1px #cbd5e1' : 'inset 0 0 0 1px rgba(0,0,0,0.1)',
+            }}
+          />
+        </span>
       )}
       <span
         className={`flex-1 truncate transition-colors ${
@@ -1238,8 +1244,8 @@ const ProductsPage = () => {
     'inline-flex items-center gap-1.5 pl-3.5 pr-2.5 py-2 rounded-full border border-slate-200 bg-white text-sm font-medium text-slate-700 hover:border-[#1A175A] cursor-pointer transition-colors duration-150';
 
   // Same horizontal rhythm as the navbar so everything lines up cleanly across full HD width
-  const wrap = 'w-full max-w-[1640px] mx-auto px-4 sm:px-6 xl:px-8';
-  const gridCols = 'grid-cols-1 min-[520px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5';
+  const wrap = 'w-full max-w-[1640px] mx-auto px-3 sm:px-6 xl:px-8';
+  const gridCols = 'grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5';
 
   return (
     <Layout>
@@ -1387,7 +1393,7 @@ const ProductsPage = () => {
             {/* Grid / states */}
             <div className="pt-6">
               {loading ? (
-                <div className={`grid ${gridCols} gap-x-4 sm:gap-x-5 gap-y-7`}>
+                <div className={`grid ${gridCols} gap-x-2.5 sm:gap-x-5 gap-y-3.5 sm:gap-y-7`}>
                   {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => (
                     <ProductCardSkeleton key={i} />
                   ))}
@@ -1450,7 +1456,7 @@ const ProductsPage = () => {
                   </div>
                 </div>
               ) : (
-                <div className={`grid ${gridCols} gap-x-4 sm:gap-x-5 gap-y-7`}>
+                <div className={`grid ${gridCols} gap-x-2.5 sm:gap-x-5 gap-y-3.5 sm:gap-y-7`}>
                   {filteredProducts.map((product) => (
                     <ProductCard key={product.id} product={product} />
                   ))}

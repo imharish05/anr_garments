@@ -187,11 +187,32 @@ const OrdersAdminPage = () => {
                     {[...Array(orderHeaders.length)].map((_, j) => <td key={j} className="px-4 py-3"><div className="skeleton h-4 w-16" /></td>)}
                   </tr>
                 ))
-              ) : filtered.map(order => (
+              ) : filtered.map(order => {
+                const hasCustomEmbroidery = order.items && order.items.some(it => {
+                  let emb = it.embroidery;
+                  if (!emb && it.selectedVariant) {
+                    if (typeof it.selectedVariant === 'string') {
+                      try { emb = JSON.parse(it.selectedVariant)?.customEmbroidery; } catch (e) {}
+                    } else if (typeof it.selectedVariant === 'object') {
+                      emb = it.selectedVariant.customEmbroidery;
+                    }
+                  }
+                  if (typeof emb === 'string') {
+                    try { emb = JSON.parse(emb); } catch (e) {}
+                  }
+                  return emb && (emb.doctorName || emb.designation || emb.hasLogo || emb.logoUrl);
+                });
+
+                return (
                 <tr key={order.id} className="border-b border-brand-light hover:bg-brand-light/20 transition-colors">
                   <td className="px-4 py-3">
                     <span className="font-mono text-xs font-semibold text-[#1a175a]">{order.orderNumber}</span>
                     {order.isFraudFlagged && <AlertTriangle size={12} className="inline ml-1 text-red-500" title="Fraud flagged" />}
+                    {hasCustomEmbroidery && (
+                      <span className="block mt-1 text-[10px] bg-blue-50 text-[#1a175a] font-bold px-1.5 py-0.5 rounded border border-blue-200 w-fit whitespace-nowrap">
+                        ✂️ Custom Embroidery
+                      </span>
+                    )}
                   </td>
                   <td className="px-4 py-3">
                     <p className="font-medium">{order.customer?.name || 'Customer'}</p>
@@ -243,8 +264,9 @@ const OrdersAdminPage = () => {
                       </button> */}
                     </div>
                   </td>
-                </tr>
-              ))}
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
           {!loading && filtered.length === 0 && (

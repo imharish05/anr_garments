@@ -136,7 +136,7 @@ const getCart = async (req, res) => {
 // Add item to cart with strict stock validation
 const addToCart = async (req, res) => {
   try {
-    const { productId, variantId, quantity = 1 } = req.body;
+    const { productId, variantId, quantity = 1, price, embroidery } = req.body;
     if (quantity <= 0) {
       return res.status(400).json({ success: false, message: 'Quantity must be positive' });
     }
@@ -211,8 +211,9 @@ const addToCart = async (req, res) => {
         productId,
         variantId: variantId || null,
         quantity,
-        priceAtAdd: itemPrice,
-        selectedVariant: selectedVariantJson
+        priceAtAdd: (price && Number(price) > itemPrice) ? Number(price) : itemPrice,
+        selectedVariant: selectedVariantJson,
+        embroidery: embroidery || null
       });
     }
 
@@ -421,13 +422,15 @@ const syncCart = async (req, res) => {
       }
 
       if (quantity > 0) {
+        const itemFinalPrice = (item.price && Number(item.price) > itemPrice) ? Number(item.price) : itemPrice;
         itemsToCreate.push({
           cartId: cart.id,
           productId,
           variantId,
           quantity,
-          priceAtAdd: itemPrice,
-          selectedVariant: selectedVariantJson
+          priceAtAdd: itemFinalPrice,
+          selectedVariant: selectedVariantJson,
+          embroidery: item.embroidery || null
         });
 
         const liveGstRate = (variantId && variant ? variant.gstRate : null) ?? product.gstRate ?? '0%';
@@ -436,8 +439,9 @@ const syncCart = async (req, res) => {
           productId,
           variantId,
           quantity,
-          priceAtAdd: itemPrice,
+          priceAtAdd: itemFinalPrice,
           selectedVariant: selectedVariantJson,
+          embroidery: item.embroidery || null,
           product: {
             id: product.id,
             name: product.name,
@@ -577,8 +581,9 @@ const mergeCart = async (req, res) => {
           productId,
           variantId: variantId || null,
           quantity: newQty,
-          priceAtAdd: itemPrice,
-          selectedVariant: selectedVariantJson
+          priceAtAdd: (guestItem.priceAtAdd && Number(guestItem.priceAtAdd) > itemPrice) ? Number(guestItem.priceAtAdd) : itemPrice,
+          selectedVariant: selectedVariantJson,
+          embroidery: guestItem.embroidery || null
         });
         existingItems.push(created);
       }

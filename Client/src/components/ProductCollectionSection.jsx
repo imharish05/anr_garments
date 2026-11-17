@@ -64,7 +64,7 @@ const ProductCollectionSection = ({
 
   return (
     <section id={id} className={`py-16 ${bgClass} border-b border-slate-100 `}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
           <div className="space-y-1.5">
             {eyebrow && (
@@ -104,7 +104,7 @@ const ProductCollectionSection = ({
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-x-2.5 sm:gap-x-6 gap-y-4 sm:gap-y-8">
             {[0, 1, 2, 3].map((idx) => (
               <ProductCardSkeleton key={idx} />
             ))}
@@ -138,7 +138,7 @@ const ProductCollectionSection = ({
             staggerChildren
             staggerMs={65}
             triggerKey={products.length}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+            className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-x-2.5 sm:gap-x-6 gap-y-4 sm:gap-y-8"
           >
             {products.map((product) => (
               <ProductCard key={product.id} product={product} />

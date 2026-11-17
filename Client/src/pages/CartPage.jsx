@@ -11,11 +11,13 @@ import {
   ArrowRight,
   ShieldCheck,
   Sparkles,
+  Scissors,
   Building2,
   Truck,
   Check,
   ChevronLeft
 } from 'lucide-react';
+import { getImageUrl } from '../services/api';
 
 /**
  * R4 Safety: Guards against React 19 "Objects are not valid as a React child"
@@ -54,7 +56,7 @@ const CartPage = () => {
   return (
     <Layout>
       {/* 1. Breadcrumbs Navigation */}
-      <Breadcrumbs items={[{ label: 'Shopping Bag' }]} />
+      <Breadcrumbs items={[{ label: 'Shopping Cart' }]} />
 
       <section className="py-8 sm:py-12 bg-slate-50 min-h-[75vh]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -67,10 +69,10 @@ const CartPage = () => {
               </div>
               <div className="space-y-2">
                 <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-                  Your Shopping Bag is Empty
+                  Your Cart is Empty
                 </h2>
                 <p className="text-xs sm:text-sm text-slate-500 leading-relaxed max-w-sm mx-auto">
-                  Looks like you haven't added any tailored medical scrubs, lab coats, or doctor aprons to your bag yet.
+                  Looks like you haven't added any tailored medical scrubs, lab coats, or doctor aprons to your cart yet.
                 </p>
               </div>
               <div className="pt-2">
@@ -102,7 +104,7 @@ const CartPage = () => {
                     Healthcare Order Summary
                   </span>
                   <h1 className="text-2xl sm:text-4xl font-black text-slate-900 mt-1">
-                    Your Shopping Bag ({totalItems} {totalItems === 1 ? 'item' : 'items'})
+                    Shopping Cart ({totalItems} {totalItems === 1 ? 'item' : 'items'})
                   </h1>
                 </div>
 
@@ -111,10 +113,10 @@ const CartPage = () => {
                     type="button"
                     onClick={clearCart}
                     className="text-xs font-semibold text-rose-600 hover:text-rose-700 flex items-center gap-1.5 transition-colors p-1"
-                    title="Remove all items from bag"
+                    title="Remove all items from cart"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
-                    <span>Clear Bag</span>
+                    <span>Clear Cart</span>
                   </button>
                   <Link
                     to="/products"
@@ -133,7 +135,7 @@ const CartPage = () => {
                 <div className="lg:col-span-8 space-y-4">
                   {cartItems.map((item, index) => (
                     <div
-                      key={`${item.id}-${typeof item.color === 'object' ? item.color?.name : item.color}-${item.size}-${index}`}
+                      key={`${item.id}-${typeof item.color === 'object' ? item.color?.name : item.color}-${item.size}-${item.pocket || ''}-${index}`}
                       className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-xs hover:shadow-md transition-shadow flex flex-col sm:flex-row gap-4 sm:gap-5"
                     >
                       {/* Product Thumbnail */}
@@ -170,16 +172,16 @@ const CartPage = () => {
                             {/* Remove Item Button */}
                             <button
                               type="button"
-                              onClick={() => removeFromCart(item.id, item.color, item.size, item.embroidery)}
+                              onClick={() => removeFromCart(item.id, item.color, item.size, item.embroidery, item.pocket)}
                               className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors"
-                              title="Remove item from bag"
+                              title="Remove item from cart"
                               aria-label="Remove item"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
                           </div>
 
-                          {/* Attribute Badges: Safe Color & Size */}
+                          {/* Attribute Badges: Safe Color & Size & Pocket */}
                           <div className="flex flex-wrap items-center gap-2 mt-2">
                             <span className="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-semibold bg-slate-100 text-slate-700">
                               Color: <strong className="ml-1 text-slate-900">{formatColor(item.color)}</strong>
@@ -187,31 +189,64 @@ const CartPage = () => {
                             <span className="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-semibold bg-slate-100 text-slate-700">
                               Size: <strong className="ml-1 text-slate-900">{item.size}</strong>
                             </span>
+                            {item.pocket && (
+                              <span className="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-semibold bg-slate-100 text-slate-700">
+                                Pocket: <strong className="ml-1 text-slate-900">{item.pocket}</strong>
+                              </span>
+                            )}
                           </div>
 
-                          {/* Custom Embroidery Breakdown */}
+                          {/* Custom Embroidery Breakdown (Clean, editorial left-accent style) */}
                           {item.embroidery && (
-                            <div className="mt-3 p-3 rounded-xl bg-blue-50/80 border border-blue-200 text-xs text-[#1A175A] space-y-1">
-                              <div className="flex items-center justify-between font-bold">
-                                <div className="flex items-center gap-1.5">
-                                  <Sparkles className="w-3.5 h-3.5 text-blue-700" />
-                                  <span>Custom Hospital Embroidery</span>
-                                </div>
-                                <span className="text-[11px] font-extrabold text-blue-800">
-                                  +₹{item.embroidery.price || 150}
-                                </span>
+                            <div className="mt-2.5 pl-3 border-l-2 border-[#1A175A] text-xs text-slate-700 space-y-1.5">
+                              <div className="flex items-center gap-2 font-bold text-[#1A175A]">
+                                <Scissors className="w-3.5 h-3.5 text-[#1A175A]" />
+                                <span>Custom Embroidery</span>
+                                {Number(item.embroidery.price || 0) > 0 && (
+                                  <span className="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.2 rounded-full border border-blue-200">
+                                    +₹{item.embroidery.price}
+                                  </span>
+                                )}
                               </div>
-                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 pt-1 text-[11px] text-slate-700">
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1 pt-0.5 text-[11px]">
                                 {item.embroidery.doctorName && (
-                                  <div>Name: <strong>{item.embroidery.doctorName}</strong></div>
+                                  <div>
+                                    <span className="text-slate-400 text-[10px] uppercase font-bold tracking-wider block">Line 1: Name</span>
+                                    <strong className="text-slate-900 font-semibold">{item.embroidery.doctorName}</strong>
+                                  </div>
                                 )}
                                 {item.embroidery.designation && (
-                                  <div>Dept: <strong>{item.embroidery.designation}</strong></div>
+                                  <div>
+                                    <span className="text-slate-400 text-[10px] uppercase font-bold tracking-wider block">Line 2: Dept</span>
+                                    <strong className="text-slate-900 font-semibold">{item.embroidery.designation}</strong>
+                                  </div>
+                                )}
+                                {item.embroidery.threadColor && (
+                                  <div>
+                                    <span className="text-slate-400 text-[10px] uppercase font-bold tracking-wider block">Thread Color</span>
+                                    <strong className="text-slate-800 font-semibold">{item.embroidery.threadColor}</strong>
+                                  </div>
+                                )}
+                                {item.embroidery.placement && (
+                                  <div>
+                                    <span className="text-slate-400 text-[10px] uppercase font-bold tracking-wider block">Placement</span>
+                                    <strong className="text-slate-800 font-semibold capitalize">{item.embroidery.placement.replace(/-/g, ' ')}</strong>
+                                  </div>
                                 )}
                                 {item.embroidery.hasLogo && (
-                                  <div className="text-emerald-700 font-bold flex items-center gap-1 sm:col-span-2">
-                                    <Check className="w-3 h-3 text-emerald-600" />
-                                    <span>Hospital Crest Logo Included</span>
+                                  <div className="flex items-center gap-2 pt-1 text-emerald-800 font-semibold sm:col-span-2 text-[11px]">
+                                    {item.embroidery.logoUrl && (
+                                      <img
+                                        src={getImageUrl(item.embroidery.logoUrl)}
+                                        alt="Logo"
+                                        className="w-5 h-5 object-contain rounded bg-white border border-slate-200"
+                                        onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                                      />
+                                    )}
+                                    <span className="flex items-center gap-1 text-emerald-700">
+                                      <span>✓</span>
+                                      <span>Hospital Crest Attached</span>
+                                    </span>
                                   </div>
                                 )}
                               </div>
@@ -225,7 +260,7 @@ const CartPage = () => {
                           <div className="flex items-center border border-slate-200 rounded-xl bg-slate-50 p-0.5 shadow-2xs">
                             <button
                               type="button"
-                              onClick={() => updateQuantity(item.id, item.color, item.size, -1, item.embroidery)}
+                              onClick={() => updateQuantity(item.id, item.color, item.size, -1, item.embroidery, item.pocket)}
                               className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-600 hover:bg-white hover:text-slate-900 transition-colors"
                               aria-label="Decrease quantity"
                             >
@@ -236,7 +271,7 @@ const CartPage = () => {
                             </span>
                             <button
                               type="button"
-                              onClick={() => updateQuantity(item.id, item.color, item.size, 1, item.embroidery)}
+                              onClick={() => updateQuantity(item.id, item.color, item.size, 1, item.embroidery, item.pocket)}
                               className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-600 hover:bg-white hover:text-slate-900 transition-colors"
                               aria-label="Increase quantity"
                             >
@@ -270,7 +305,7 @@ const CartPage = () => {
                       onClick={clearCart}
                       className="text-xs font-semibold text-rose-600 hover:underline"
                     >
-                      Empty Entire Bag
+                      Empty Entire Cart
                     </button>
                   </div>
                 </div>
@@ -324,13 +359,13 @@ const CartPage = () => {
                       </p>
                     </div>
 
-                    {/* Primary CTA: Doctor Checkout */}
+                    {/* Primary CTA: Checkout */}
                     <button
                       type="button"
                       onClick={handleProceedCheckout}
                       className="w-full py-4 px-6 rounded-xl bg-[#1A175A] hover:bg-[#141247] text-white font-extrabold text-sm shadow-xl flex items-center justify-center gap-2 transition-transform hover:scale-[1.01]"
                     >
-                      <span>Proceed to Doctor Checkout</span>
+                      <span>Proceed to Checkout</span>
                       <ArrowRight className="w-4 h-4 text-blue-200" />
                     </button>
 

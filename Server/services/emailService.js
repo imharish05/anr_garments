@@ -453,8 +453,13 @@ const sendOrderStatusNotification = async (order, statusTypeOverride = null) => 
         }
 
         const variantText = (parsedVariant && typeof parsedVariant === 'object')
-          ? Object.entries(parsedVariant).map(([k, v]) => `${k}: ${v}`).join(' · ')
+          ? Object.entries(parsedVariant).filter(([k]) => k !== 'customEmbroidery' && k !== 'embroidery').map(([k, v]) => `${k}: ${v}`).join(' · ')
           : '';
+
+        let embObj = item.embroidery || parsedVariant?.customEmbroidery || null;
+        if (typeof embObj === 'string') {
+          try { embObj = JSON.parse(embObj); } catch (e) { embObj = null; }
+        }
 
         const itemUnitPrice = parseFloat(item.unitPrice || item.totalPrice || 0);
 
@@ -463,6 +468,16 @@ const sendOrderStatusNotification = async (order, statusTypeOverride = null) => 
             <td style="padding: 12px 16px; border-bottom: 1px solid #F3F4F6; vertical-align: top;">
               <p style="margin: 0 0 4px; font-weight: 600; font-size: 13px; color: #1F2937;">${item.productName}</p>
               ${variantText ? `<p style="margin: 0; font-size: 11px; color: #6B7280;">${variantText}</p>` : ''}
+              ${embObj ? `
+                <div style="margin-top: 6px; padding: 6px 8px; background: #EEF2FF; border: 1px solid #C7D2FE; border-radius: 6px; font-size: 11px; color: #1E1B4B;">
+                  <strong style="color: #3730A3;">✨ Custom Embroidery:</strong><br/>
+                  ${embObj.doctorName ? `<strong>Line 1 (Name):</strong> ${embObj.doctorName}<br/>` : ''}
+                  ${embObj.designation ? `<strong>Line 2 (Dept):</strong> ${embObj.designation}<br/>` : ''}
+                  ${embObj.threadColor ? `<span>Thread: ${embObj.threadColor}</span> · ` : ''}
+                  ${embObj.placement ? `<span>Placement: ${embObj.placement}</span>` : ''}
+                  ${embObj.hasLogo ? `<br/><span style="color: #047857; font-weight: 600;">✓ Hospital Crest Logo Included</span>` : ''}
+                </div>
+              ` : ''}
             </td>
             <td style="padding: 12px 16px; border-bottom: 1px solid #F3F4F6; text-align: center; font-size: 13px; color: #4B5563; vertical-align: top;">
               ${item.quantity}

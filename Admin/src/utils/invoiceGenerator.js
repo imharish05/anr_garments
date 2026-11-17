@@ -101,7 +101,7 @@ export const formatVariantAttributes = (rawVar) => {
   if (parsed && typeof parsed === 'object') {
     const entries = Object.entries(parsed).filter(
       ([k, v]) => v !== undefined && v !== null && v !== '' &&
-      !['id', 'createdAt', 'updatedAt', 'productId', 'price', 'stock', 'sku', 'image', 'gstRate', 'variantId'].includes(k)
+      !['id', 'createdAt', 'updatedAt', 'productId', 'price', 'stock', 'sku', 'image', 'gstRate', 'variantId', 'customEmbroidery', 'embroidery'].includes(k)
     );
     if (entries.length > 0) {
       return entries.map(([k, v]) => `${k}: ${v}`).join(' | ');
@@ -316,7 +316,29 @@ export const generateInvoiceHTML = (order) => {
     const variantText = formatVariantAttributes(item.selectedVariant || item.variant);
     const sku = item.variant?.sku || item.sku || '';
 
+    const rawEmb = item.embroidery || (item.selectedVariant && (item.selectedVariant.customEmbroidery || item.selectedVariant.embroidery));
+    let embObj = null;
+    if (rawEmb) {
+      if (typeof rawEmb === 'string') {
+        try { embObj = JSON.parse(rawEmb); } catch (e) { embObj = null; }
+      } else if (typeof rawEmb === 'object') {
+        embObj = rawEmb;
+      }
+    }
+
+    let embroideryHtml = '';
+    if (embObj && (embObj.doctorName || embObj.designation || embObj.hasLogo || embObj.logoUrl)) {
+      const parts = [];
+      if (embObj.doctorName) parts.push(`Line 1: <strong>${embObj.doctorName}</strong>`);
+      if (embObj.designation) parts.push(`Line 2: <strong>${embObj.designation}</strong>`);
+      if (embObj.threadColor) parts.push(`Thread: ${embObj.threadColor}`);
+      if (embObj.placement) parts.push(`Placement: ${String(embObj.placement).replace(/-/g, ' ')}`);
+      if (embObj.hasLogo) parts.push(`Crest Logo: Attached (${embObj.logoFileName || 'File'})`);
+      embroideryHtml = `<div style="font-size: 8.5px; color: #1e3a8a; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 4px; padding: 2px 5px; margin-top: 3px; line-height: 1.3;">✂️ Custom Embroidery: ${parts.join(' | ')}</div>`;
+    }
+
     return {
+      embroideryHtml,
       index: idx + 1,
       name: item.productName || item.name || 'Luxury Product',
       variantText,
@@ -981,6 +1003,7 @@ export const generateInvoiceHTML = (order) => {
               <strong style="color: #0f172a;">${item.name}</strong>
               ${item.sku ? `<span style="font-size: 9.5px; color: #64748b; font-family: monospace; display: block;">SKU: ${item.sku}</span>` : ''}
               ${item.variantText ? `<span style="font-size: 9.5px; color: #1a175a; display: block;">${item.variantText}</span>` : ''}
+              ${item.embroideryHtml || ''}
             </td>
             <td class="text-center font-mono" style="font-size: 10px;">${item.hsnCode}</td>
             <td class="text-center font-bold">${item.qty}</td>

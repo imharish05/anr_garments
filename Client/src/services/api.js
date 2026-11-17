@@ -356,6 +356,7 @@ const normalizeProduct = (p) => {
   const variants = Array.isArray(p.variants) ? p.variants : [];
   const extractedSizes = [];
   const extractedColors = [];
+  const extractedPockets = [];
 
   variants.forEach((v) => {
     let attrs = v.attributes;
@@ -388,6 +389,10 @@ const normalizeProduct = (p) => {
           });
         }
       }
+      const pocketVal = attrs['Pocket Style'] ?? attrs['pocket style'] ?? attrs.Pocket ?? attrs.pocket ?? attrs.Pockets ?? attrs.pockets ?? attrs['Pocket Configuration'] ?? attrs['pocket configuration'];
+      if (pocketVal && !extractedPockets.includes(String(pocketVal).trim())) {
+        extractedPockets.push(String(pocketVal).trim());
+      }
     } else if (v.colorHex) {
       const resolvedHex = resolveColorHex('', v.colorHex);
       if (!extractedColors.some((c) => c.hex.toLowerCase() === resolvedHex.toLowerCase())) {
@@ -408,6 +413,33 @@ const normalizeProduct = (p) => {
     }
   } else if (p.attributes && typeof p.attributes === 'object') {
     parsedAttributes = p.attributes;
+  }
+
+  // Also extract pocket options defined at product attributes level
+  const attrPocketVal =
+    parsedAttributes['Pocket Style'] ??
+    parsedAttributes['pocket style'] ??
+    parsedAttributes.Pocket ??
+    parsedAttributes.pocket ??
+    parsedAttributes.Pockets ??
+    parsedAttributes.pockets ??
+    parsedAttributes['Pocket Configuration'] ??
+    parsedAttributes['pocket configuration'];
+
+  if (attrPocketVal) {
+    if (Array.isArray(attrPocketVal)) {
+      attrPocketVal.forEach(item => {
+        if (item && !extractedPockets.includes(String(item).trim())) {
+          extractedPockets.push(String(item).trim());
+        }
+      });
+    } else if (typeof attrPocketVal === 'string' && attrPocketVal.trim()) {
+      attrPocketVal.split(',').map(s => s.trim()).filter(Boolean).forEach(item => {
+        if (!extractedPockets.includes(item)) {
+          extractedPockets.push(item);
+        }
+      });
+    }
   }
 
   if (extractedColors.length === 0 && parsedAttributes && typeof parsedAttributes === 'object') {
@@ -470,6 +502,7 @@ const normalizeProduct = (p) => {
     sku: p.sku || '',
     sizes: extractedSizes.length > 0 ? extractedSizes : Array.isArray(parsedAttributes.sizes) ? parsedAttributes.sizes : [],
     colors: extractedColors,
+    pockets: extractedPockets,
     variants: variants.map((v) => ({
       ...v,
       price: Number(v.price ?? price),
@@ -666,6 +699,15 @@ export const subscribeNewsletterApi = async (email) => {
   });
 };
 
+export const uploadEmbroideryLogoApi = async (file) => {
+  const formData = new FormData();
+  formData.append('logo', file);
+  return apiRequest('/orders/upload-embroidery-logo', {
+    method: 'POST',
+    body: formData,
+  });
+};
+
 export const syncServerCart = async (items = []) => {
   const mappedItems = (Array.isArray(items) ? items : [])
     .filter((i) => i && (i.productId || i.id))
@@ -673,10 +715,13 @@ export const syncServerCart = async (items = []) => {
       productId: Number(i.productId || i.id),
       variantId: i.variantId ? Number(i.variantId) : null,
       quantity: Math.max(1, Number(i.quantity) || 1),
+      price: i.price,
       selectedVariant: i.selectedVariant || {
         ...(i.size ? { Size: i.size } : {}),
         ...(i.color ? { Color: i.color } : {}),
+        ...(i.pocket ? { Pocket: i.pocket } : {}),
       },
+      embroidery: i.embroidery || null,
     }))
     .filter((i) => Number.isFinite(i.productId) && i.productId > 0);
 

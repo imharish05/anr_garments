@@ -169,9 +169,27 @@
   transform: translateY(-4px);
 }
 
-/* Exact remaining viewport height so TopAnnouncementBar + Navbar + HeroBanner = 100vh */
+/* Hero banner responsive height: normal aspect ratio on mobile so full banner is visible without cropping, full viewport on desktop */
 .hero-viewport-height {
-  height: calc(100vh - var(--anr-topbar-height, 0px) - var(--anr-navbar-height, 80px));
-  height: calc(100dvh - var(--anr-topbar-height, 0px) - var(--anr-navbar-height, 80px));
-  min-height: 320px;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  min-height: 0;
+}
+
+@media (min-width: 640px) {
+  .hero-viewport-height {
+    aspect-ratio: 21 / 9;
+    height: auto;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-viewport-height {
+    aspect-ratio: auto;
+    height: calc(100vh - var(--anr-topbar-height, 0px) - var(--anr-navbar-height, 80px));
+    height: calc(100dvh - var(--anr-topbar-height, 0px) - var(--anr-navbar-height, 80px));
+    min-height: 440px;
+    max-height: 720px;
+  }
 }

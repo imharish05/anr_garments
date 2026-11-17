@@ -79,6 +79,33 @@ const formatOrder = (order, req) => {
         item.productImage = toAbsoluteUrl(variantImg, req);
       }
 
+      // Format & normalize custom embroidery details
+      let emb = item.embroidery;
+      if (!emb && item.selectedVariant) {
+        let sv = item.selectedVariant;
+        while (typeof sv === 'string') {
+          try { const p = JSON.parse(sv); if (p === sv) break; sv = p; } catch (e) { break; }
+        }
+        if (sv && typeof sv === 'object') {
+          emb = sv.customEmbroidery || sv.embroidery || null;
+        }
+      }
+      while (typeof emb === 'string') {
+        try {
+          const parsed = JSON.parse(emb);
+          if (parsed === emb) break;
+          emb = parsed;
+        } catch (e) {
+          break;
+        }
+      }
+      if (emb && typeof emb === 'object') {
+        if (emb.logoUrl) {
+          emb.logoUrl = toAbsoluteUrl(emb.logoUrl, req);
+        }
+        item.embroidery = emb;
+      }
+
       return item;
     });
   }
@@ -281,14 +308,16 @@ const placeOrder = async (req, res) => {
         }
       }
       const itemPrice = v && v.price ? parseFloat(v.price) : parseFloat(p.price);
+      const resolvedBuyNowPrice = buyNowItem.price ? Number(buyNowItem.price) : itemPrice;
       itemsToLock = [{
         productId: p.id,
         variantId: v ? v.id : null,
         quantity: Math.max(1, parseInt(buyNowItem.quantity, 10) || 1),
-        price: itemPrice,
+        price: resolvedBuyNowPrice,
         name: p.name,
         image: v?.image || p.defaultProductImage || (Array.isArray(p.images) ? p.images[0] : '') || '',
-        selectedVariant: v?.attributes || buyNowItem.selectedVariant || {}
+        selectedVariant: v?.attributes || buyNowItem.selectedVariant || {},
+        embroidery: buyNowItem.embroidery || null
       }];
     } else {
       let cartWhere = {};
@@ -318,15 +347,31 @@ const placeOrder = async (req, res) => {
         return res.status(400).json({ success: false, message: 'Cart is empty' });
       }
 
-      itemsToLock = cart.items.map(item => ({
-        productId: item.productId,
-        variantId: item.variantId || null,
-        quantity: item.quantity,
-        price: parseFloat(item.priceAtAdd),
-        name: item.product?.name || 'Product',
-        image: item.variant?.image || item.variantImage || item.image || item.product?.defaultProductImage || item.product?.images?.[0] || '',
-        selectedVariant: item.selectedVariant || {}
-      }));
+      itemsToLock = cart.items.map((item, idx) => {
+        let matchingReqItem = null;
+        if (Array.isArray(req.body.items)) {
+          if (req.body.items[idx] && Number(req.body.items[idx].productId || req.body.items[idx].id) === Number(item.productId)) {
+            matchingReqItem = req.body.items[idx];
+          } else {
+            matchingReqItem = req.body.items.find(ri => Number(ri.productId || ri.id) === Number(item.productId));
+          }
+        }
+        const resolvedEmbroidery = item.embroidery || matchingReqItem?.embroidery || null;
+        const resolvedPrice = (matchingReqItem?.price && Number(matchingReqItem.price) > parseFloat(item.priceAtAdd))
+          ? Number(matchingReqItem.price)
+          : parseFloat(item.priceAtAdd);
+
+        return {
+          productId: item.productId,
+          variantId: item.variantId || null,
+          quantity: item.quantity,
+          price: resolvedPrice,
+          name: item.product?.name || 'Product',
+          image: item.variant?.image || item.variantImage || item.image || item.product?.defaultProductImage || item.product?.images?.[0] || '',
+          selectedVariant: item.selectedVariant || {},
+          embroidery: resolvedEmbroidery
+        };
+      });
     }
 
     itemsToLock.sort((a, b) => {
@@ -494,12 +539,26 @@ const placeOrder = async (req, res) => {
         unitPrice,
         totalPrice,
         gstRate: itemGst,
+        embroidery: (() => {
+          let e = item.embroidery;
+          while (typeof e === 'string') {
+            try { const p = JSON.parse(e); if (p === e) break; e = p; } catch (err) { break; }
+          }
+          return (e && typeof e === 'object') ? e : null;
+        })(),
         selectedVariant: (() => {
           let sv = item.selectedVariant;
           if (typeof sv === 'string') {
             try { sv = JSON.parse(sv); } catch (e) { sv = null; }
           }
-          return (sv && typeof sv === 'object' && Object.keys(sv).length > 0) ? sv : null;
+          const baseSv = (sv && typeof sv === 'object' && Object.keys(sv).length > 0) ? sv : {};
+          if (item.embroidery) {
+            return {
+              ...baseSv,
+              customEmbroidery: item.embroidery
+            };
+          }
+          return Object.keys(baseSv).length > 0 ? baseSv : null;
         })()
       };
     });
@@ -976,5 +1035,24 @@ const getStatusCounts = async (req, res) => {
   }
 };
 
-module.exports = { getAll, getOne, getMyOrders, getMyOrderById, trackOrder, placeOrder, cancelMyOrder, updateStatus, getDashboardStats, getStatusCounts };
+
+const uploadEmbroideryLogo = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: 'No logo file provided' });
+    }
+    const relativePath = `/uploads/embroidery/${req.file.filename}`;
+    const absoluteUrl = toAbsoluteUrl(relativePath, req);
+    return res.json({
+      success: true,
+      url: relativePath,
+      absoluteUrl,
+      fileName: req.file.originalname,
+    });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+module.exports = { uploadEmbroideryLogo, getAll, getOne, getMyOrders, getMyOrderById, trackOrder, placeOrder, cancelMyOrder, updateStatus, getDashboardStats, getStatusCounts };
 

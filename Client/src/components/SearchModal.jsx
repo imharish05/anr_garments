@@ -285,7 +285,7 @@ const SearchModal = ({ isOpen, onClose }) => {
                           ? 'bg-emerald-600 text-white'
                           : 'bg-slate-100 text-[#1A175A] hover:bg-[#1A175A] hover:text-white'
                       }`}
-                      title={isAdded ? 'Added' : 'Add to bag'}
+                      title={isAdded ? 'Added' : 'Add to Cart'}
                     >
                       {isAdded ? <Check className="w-4 h-4" /> : <ShoppingBag className="w-4 h-4" />}
                     </button>

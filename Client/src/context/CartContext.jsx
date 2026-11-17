@@ -23,6 +23,7 @@ export const CartProvider = ({ children }) => {
           ...item,
           color: formatColorLabel(item.color),
           size: item.size ? String(item.size) : 'M',
+          pocket: item.pocket ? String(item.pocket) : '',
           quantity: Math.max(1, Number(item.quantity) || 1),
         }));
     } catch {
@@ -91,8 +92,9 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  const addToCart = (product, selectedColor = "Navy Blue", selectedSize = "M", quantity = 1, embroidery = null) => {
+  const addToCart = (product, selectedColor = "Navy Blue", selectedSize = "M", quantity = 1, embroidery = null, pocket = '') => {
     const safeColor = formatColorLabel(selectedColor);
+    const safePocket = pocket ? String(pocket).trim() : '';
 
     setCartItems(prev => {
       // If embroidery is attached, treat as unique customized item
@@ -100,6 +102,7 @@ export const CartProvider = ({ children }) => {
         String(item.id) === String(product.id) &&
         item.color === safeColor &&
         item.size === selectedSize &&
+        (item.pocket || '') === safePocket &&
         JSON.stringify(item.embroidery || null) === JSON.stringify(embroidery || null)
       );
 
@@ -112,6 +115,7 @@ export const CartProvider = ({ children }) => {
           String(item.id) === String(product.id) &&
           item.color === safeColor &&
           item.size === selectedSize &&
+          (item.pocket || '') === safePocket &&
           JSON.stringify(item.embroidery || null) === JSON.stringify(embroidery || null)
             ? { ...item, quantity: item.quantity + quantity }
             : item
@@ -127,6 +131,7 @@ export const CartProvider = ({ children }) => {
         originalPrice: product.originalPrice,
         color: safeColor,
         size: selectedSize,
+        pocket: safePocket,
         quantity: quantity,
         image: product.image,
         embroidery: embroidery || null
@@ -136,25 +141,29 @@ export const CartProvider = ({ children }) => {
     setIsCartOpen(true);
   };
 
-  const removeFromCart = (id, color, size, embroidery = null) => {
+  const removeFromCart = (id, color, size, embroidery = null, pocket = '') => {
     const safeColor = formatColorLabel(color);
+    const safePocket = pocket ? String(pocket).trim() : '';
 
     setCartItems(prev => prev.filter(item => !(
       String(item.id) === String(id) &&
       item.color === safeColor &&
       item.size === size &&
+      (item.pocket || '') === safePocket &&
       JSON.stringify(item.embroidery || null) === JSON.stringify(embroidery || null)
     )));
   };
 
-  const updateQuantity = (id, color, size, delta, embroidery = null) => {
+  const updateQuantity = (id, color, size, delta, embroidery = null, pocket = '') => {
     const safeColor = formatColorLabel(color);
+    const safePocket = pocket ? String(pocket).trim() : '';
 
     setCartItems(prev => prev.map(item => {
       if (
         String(item.id) === String(id) &&
         item.color === safeColor &&
         item.size === size &&
+        (item.pocket || '') === safePocket &&
         JSON.stringify(item.embroidery || null) === JSON.stringify(embroidery || null)
       ) {
         const newQty = item.quantity + delta;

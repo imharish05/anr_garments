@@ -9,6 +9,7 @@ const CartItem = sequelize.define('CartItem', {
   variantId: { type: DataTypes.INTEGER, allowNull: true }, // links to ProductVariant if applicable
   quantity: { type: DataTypes.INTEGER, defaultValue: 1 },
   selectedVariant: { type: DataTypes.JSON, defaultValue: {} }, // { size, color } snapshot
+  embroidery: { type: DataTypes.JSON, allowNull: true, defaultValue: null },
   priceAtAdd: { type: DataTypes.DECIMAL(10, 2), allowNull: false },
 }, {
   tableName: 'CartItems',

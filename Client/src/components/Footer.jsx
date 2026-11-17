@@ -56,6 +56,11 @@ const QUICK_LINKS = [
   { label: 'Privacy Policy', to: '/privacy-policy' },
 ];
 
+const FACTORY_ADDRESS = 'N0:1205, 12th Cross, 2nd Phase, 1st Stage, Banashankari, Girinagar, Bangalore-560085.';
+const GOOGLE_MAPS_URL = 'https://share.google/kBUb7fNh4v7FJm2yp';
+const CONTACT_EMAIL = 'anr20072010@gmail.com';
+const CONTACT_PHONES = ['9986044574', '6363429113'];
+
 const Footer = () => {
   const [categories, setCategories] = useState([]);
   const { data: storefront } = useStorefrontSetting('storefront');
@@ -114,24 +119,19 @@ const Footer = () => {
             </p>
 
             <div className="pt-1 text-xs text-blue-200/90 space-y-2">
-              {storefront?.phones?.length ? (
-                <a
-                  href={`tel:${storefront.phones[0]}`}
-                  className="flex items-center gap-2 hover:text-white transition-colors"
-                >
+              {CONTACT_PHONES.map((phone) => (
+                <a key={phone} href={`tel:${phone}`} className="flex items-center gap-2 hover:text-white transition-colors">
                   <Phone className="w-3.5 h-3.5 text-blue-200 flex-shrink-0" />
-                  <span>{storefront.phones.join(' / ')}</span>
+                  <span>{phone}</span>
                 </a>
-              ) : null}
-              {storefront?.email ? (
-                <a
-                  href={`mailto:${storefront.email}`}
-                  className="flex items-center gap-2 hover:text-white transition-colors"
-                >
-                  <Mail className="w-3.5 h-3.5 text-blue-200 flex-shrink-0" />
-                  <span>{storefront.email}</span>
-                </a>
-              ) : null}
+              ))}
+              <a
+                href={`mailto:${CONTACT_EMAIL}`}
+                className="flex items-center gap-2 hover:text-white transition-colors"
+              >
+                <Mail className="w-3.5 h-3.5 text-blue-200 flex-shrink-0" />
+                <span>{CONTACT_EMAIL}</span>
+              </a>
             </div>
           </div>
 
@@ -189,12 +189,12 @@ const Footer = () => {
               Location
             </h4>
             <ul className="space-y-5 text-xs sm:text-sm text-blue-100/90">
-              {storefront?.address && (
-                <li className="flex items-start gap-2.5">
-                  <MapPin className="w-4 h-4 text-blue-200 flex-shrink-0 mt-0.5" />
-                  <span className="leading-relaxed">{storefront.address}</span>
-                </li>
-              )}
+              <li className="flex items-start gap-2.5">
+                <MapPin className="w-4 h-4 text-blue-200 flex-shrink-0 mt-0.5" />
+                <a href={GOOGLE_MAPS_URL} target="_blank" rel="noopener noreferrer" className="leading-relaxed hover:text-white transition-colors">
+                  {FACTORY_ADDRESS}
+                </a>
+              </li>
               <li>
                 <p className="text-[11px] uppercase tracking-widest text-blue-200/70 mb-3">
                   Follow us

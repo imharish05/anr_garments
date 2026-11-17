@@ -20,10 +20,15 @@ import {
   Plus,
   ArrowRight,
   Sparkles,
-  User
+  User,
+  Home,
+  Layers,
+  Info,
+  Phone,
+  Building2
 } from 'lucide-react';
 
-const Logo = ({ className = "h-9 sm:h-11 lg:h-12" }) => (
+const Logo = ({ className = "h-8 sm:h-10 lg:h-12" }) => (
   <Link to="/" className="flex items-center flex-shrink-0">
     <img src={anrLogo} alt="ANR Hospital Garments" className={`${className} w-auto object-contain rounded`} />
   </Link>
@@ -38,6 +43,7 @@ const Navbar = () => {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [dropdownPos, setDropdownPos] = useState({ left: 0 });
   const [searchOpened, setSearchOpened] = useState(false);
+  const [mobileCategoriesOpen, setMobileCategoriesOpen] = useState(false);
   const [openMobileSection, setOpenMobileSection] = useState(null);
   const [categoriesList, setCategoriesList] = useState([]);
 
@@ -272,15 +278,15 @@ const Navbar = () => {
   return (
     <>
       <header ref={headerRef} className="sticky top-0 z-40 bg-[#1A175A] text-white shadow-lg">
-        <div ref={navContainerRef} className="w-full px-4 sm:px-6 lg:px-6 xl:px-8 relative">
-          <div className="flex items-center justify-between h-16 lg:h-[68px] gap-2.5 sm:gap-3 lg:gap-4 2xl:gap-6">
+        <div ref={navContainerRef} className="w-full px-2.5 sm:px-6 lg:px-6 xl:px-8 relative">
+          <div className="flex items-center justify-between h-14 sm:h-16 lg:h-[68px] gap-1 sm:gap-3 lg:gap-4 2xl:gap-6">
 
             {/* Left: Hamburger (mobile) + ANR Brand Logo */}
-            <div className="flex items-center gap-2 sm:gap-2.5 flex-shrink-0">
+            <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(true)}
-                className={`${iconBtn} lg:hidden -ml-2`}
+                className="p-1.5 sm:p-2.5 lg:hidden text-white hover:bg-white/10 rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
                 aria-label="Open menu"
               >
                 <Menu className="w-5 h-5" />
@@ -386,7 +392,7 @@ const Navbar = () => {
             </div>
 
             {/* Right: Actions (Bulk Orders + Search Bar + My Account + Wishlist + Cart) */}
-            <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+            <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
               <NavbarCircularItem
                 as={Link}
                 to={bulkLink.href}
@@ -405,14 +411,14 @@ const Navbar = () => {
                 type="button"
                 active={searchModalOpen}
                 onClick={() => setSearchModalOpen(true)}
-                className="rounded-full w-9 h-9 sm:w-10 sm:h-10 justify-center flex-shrink-0"
-                contentClassName="w-9 h-9 sm:w-10 sm:h-10 inline-flex items-center justify-center rounded-full"
+                className="rounded-full w-8 h-8 sm:w-10 sm:h-10 justify-center flex-shrink-0"
+                contentClassName="w-8 h-8 sm:w-10 sm:h-10 inline-flex items-center justify-center rounded-full"
                 darkClassName="text-white"
                 lightClassName="bg-white text-[#1A175A] shadow-sm"
                 aria-label="Open search dialog"
                 title="Search (Ctrl+K)"
               >
-                <Search className="w-[18px] h-[18px] sm:w-5 sm:h-5" />
+                <Search className="w-4 h-4 sm:w-5 sm:h-5" />
               </NavbarCircularItem>
 
               {/* Simple White My Account / Login Icon right near Search Icon */}
@@ -420,14 +426,14 @@ const Navbar = () => {
                 as={Link}
                 to={isLoggedIn ? '/account' : '/login'}
                 active={currentPath === '/account' || currentPath === '/login'}
-                className="rounded-full w-9 h-9 sm:w-10 sm:h-10 justify-center flex-shrink-0"
-                contentClassName="w-9 h-9 sm:w-10 sm:h-10 inline-flex items-center justify-center rounded-full"
+                className="rounded-full w-8 h-8 sm:w-10 sm:h-10 justify-center flex-shrink-0"
+                contentClassName="w-8 h-8 sm:w-10 sm:h-10 inline-flex items-center justify-center rounded-full"
                 darkClassName="text-white"
                 lightClassName="bg-white text-[#1A175A] shadow-sm"
-                title="Doctor Account"
-                aria-label="Doctor Account"
+                title="My Account"
+                aria-label="My Account"
               >
-                <User className="w-[18px] h-[18px] sm:w-5 sm:h-5" />
+                <User className="w-4 h-4 sm:w-5 sm:h-5" />
               </NavbarCircularItem>
 
               {/* Wishlist Button */}
@@ -436,23 +442,23 @@ const Navbar = () => {
                   as={Link}
                   to="/wishlist"
                   active={currentPath === '/wishlist'}
-                  className="rounded-full w-9 h-9 sm:w-10 sm:h-10 justify-center"
-                  contentClassName="w-9 h-9 sm:w-10 sm:h-10 inline-flex items-center justify-center rounded-full"
+                  className="rounded-full w-8 h-8 sm:w-10 sm:h-10 justify-center"
+                  contentClassName="w-8 h-8 sm:w-10 sm:h-10 inline-flex items-center justify-center rounded-full"
                   darkClassName="text-white"
                   lightClassName="bg-white text-[#1A175A] shadow-sm"
                   title="Saved Uniforms"
                   aria-label="Saved Uniforms"
                 >
-                  <Heart className="w-[18px] h-[18px] sm:w-5 sm:h-5" />
+                  <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
                 </NavbarCircularItem>
                 {wishlistCount > 0 && (
-                  <span className="pointer-events-none absolute top-0 right-0 z-20 bg-rose-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow">
+                  <span className="pointer-events-none absolute -top-0.5 -right-0.5 z-20 bg-rose-500 text-white text-[9px] sm:text-[10px] font-bold w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center shadow">
                     {wishlistCount}
                   </span>
                 )}
               </div>
 
-              {/* Shopping Bag Button */}
+              {/* Shopping Cart Button */}
               <div className="relative flex-shrink-0">
                 <NavbarCircularItem
                   as="button"
@@ -465,16 +471,17 @@ const Navbar = () => {
                       setIsCartOpen(true);
                     }
                   }}
-                  className="rounded-full w-9 h-9 sm:w-10 sm:h-10 justify-center"
-                  contentClassName="w-9 h-9 sm:w-10 sm:h-10 inline-flex items-center justify-center rounded-full"
+                  className="rounded-full w-8 h-8 sm:w-10 sm:h-10 justify-center"
+                  contentClassName="w-8 h-8 sm:w-10 sm:h-10 inline-flex items-center justify-center rounded-full"
                   darkClassName="text-white"
                   lightClassName="bg-white text-[#1A175A] shadow-sm"
-                  aria-label="Order bag"
+                  title="Shopping Cart"
+                  aria-label="Shopping Cart"
                 >
-                  <ShoppingBag className="w-[18px] h-[18px] sm:w-5 sm:h-5" />
+                  <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5" />
                 </NavbarCircularItem>
                 {totalItems > 0 && (
-                  <span className="pointer-events-none absolute top-0 right-0 z-20 bg-rose-600 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow">
+                  <span className="pointer-events-none absolute -top-0.5 -right-0.5 z-20 bg-rose-600 text-white text-[9px] sm:text-[10px] font-bold w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center shadow">
                     {totalItems}
                   </span>
                 )}
@@ -585,168 +592,262 @@ const Navbar = () => {
         </Suspense>
       )}
 
-      {/* Mobile Drawer Navigation with Category & Subcategory Images */}
+      {/* Mobile Drawer Navigation with Standard Clean Hierarchy */}
       <div className={`fixed inset-0 z-50 lg:hidden transition-opacity duration-300 ${mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setMobileMenuOpen(false)} />
-        <aside className={`absolute left-0 top-0 h-full w-4/5 max-w-sm bg-[#1A175A] text-white shadow-2xl flex flex-col transition-transform duration-300 ease-out ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-          <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
-            <Logo className="h-12" />
-            <button onClick={() => setMobileMenuOpen(false)} className={iconBtn} aria-label="Close menu">
-              <X className="w-6 h-6" />
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-xs" onClick={() => setMobileMenuOpen(false)} aria-hidden="true" />
+        
+        <aside className={`absolute left-0 top-0 h-full w-[85vw] max-w-sm bg-[#120F3E] text-white shadow-2xl flex flex-col transition-transform duration-300 ease-out overscroll-contain ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+          {/* 1. Header: Logo + Close Button */}
+          <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/10 bg-[#1A175A]">
+            <Logo className="h-8 sm:h-9" />
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen(false)}
+              className="p-2 text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-colors focus:outline-none"
+              aria-label="Close menu"
+            >
+              <X className="w-5 h-5" />
             </button>
           </div>
 
-          {/* Quick Search Button in Mobile Drawer */}
-          <div className="px-6 py-3.5 border-b border-white/10 space-y-2.5">
+          {/* 2. Search Bar */}
+          <div className="px-4 py-3 border-b border-white/10 bg-[#141247]">
             <button
+              type="button"
               onClick={() => {
                 setMobileMenuOpen(false);
                 setSearchModalOpen(true);
               }}
-              className="w-full flex items-center gap-3 bg-[#110E3F] text-blue-200/80 px-4 py-3 rounded-full text-sm border border-white/15"
+              className="w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-left text-xs sm:text-sm text-blue-100 transition-colors cursor-pointer group"
+              aria-label="Search garments"
             >
-              <Search className="w-4 h-4 text-blue-200" />
-              <span>Search scrubs, lab coats, specs...</span>
+              <Search className="w-4 h-4 text-blue-300 group-hover:text-white transition-colors" />
+              <span className="flex-1 truncate">Search scrubs, lab coats, specs...</span>
             </button>
-
-            {/* Browse Catalog Link in Mobile Menu */}
-            <Link
-              to="/products"
-              onClick={() => setMobileMenuOpen(false)}
-              className="w-full flex items-center justify-between bg-white/10 hover:bg-white/15 text-white px-4 py-3 rounded-xl text-sm font-bold transition-colors group"
-            >
-              <div className="flex items-center gap-2.5">
-                <Sparkles className="w-4 h-4 text-white" />
-                <span>Browse All Apparel</span>
-              </div>
-              <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform" />
-            </Link>
-
-            {/* My Account Link in Mobile Menu */}
-            <Link
-              to={isLoggedIn ? '/account' : '/login'}
-              onClick={() => setMobileMenuOpen(false)}
-              className="w-full flex items-center justify-between bg-white/10 hover:bg-white/15 text-white px-4 py-3 rounded-xl text-sm font-bold transition-colors group"
-            >
-              <div className="flex items-center gap-2.5">
-                <User className="w-4 h-4 text-white" />
-                <span>My Account</span>
-              </div>
-              <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform" />
-            </Link>
-
-            {/* Shopping Bag Link in Mobile Menu */}
-            <Link
-              to="/cart"
-              onClick={() => setMobileMenuOpen(false)}
-              className="w-full flex items-center justify-between bg-white/10 hover:bg-white/15 text-white px-4 py-3 rounded-xl text-sm font-bold transition-colors group"
-            >
-              <div className="flex items-center gap-2.5">
-                <ShoppingBag className="w-4 h-4 text-white" />
-                <span>Shopping Bag {totalItems > 0 ? `(${totalItems})` : ''}</span>
-              </div>
-              <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform" />
-            </Link>
           </div>
 
-          <nav className="flex-1 overflow-y-auto px-6 py-3">
-            {mainLinks.map((link) => {
-              const isOpen = openMobileSection === link.name;
-              const hasSubs = link.subcategories && link.subcategories.length > 0;
+          {/* 3. Main Navigation Links (Scrollable) */}
+          <nav className="flex-1 overflow-y-auto px-3.5 py-3 divide-y divide-white/10 scrollbar-none">
+            {/* Core Pages & Categories Dropdown */}
+            <div className="pb-3 space-y-1">
+              {/* Home */}
+              <Link
+                to="/"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold transition-colors ${
+                  currentPath === '/' ? 'bg-white/15 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white'
+                }`}
+              >
+                <Home className="w-4 h-4 text-blue-300" />
+                <span>Home</span>
+              </Link>
 
-              return (
-                <div key={link.name} className="border-b border-white/10 py-1.5">
-                  <div className="flex items-center justify-between">
+              {/* Categories Dropdown Accordion */}
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setMobileCategoriesOpen((prev) => !prev)}
+                  className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-bold text-blue-100 hover:bg-white/10 hover:text-white transition-colors cursor-pointer"
+                  aria-expanded={mobileCategoriesOpen}
+                >
+                  <div className="flex items-center gap-3">
+                    <Layers className="w-4 h-4 text-blue-300" />
+                    <span>Categories</span>
+                  </div>
+                  <ChevronDown
+                    className={`w-4 h-4 text-blue-300 transition-transform duration-200 ${
+                      mobileCategoriesOpen ? 'rotate-180 text-white' : ''
+                    }`}
+                  />
+                </button>
+
+                {/* Submenu: Categories list */}
+                {mobileCategoriesOpen && (
+                  <div className="pl-3 pr-1 py-1 space-y-1 mt-0.5 border-l-2 border-white/15 ml-4">
+                    {/* All Products shortcut */}
                     <Link
-                      to={link.href}
+                      to="/products"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="flex-1 flex items-center gap-3.5 py-3.5 text-base font-semibold hover:text-blue-200"
+                      className="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-bold text-blue-200 hover:bg-white/10 hover:text-white transition-colors"
                     >
-                      {/* Category Thumbnail Image in Mobile Menu */}
-                      <div className="w-9 h-9 rounded-lg overflow-hidden bg-slate-800 border border-white/20 flex-shrink-0 shadow-sm">
-                        <img
-                          src={link.image}
-                          alt={link.name}
-                          loading="lazy"
-                          decoding="async"
-                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <span className="block truncate">{link.name}</span>
-                        {link.badge && (
-                          <span className="text-[10px] bg-sky-400 text-[#1A175A] font-bold px-2 py-0.5 rounded-full inline-block mt-0.5">
-                            {link.badge}
-                          </span>
-                        )}
-                      </div>
+                      <span className="flex items-center gap-2">
+                        <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                        <span>Browse All Apparel</span>
+                      </span>
+                      <ChevronRight className="w-3.5 h-3.5 text-blue-300/60" />
                     </Link>
 
-                    {hasSubs && (
-                      <button
-                        onClick={() => setOpenMobileSection(isOpen ? null : link.name)}
-                        className="p-2.5 text-white/80 hover:text-white"
-                        aria-label={`Toggle ${link.name}`}
-                        aria-expanded={isOpen}
-                      >
-                        <Plus className={`w-4 h-4 transition-transform duration-300 ${isOpen ? 'rotate-45 text-blue-200' : ''}`} />
-                      </button>
-                    )}
-                  </div>
+                    {/* Each Category */}
+                    {mainLinks.map((cat) => {
+                      const hasSubs = cat.subcategories && cat.subcategories.length > 0;
+                      const isSubOpen = openMobileSection === cat.name;
 
-                  {/* Subcategories Accordion with Images in Mobile Menu */}
-                  {hasSubs && (
-                    <div className={`grid transition-all duration-300 ${isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
-                      <div className="overflow-hidden">
-                        <div className="pl-3.5 pb-3.5 ml-4 space-y-2.5 border-l-2 border-white/30">
-                          {link.subcategories.map((sub) => (
+                      return (
+                        <div key={cat.name} className="rounded-lg overflow-hidden">
+                          <div className="flex items-center justify-between hover:bg-white/5 rounded-lg pr-1">
                             <Link
-                              key={sub.label || sub.name}
-                              to={sub.href}
+                              to={cat.href}
                               onClick={() => setMobileMenuOpen(false)}
-                              className="flex items-center gap-3 py-1.5 text-sm text-blue-200 hover:text-white group"
+                              className="flex-1 flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-slate-200 hover:text-white truncate"
                             >
-                              {/* Subcategory Image Thumbnail in Mobile Drawer */}
-                              <div className="w-7 h-7 rounded-md overflow-hidden bg-slate-800 border border-white/20 flex-shrink-0">
+                              {cat.image ? (
                                 <img
-                                  src={sub.image}
-                                  alt={sub.label || sub.name}
-                                  loading="lazy"
-                                  decoding="async"
+                                  src={cat.image}
+                                  alt=""
+                                  className="w-5 h-5 rounded object-cover shrink-0 bg-slate-800"
                                   onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                                  className="w-full h-full object-cover"
                                 />
-                              </div>
-                              <span className="group-hover:text-white transition-colors truncate">
-                                {sub.label || sub.name}
-                              </span>
+                              ) : (
+                                <span className="w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0" />
+                              )}
+                              <span className="truncate">{cat.name}</span>
+                              {cat.badge && (
+                                <span className="px-1.5 py-0.2 rounded-full bg-sky-500/30 text-sky-200 text-[9px] font-bold">
+                                  {cat.badge}
+                                </span>
+                              )}
                             </Link>
-                          ))}
+
+                            {hasSubs && (
+                              <button
+                                type="button"
+                                onClick={() => setOpenMobileSection(isSubOpen ? null : cat.name)}
+                                className="p-1.5 text-blue-300 hover:text-white cursor-pointer"
+                                aria-label={`Toggle ${cat.name} subcategories`}
+                                aria-expanded={isSubOpen}
+                              >
+                                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isSubOpen ? 'rotate-180' : ''}`} />
+                              </button>
+                            )}
+                          </div>
+
+                          {/* Subcategories list */}
+                          {hasSubs && isSubOpen && (
+                            <div className="pl-6 pr-2 py-1 space-y-1 border-l border-white/10 ml-4 my-1">
+                              {cat.subcategories.map((sub) => (
+                                <Link
+                                  key={sub.label || sub.name}
+                                  to={sub.href}
+                                  onClick={() => setMobileMenuOpen(false)}
+                                  className="block py-1 text-[11px] font-medium text-blue-200 hover:text-white truncate transition-colors"
+                                >
+                                  {sub.label || sub.name}
+                                </Link>
+                              ))}
+                            </div>
+                          )}
                         </div>
-                      </div>
-                    </div>
-                  )}
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* Bulk Orders */}
+              <Link
+                to="/bulk-order"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold transition-colors ${
+                  currentPath === '/bulk-order' ? 'bg-white/15 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white'
+                }`}
+              >
+                <Building2 className="w-4 h-4 text-blue-300" />
+                <span>Bulk Orders</span>
+              </Link>
+
+              {/* About Us */}
+              <Link
+                to="/about"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold transition-colors ${
+                  currentPath === '/about' ? 'bg-white/15 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white'
+                }`}
+              >
+                <Info className="w-4 h-4 text-blue-300" />
+                <span>About Us</span>
+              </Link>
+
+              {/* Contact Us */}
+              <Link
+                to="/contact"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold transition-colors ${
+                  currentPath === '/contact' ? 'bg-white/15 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white'
+                }`}
+              >
+                <Phone className="w-4 h-4 text-blue-300" />
+                <span>Contact Us</span>
+              </Link>
+            </div>
+
+            {/* Account & Orders Section */}
+            <div className="py-3 space-y-1">
+              <span className="px-3 text-[10px] font-bold uppercase tracking-wider text-blue-300/70 block mb-1">
+                Account & Shopping
+              </span>
+
+              {/* My Account */}
+              <Link
+                to={isLoggedIn ? '/account' : '/login'}
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-bold text-blue-100 hover:bg-white/10 hover:text-white transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <User className="w-4 h-4 text-blue-300" />
+                  <span>{isLoggedIn ? (currentUser?.name || 'My Account') : 'Sign In / Register'}</span>
                 </div>
-              );
-            })}
+                <ChevronRight className="w-4 h-4 text-blue-300/60" />
+              </Link>
+
+              {/* Wishlist */}
+              <Link
+                to="/wishlist"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-bold text-blue-100 hover:bg-white/10 hover:text-white transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <Heart className="w-4 h-4 text-rose-400" />
+                  <span>Saved Uniforms</span>
+                </div>
+                {wishlistCount > 0 && (
+                  <span className="px-2 py-0.5 rounded-full bg-rose-500 text-white text-[10px] font-bold">
+                    {wishlistCount}
+                  </span>
+                )}
+              </Link>
+
+              {/* Shopping Cart */}
+              <Link
+                to="/cart"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-bold text-blue-100 hover:bg-white/10 hover:text-white transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <ShoppingBag className="w-4 h-4 text-emerald-400" />
+                  <span>Shopping Cart</span>
+                </div>
+                {totalItems > 0 && (
+                  <span className="px-2 py-0.5 rounded-full bg-rose-600 text-white text-[10px] font-bold">
+                    {totalItems}
+                  </span>
+                )}
+              </Link>
+            </div>
           </nav>
 
-          <div className="px-6 py-5 border-t border-white/10 space-y-3">
+          {/* 4. Footer CTA & Store Info */}
+          <div className="p-4 border-t border-white/10 bg-[#100E34] space-y-2.5">
             <Link
               to="/bulk-order"
               onClick={() => setMobileMenuOpen(false)}
-              className="block w-full text-center bg-white text-[#1A175A] py-3 rounded-full font-bold text-sm hover:bg-blue-50 transition-colors shadow"
+              className="block w-full py-2.5 px-4 text-center rounded-xl bg-white hover:bg-blue-50 text-[#1A175A] font-bold text-xs shadow-md transition-colors"
             >
               Request Hospital Bulk Quote
             </Link>
-            <div className="space-y-1 text-xs text-blue-200 text-center">
+            <div className="text-center text-[11px] text-blue-200/80">
               <p className="font-semibold text-white">{storefront?.brandName || 'ANR Hospital Garments'}</p>
               {Array.isArray(storefront?.phones) && storefront.phones.length > 0 && (
-                <p>{storefront.phones.join(' / ')}</p>
-              )}
-              {storefront?.address && (
-                <p className="text-[11px] text-blue-200 line-clamp-2">{storefront.address}</p>
+                <p className="mt-0.5">{storefront.phones.join(' • ')}</p>
               )}
             </div>
           </div>
