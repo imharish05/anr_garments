@@ -119,8 +119,13 @@ const CategoriesAdminPage = () => {
 
   const handleNameChange = (e) => {
     const val = e.target.value;
-    const slugVal = val.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-    setForm(p => ({ ...p, name: val, slug: slugVal }));
+    if (editing) {
+      // Do not auto-modify slug when editing existing category to avoid breaking storefront URLs
+      setForm(p => ({ ...p, name: val }));
+    } else {
+      const slugVal = val.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+      setForm(p => ({ ...p, name: val, slug: slugVal }));
+    }
   };
 
   const handleFileSelect = (e) => {

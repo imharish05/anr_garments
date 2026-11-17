@@ -35,21 +35,34 @@ const ProductCollectionSection = ({
     setLoading(true);
     setError('');
     try {
-      const list = await fetchProducts(
-        primarySlug ? { category: primarySlug, limit, forceRefresh } : { limit: 100, forceRefresh }
-      );
       const slugs = slugsKey ? slugsKey.split(',') : EMPTY_LIST;
       const ids = idsKey ? idsKey.split(',').map(Number) : EMPTY_LIST;
       const regex = patternSource ? new RegExp(patternSource, patternFlags) : null;
 
-      const filtered = primarySlug
-        ? list
-        : list.filter((p) => {
-            if (slugs.includes(p.categorySlug)) return true;
-            if (ids.includes(p.categoryId)) return true;
-            return regex ? regex.test(p.category || p.name || '') : false;
-          });
-      setProducts(filtered);
+      let list = [];
+      const primary = slugs[0];
+      if (primary) {
+        try {
+          const direct = await fetchProducts({ category: primary, limit, forceRefresh });
+          if (Array.isArray(direct) && direct.length > 0) {
+            list = direct;
+          }
+        } catch {
+          // fallback to catalog below
+        }
+      }
+
+      if (!list || list.length === 0) {
+        const fullList = await fetchProducts({ limit: 100, forceRefresh });
+        list = (fullList || []).filter((p) => {
+          if (slugs.includes(p.categorySlug)) return true;
+          if (ids.includes(p.categoryId)) return true;
+          if (regex && (regex.test(p.category || '') || regex.test(p.name || '') || regex.test(p.categorySlug || ''))) return true;
+          return false;
+        });
+      }
+
+      setProducts(list.slice(0, limit));
     } catch (err) {
       setError(err?.message || 'Unable to load products right now.');
       setProducts([]);

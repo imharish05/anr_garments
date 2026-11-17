@@ -1,7 +1,8 @@
 import React from 'react';
 import ProductCollectionSection from './ProductCollectionSection';
 
-const APRON_SLUGS = ['aprons-lab-coats'];
+const APRON_SLUGS = ['aprons-lab-coats', 'aprons', 'aprons-for-men-women'];
+const APRON_PATTERN = /apron|lab\s*coat/i;
 
 const ProductListLabCoats = () => (
   <ProductCollectionSection
@@ -13,6 +14,7 @@ const ProductListLabCoats = () => (
     ctaText="View all lab coats & aprons"
     ctaTo="/products/aprons-lab-coats"
     categorySlugs={APRON_SLUGS}
+    namePattern={APRON_PATTERN}
   />
 );
 
