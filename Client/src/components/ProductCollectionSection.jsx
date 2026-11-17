@@ -101,7 +101,7 @@ const ProductCollectionSection = ({
     } finally {
       setLoading(false);
     }
-  }, [primarySlug, limit, slugsKey, idsKey, patternSource, patternFlags]);
+  }, [limit, slugsKey, idsKey, patternSource, patternFlags]);
 
   useEffect(() => {
     loadProducts();
