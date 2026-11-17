@@ -1,9 +1,141 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useCart, formatColorLabel } from '../context/CartContext';
 import { getImageUrl } from '../services/api';
-import { X, Trash2, Plus, Minus, ArrowRight, ShoppingBag, ShieldCheck, Sparkles, Scissors } from 'lucide-react';
+import { X, Trash2, Plus, Minus, ArrowRight, ShoppingBag, ShieldCheck, Scissors, Pencil, Check } from 'lucide-react';
 
+/* ---------- Embroidery ---------- */
+const THREAD_OPTIONS = ['Clinical White', 'Navy Blue', 'Black', 'Royal Blue', 'Maroon', 'Gold', 'Silver'];
+const PLACEMENT_OPTIONS = ['right-chest', 'left-chest', 'pocket', 'sleeve'];
+const MAX_LINE = 20;
+
+const formatPlacement = (p) => {
+  if (!p) return '';
+  return String(p).replace(/[-_]/g, ' ').trim().replace(/\b\w/g, (c) => c.toUpperCase());
+};
+
+const withCurrent = (options, current) =>
+  current && !options.includes(current) ? [current, ...options] : options;
+
+const inputCls =
+  'w-full rounded-lg border border-slate-300 bg-white px-2.5 py-2 text-[12px] text-slate-900 focus:outline-none focus:border-[#1A175A] focus:ring-1 focus:ring-[#1A175A]';
+
+const EmbroideryDetails = ({ embroidery, onSave }) => {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(embroidery);
+  const price = Number(embroidery.price || 0);
+
+  const startEdit = () => { setDraft(embroidery); setEditing(true); };
+  const set = (key) => (e) => setDraft((d) => ({ ...d, [key]: e.target.value }));
+  const save = () => { onSave?.(draft); setEditing(false); };
+
+  const rows = [
+    ['Line 1', embroidery.doctorName],
+    ['Line 2', embroidery.designation],
+    ['Thread', embroidery.threadColor],
+    ['Placement', formatPlacement(embroidery.placement)],
+  ];
+
+  return (
+    <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-3 space-y-2.5">
+      {/* Header */}
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-1.5 text-[13px] font-bold text-[#1A175A]">
+          <Scissors className="w-3.5 h-3.5" />
+          <span>Custom Embroidery</span>
+          {price > 0 && (
+            <span className="text-[11px] font-semibold text-slate-500">+₹{price.toLocaleString()}</span>
+          )}
+        </div>
+        {!editing && onSave && (
+          <button
+            type="button"
+            onClick={startEdit}
+            className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] font-bold text-[#1A175A] hover:bg-[#1A175A]/10"
+          >
+            <Pencil className="w-3 h-3" />
+            Edit
+          </button>
+        )}
+      </div>
+
+      {editing ? (
+        <div className="space-y-2.5">
+          <div className="grid grid-cols-2 gap-2">
+            <label className="block text-[11px] text-slate-500">
+              <span className="flex justify-between mb-1">
+                <span>Line 1</span>
+                <span>{(draft.doctorName || '').length}/{MAX_LINE}</span>
+              </span>
+              <input
+                className={inputCls}
+                value={draft.doctorName || ''}
+                maxLength={MAX_LINE}
+                onChange={set('doctorName')}
+              />
+            </label>
+            <label className="block text-[11px] text-slate-500">
+              <span className="flex justify-between mb-1">
+                <span>Line 2</span>
+                <span>{(draft.designation || '').length}/{MAX_LINE}</span>
+              </span>
+              <input
+                className={inputCls}
+                value={draft.designation || ''}
+                maxLength={MAX_LINE}
+                onChange={set('designation')}
+              />
+            </label>
+            <label className="block text-[11px] text-slate-500">
+              <span className="block mb-1">Thread</span>
+              <select className={inputCls} value={draft.threadColor || ''} onChange={set('threadColor')}>
+                {withCurrent(THREAD_OPTIONS, draft.threadColor).map((o) => (
+                  <option key={o} value={o}>{o}</option>
+                ))}
+              </select>
+            </label>
+            <label className="block text-[11px] text-slate-500">
+              <span className="block mb-1">Placement</span>
+              <select className={inputCls} value={draft.placement || ''} onChange={set('placement')}>
+                {withCurrent(PLACEMENT_OPTIONS, draft.placement).map((o) => (
+                  <option key={o} value={o}>{formatPlacement(o)}</option>
+                ))}
+              </select>
+            </label>
+          </div>
+          <div className="flex justify-end gap-2">
+            <button
+              type="button"
+              onClick={() => setEditing(false)}
+              className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-[11px] font-bold text-slate-600 hover:bg-slate-100"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={save}
+              className="inline-flex items-center gap-1 rounded-lg bg-[#1A175A] px-3 py-1.5 text-[11px] font-bold text-white hover:bg-[#141247]"
+            >
+              <Check className="w-3 h-3" />
+              Save
+            </button>
+          </div>
+        </div>
+      ) : (
+        <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-[12px]">
+          {rows.map(([label, value]) => (
+            <React.Fragment key={label}>
+              <dt className="text-slate-500">{label}</dt>
+              <dd className="font-semibold text-slate-900 break-words min-w-0">{value || '—'}</dd>
+            </React.Fragment>
+          ))}
+        </dl>
+      )}
+    </div>
+  );
+};
+
+/* ---------- Drawer ---------- */
 const CartDrawer = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -13,6 +145,7 @@ const CartDrawer = () => {
     cartItems,
     removeFromCart,
     updateQuantity,
+    updateEmbroidery,
     totalItems,
     subtotal,
     currentUser
@@ -71,14 +204,14 @@ const CartDrawer = () => {
             isCartOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
         >
-          
+
           {/* Header */}
           <div className="p-5 bg-[#1A175A] text-white flex items-center justify-between">
             <div className="flex items-center gap-2">
               <ShoppingBag className="w-5 h-5 text-blue-200" />
               <h2 className="text-base font-bold">Shopping Cart</h2>
               <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full font-bold">
-                {totalItems} items
+                {totalItems} {totalItems === 1 ? 'item' : 'items'}
               </span>
             </div>
             <button
@@ -122,15 +255,16 @@ const CartDrawer = () => {
               cartItems.map((item, index) => (
                 <div
                   key={`${item.id}-${formatColorLabel(item.color)}-${item.size}-${item.pocket || ''}-${index}`}
-                  className="flex gap-4 p-3 rounded-2xl border border-slate-200 bg-white shadow-xs"
+                  className="p-3 rounded-2xl border border-slate-200 bg-white shadow-xs space-y-3"
                 >
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-20 h-24 object-cover rounded-xl bg-slate-100 flex-shrink-0"
-                  />
-                  <div className="flex-1 flex flex-col justify-between">
-                    <div>
+                  {/* Top row: image + basic info */}
+                  <div className="flex gap-4">
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="w-20 h-24 object-cover rounded-xl bg-slate-100 flex-shrink-0"
+                    />
+                    <div className="flex-1 min-w-0">
                       <div className="flex justify-between items-start gap-2">
                         <h4 className="text-xs font-bold text-slate-900 line-clamp-2 leading-snug">
                           {item.name}
@@ -139,6 +273,7 @@ const CartDrawer = () => {
                           onClick={() => removeFromCart(item.id, item.color, item.size, item.embroidery, item.pocket)}
                           className="text-slate-400 hover:text-rose-600 p-1 rounded-md hover:bg-slate-100 transition-colors shrink-0 -mt-0.5 -mr-1"
                           title="Remove item"
+                          aria-label="Remove item"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -163,93 +298,45 @@ const CartDrawer = () => {
                           </span>
                         )}
                       </div>
-
-                      {/* Custom Embroidery Details (Clean, structured editorial layout) */}
-                      {item.embroidery && (
-                        <div className="mt-2.5 pl-2.5 border-l-2 border-[#1A175A] space-y-1.5 text-[11px] text-slate-700">
-                          <div className="flex items-center gap-1.5 text-xs font-bold text-[#1A175A]">
-                            <Scissors className="w-3.5 h-3.5 text-[#1A175A]" />
-                            <span>Custom Embroidery</span>
-                            {Number(item.embroidery.price || 0) > 0 && (
-                              <span className="text-[10px] font-bold text-blue-700 bg-blue-50 px-1.5 py-0.2 rounded-full border border-blue-200">
-                                +₹{item.embroidery.price}
-                              </span>
-                            )}
-                          </div>
-
-                          <div className="grid grid-cols-1 gap-1 text-[11px]">
-                            {item.embroidery.doctorName && (
-                              <div className="leading-tight">
-                                <span className="text-slate-400 text-[10px] uppercase font-bold tracking-wider mr-1">Line 1:</span>
-                                <strong className="text-slate-900 font-semibold">{item.embroidery.doctorName}</strong>
-                              </div>
-                            )}
-                            {item.embroidery.designation && (
-                              <div className="leading-tight">
-                                <span className="text-slate-400 text-[10px] uppercase font-bold tracking-wider mr-1">Line 2:</span>
-                                <strong className="text-slate-900 font-semibold">{item.embroidery.designation}</strong>
-                              </div>
-                            )}
-                            {(item.embroidery.threadColor || item.embroidery.placement) && (
-                              <div className="text-[10px] text-slate-600 flex items-center gap-1.5 flex-wrap pt-0.5">
-                                {item.embroidery.threadColor && (
-                                  <span className="bg-slate-50 px-1.5 py-0.5 rounded border border-slate-200">
-                                    Thread: <strong className="text-slate-800">{item.embroidery.threadColor}</strong>
-                                  </span>
-                                )}
-                                {item.embroidery.placement && (
-                                  <span className="bg-slate-50 px-1.5 py-0.5 rounded border border-slate-200 capitalize">
-                                    Placement: <strong className="text-slate-800">{String(item.embroidery.placement).replace(/-/g, ' ')}</strong>
-                                  </span>
-                                )}
-                              </div>
-                            )}
-                          </div>
-
-                          {item.embroidery.hasLogo && (
-                            <div className="flex items-center gap-2 pt-1 text-[10.5px] text-emerald-800 font-medium">
-                              {item.embroidery.logoUrl && (
-                                <img
-                                  src={getImageUrl(item.embroidery.logoUrl)}
-                                  alt="Logo Crest"
-                                  className="w-5 h-5 object-contain rounded bg-white border border-slate-200 shrink-0"
-                                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                                />
-                              )}
-                              <span className="flex items-center gap-1 font-semibold text-emerald-700">
-                                <span>✓</span>
-                                <span>Hospital Crest Attached</span>
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      )}
                     </div>
+                  </div>
 
-                    <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-100">
-                      <div className="flex items-center border border-slate-200 rounded-lg">
-                        <button
-                          onClick={() => updateQuantity(item.id, item.color, item.size, -1, item.embroidery, item.pocket)}
-                          className="p-1 hover:bg-slate-100 text-slate-600"
-                        >
-                          <Minus className="w-3 h-3" />
-                        </button>
-                        <span className="px-2 text-xs font-bold text-slate-800">
-                          {item.quantity}
-                        </span>
-                        <button
-                          onClick={() => updateQuantity(item.id, item.color, item.size, 1, item.embroidery, item.pocket)}
-                          className="p-1 hover:bg-slate-100 text-slate-600"
-                        >
-                          <Plus className="w-3 h-3" />
-                        </button>
-                      </div>
-                      <div className="text-right">
-                        <span className="text-sm font-extrabold text-[#1A175A]">
-                          ₹{(item.price * item.quantity).toLocaleString()}
-                        </span>
-                      </div>
+                  {/* Custom embroidery: full width so it has room */}
+                  {item.embroidery && (
+                    <EmbroideryDetails
+                      embroidery={item.embroidery}
+                      onSave={
+                        updateEmbroidery
+                          ? (next) => updateEmbroidery(item.id, item.color, item.size, item.embroidery, item.pocket, next)
+                          : undefined
+                      }
+                    />
+                  )}
+
+                  {/* Quantity + line total */}
+                  <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+                    <div className="flex items-center border border-slate-200 rounded-lg">
+                      <button
+                        onClick={() => updateQuantity(item.id, item.color, item.size, -1, item.embroidery, item.pocket)}
+                        className="p-1 hover:bg-slate-100 text-slate-600"
+                        aria-label="Decrease quantity"
+                      >
+                        <Minus className="w-3 h-3" />
+                      </button>
+                      <span className="px-2 text-xs font-bold text-slate-800">
+                        {item.quantity}
+                      </span>
+                      <button
+                        onClick={() => updateQuantity(item.id, item.color, item.size, 1, item.embroidery, item.pocket)}
+                        className="p-1 hover:bg-slate-100 text-slate-600"
+                        aria-label="Increase quantity"
+                      >
+                        <Plus className="w-3 h-3" />
+                      </button>
                     </div>
+                    <span className="text-sm font-extrabold text-[#1A175A]">
+                      ₹{(item.price * item.quantity).toLocaleString()}
+                    </span>
                   </div>
                 </div>
               ))

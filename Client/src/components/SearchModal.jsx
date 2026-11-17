@@ -11,7 +11,8 @@ import {
   Check,
   AlertCircle,
   RefreshCw,
-  Star
+  Star,
+  ChevronRight
 } from 'lucide-react';
 
 const SearchModal = ({ isOpen, onClose }) => {
@@ -276,19 +277,14 @@ const SearchModal = ({ isOpen, onClose }) => {
                       </div>
                     </div>
 
-                    {/* Quick Add Button */}
-                    <button
-                      type="button"
-                      onClick={(e) => handleAddToCart(product, e)}
-                      className={`p-2 rounded-lg text-xs font-bold transition-all flex-shrink-0 ${
-                        isAdded
-                          ? 'bg-emerald-600 text-white'
-                          : 'bg-slate-100 text-[#1A175A] hover:bg-[#1A175A] hover:text-white'
-                      }`}
-                      title={isAdded ? 'Added' : 'Add to Cart'}
+                    {/* View Product Indicator */}
+                    <div
+                      className="p-2 rounded-lg text-xs font-bold text-slate-400 group-hover:text-[#1A175A] group-hover:bg-slate-100 transition-all flex-shrink-0 flex items-center gap-1"
+                      title="View Product Details"
                     >
-                      {isAdded ? <Check className="w-4 h-4" /> : <ShoppingBag className="w-4 h-4" />}
-                    </button>
+                      <span className="text-[11px] font-semibold hidden sm:inline">View</span>
+                      <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#1A175A] transition-colors" />
+                    </div>
                   </div>
                 );
               })}

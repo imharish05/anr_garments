@@ -518,6 +518,7 @@ export const fetchProducts = async (options = false) => {
   const {
     forceRefresh = false,
     category,
+    subCategoryId,
     page,
     limit = 100,
     search,
@@ -532,6 +533,7 @@ export const fetchProducts = async (options = false) => {
   if (limit) query.set('limit', String(limit));
   if (page) query.set('page', String(page));
   if (category) query.set('category', String(category));
+  if (subCategoryId) query.set('subCategoryId', String(subCategoryId));
   if (search) query.set('search', String(search));
   if (featured !== undefined) query.set('featured', String(featured));
   if (newArrival !== undefined) query.set('newArrival', String(newArrival));

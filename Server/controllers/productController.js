@@ -165,13 +165,17 @@ const getAll = async (req, res) => {
   try {
     const {
       page = 1, limit = 12,
-      category, minPrice, maxPrice,
+      category, subCategoryId, minPrice, maxPrice,
       sort = 'createdAt', order = 'DESC',
       search, featured, newArrival, bestSeller,
       minDiscount, maxDiscount
     } = req.query;
 
-    const where = {};
+    // Public catalog must follow the same publication rule as product details.
+    const where = { isActive: true };
+    if (subCategoryId && Number.isInteger(Number(subCategoryId)) && Number(subCategoryId) > 0) {
+      where.subCategoryId = Number(subCategoryId);
+    }
     if (category) {
       if (isNaN(category)) {
         let found = await Category.findOne({ where: { slug: category, isActive: true } });

@@ -828,19 +828,33 @@ const ProductsPage = () => {
     setLoading(true);
     setError('');
     try {
-      const [prods, tree] = await Promise.all([
-        fetchProducts({ limit: 200, forceRefresh }),
-        fetchCategoriesTree(forceRefresh).catch(() => []),
-      ]);
+      const tree = await fetchCategoriesTree(forceRefresh).catch(() => []);
+      const safeTree = Array.isArray(tree) ? tree : [];
+      const normalize = (value) => String(value || '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+      const targetCategory = categorySlug && categorySlug !== 'all'
+        ? safeTree.find((category) => normalize(category.slug) === normalize(categorySlug) || normalize(category.name) === normalize(categorySlug))
+        : null;
+      const targetSubcategory = subCategorySlug
+        ? (targetCategory?.subcategories || safeTree.flatMap((category) => category.subcategories || []))
+            .find((subcategory) => normalize(subcategory.slug) === normalize(subCategorySlug) || normalize(subcategory.name) === normalize(subCategorySlug))
+        : null;
+      const scopedCategory = targetCategory?.id ?? (targetSubcategory ? undefined : categorySlug);
+      const prods = await fetchProducts({
+        limit: 200,
+        ...(targetSubcategory?.id != null
+          ? { subCategoryId: targetSubcategory.id }
+          : scopedCategory != null ? { category: scopedCategory } : {}),
+        forceRefresh,
+      });
       setAllProducts(Array.isArray(prods) ? prods : []);
-      setCategoriesTree(Array.isArray(tree) ? tree : []);
+      setCategoriesTree(safeTree);
     } catch (err) {
       setError(err?.message || 'Unable to load product catalog right now.');
       setAllProducts([]);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [categorySlug, subCategorySlug]);
 
   useEffect(() => {
     loadData();

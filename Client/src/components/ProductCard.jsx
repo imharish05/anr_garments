@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
-import { Star, ShoppingBag, Heart, Check, BadgePercent } from 'lucide-react';
+import { Star, Eye, Heart, BadgePercent } from 'lucide-react';
 import ProductImage from './ProductImage';
 import { normalizeColorOption } from '../services/api';
 
@@ -9,15 +9,13 @@ const SIZES = ["S", "M", "L", "XL", "2XL"];
 const MAX_COLORS = 5;
 
 const ProductCard = ({ product }) => {
-  const { addToCart, addToWishlist, removeFromWishlist, isInWishlist } = useCart();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useCart();
   const [selectedColorIdx, setSelectedColorIdx] = useState(0);
   const [selectedSize, setSelectedSize] = useState("M");
   const isLiked = Boolean(product?.id != null && isInWishlist(product.id));
-  const [isAdded, setIsAdded] = useState(false);
   const [showAllColors, setShowAllColors] = useState(false);
-  const [showAlt, setShowAlt] = useState(false); // touch devices: tap image to flip
 
-  // second photo: product.hoverImage, or product.images[1]
+  // second photo: product.hoverImage, or product.images?.[1]
   const altImage = product.hoverImage || product.images?.[1] || null;
 
   const allColors = (product.colors || []).map(normalizeColorOption).filter(Boolean);
@@ -28,11 +26,7 @@ const ProductCard = ({ product }) => {
   const savings = product.originalPrice ? product.originalPrice - product.price : 0;
   const displayImage = (safeColorIdx > 0 && activeColor.image) ? activeColor.image : product.image;
 
-  const handleAddToCart = () => {
-    addToCart(product, activeColor.name || activeColor.hex, selectedSize);
-    setIsAdded(true);
-    setTimeout(() => setIsAdded(false), 1800);
-  };
+  const productLink = `/product/${product.slug || product.id}${selectedSize ? `?size=${selectedSize}` : ''}${activeColor?.hex ? `&color=${encodeURIComponent(activeColor.hex)}` : ''}`;
 
   const handleWishlist = (e) => {
     e.preventDefault();
@@ -47,55 +41,52 @@ const ProductCard = ({ product }) => {
 
   return (
     <article className="group relative flex h-full flex-col rounded-xl sm:rounded-2xl bg-white p-2 sm:p-3 shadow-sm ring-1 ring-slate-900/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#1A175A]/10">
-      {/* ---------- Image (hover / tap swaps to 2nd photo) ---------- */}
-      <div
-        className="relative aspect-[4/5] cursor-pointer overflow-hidden rounded-lg sm:rounded-xl bg-white"
-        onClick={() => altImage && setShowAlt((v) => !v)}
-      >
-        {/* primary */}
-        <ProductImage
-          src={displayImage}
-          alt={product.name}
-          fallbackLabel="No product image"
-          containerClassName={`absolute inset-0 h-full w-full bg-white ${
-            altImage
-              ? `${showAlt ? 'opacity-0' : 'opacity-100'} [@media(hover:hover)]:group-hover:opacity-0`
-              : ''
-          }`}
-          className={`absolute inset-0 h-full w-full object-contain object-center p-2 transition-all duration-500 ease-out ${
-            altImage
-              ? `${showAlt ? 'opacity-0' : 'opacity-100'} [@media(hover:hover)]:group-hover:opacity-0`
-              : 'group-hover:scale-[1.04]'
-          }`}
-        />
-        {/* secondary / hover view */}
-        {altImage && (
-          <img
-            src={altImage}
-            alt={`${product.name} – hover view`}
-            loading="lazy"
-            decoding="async"
-            onError={(e) => {
-              e.currentTarget.style.display = 'none';
-            }}
-            className={`absolute inset-0 h-full w-full scale-105 bg-[#F5F6FA] object-contain object-center transition-all duration-500 ease-out ${
-              showAlt ? 'scale-100 opacity-100' : 'opacity-0'
-            } [@media(hover:hover)]:group-hover:scale-100 [@media(hover:hover)]:group-hover:opacity-100`}
+      {/* ---------- Image (clicking opens Product Detail Page) ---------- */}
+      <div className="relative aspect-[4/5] overflow-hidden rounded-lg sm:rounded-xl bg-white">
+        <Link
+          to={productLink}
+          className="absolute inset-0 block h-full w-full cursor-pointer"
+          aria-label={`View details of ${product.name}`}
+        >
+          {/* primary */}
+          <ProductImage
+            src={displayImage}
+            alt={product.name}
+            fallbackLabel="No product image"
+            containerClassName={`absolute inset-0 h-full w-full bg-white ${
+              altImage ? 'opacity-100 [@media(hover:hover)]:group-hover:opacity-0' : ''
+            }`}
+            className={`absolute inset-0 h-full w-full object-contain object-center p-2 transition-all duration-500 ease-out ${
+              altImage ? '[@media(hover:hover)]:group-hover:opacity-0' : 'group-hover:scale-[1.04]'
+            }`}
           />
-        )}
+          {/* secondary / hover view */}
+          {altImage && (
+            <img
+              src={altImage}
+              alt={`${product.name} – hover view`}
+              loading="lazy"
+              decoding="async"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+              }}
+              className="absolute inset-0 h-full w-full scale-105 bg-[#F5F6FA] object-contain object-center opacity-0 transition-all duration-500 ease-out [@media(hover:hover)]:group-hover:scale-100 [@media(hover:hover)]:group-hover:opacity-100"
+            />
+          )}
 
-        {/* soft vignette so overlays always read on primary, fades out cleanly on hover spec view */}
-        <div
-          className={`pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/15 via-transparent to-slate-950/5 transition-opacity duration-300 ${
-            altImage ? `${showAlt ? 'opacity-0' : ''} [@media(hover:hover)]:group-hover:opacity-0` : ''
-          }`}
-        />
+          {/* soft vignette so overlays always read on primary */}
+          <div
+            className={`pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/15 via-transparent to-slate-950/5 transition-opacity duration-300 ${
+              altImage ? '[@media(hover:hover)]:group-hover:opacity-0' : ''
+            }`}
+          />
+        </Link>
 
         {/* Badge */}
         {product.badge && (
           <span
-            className={`absolute left-2 top-2 sm:left-3 sm:top-3 z-10 rounded-full bg-white/95 px-2 py-0.5 sm:px-2.5 sm:py-1 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-[#1A175A] shadow-sm transition-opacity duration-200 ${
-              altImage ? `${showAlt ? 'opacity-0' : ''} [@media(hover:hover)]:group-hover:opacity-0` : ''
+            className={`pointer-events-none absolute left-2 top-2 sm:left-3 sm:top-3 z-10 rounded-full bg-white/95 px-2 py-0.5 sm:px-2.5 sm:py-1 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-[#1A175A] shadow-sm transition-opacity duration-200 ${
+              altImage ? '[@media(hover:hover)]:group-hover:opacity-0' : ''
             }`}
           >
             {product.badge}
@@ -120,8 +111,8 @@ const ProductCard = ({ product }) => {
         {/* Discount */}
         {product.discount && (
           <span
-            className={`absolute bottom-2 left-2 sm:bottom-3 sm:left-3 z-10 inline-flex items-center gap-0.5 sm:gap-1 rounded-full bg-emerald-500 px-1.5 sm:px-2.5 py-0.5 text-[9px] sm:text-[10px] font-bold text-white shadow-md transition-opacity duration-300 ${
-              altImage ? `${showAlt ? 'opacity-0' : ''} [@media(hover:hover)]:group-hover:opacity-0` : ''
+            className={`pointer-events-none absolute bottom-2 left-2 sm:bottom-3 sm:left-3 z-10 inline-flex items-center gap-0.5 sm:gap-1 rounded-full bg-emerald-500 px-1.5 sm:px-2.5 py-0.5 text-[9px] sm:text-[10px] font-bold text-white shadow-md transition-opacity duration-300 ${
+              altImage ? '[@media(hover:hover)]:group-hover:opacity-0' : ''
             }`}
           >
             <BadgePercent className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
@@ -131,17 +122,9 @@ const ProductCard = ({ product }) => {
 
         {/* Photo indicator dots */}
         {altImage && (
-          <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 z-10 flex items-center gap-1" aria-hidden="true">
-            <span
-              className={`h-1.5 rounded-full bg-white shadow transition-all duration-300 ${
-                showAlt ? 'w-1.5 opacity-60' : 'w-3.5'
-              } [@media(hover:hover)]:group-hover:w-1.5 [@media(hover:hover)]:group-hover:opacity-60`}
-            />
-            <span
-              className={`h-1.5 rounded-full bg-white shadow transition-all duration-300 ${
-                showAlt ? 'w-3.5' : 'w-1.5 opacity-60'
-              } [@media(hover:hover)]:group-hover:w-3.5 [@media(hover:hover)]:group-hover:opacity-100`}
-            />
+          <div className="pointer-events-none absolute bottom-2 right-2 sm:bottom-3 sm:right-3 z-10 flex items-center gap-1" aria-hidden="true">
+            <span className="h-1.5 w-3.5 rounded-full bg-white shadow transition-all duration-300 [@media(hover:hover)]:group-hover:w-1.5 [@media(hover:hover)]:group-hover:opacity-60" />
+            <span className="h-1.5 w-1.5 rounded-full bg-white opacity-60 shadow transition-all duration-300 [@media(hover:hover)]:group-hover:w-3.5 [@media(hover:hover)]:group-hover:opacity-100" />
           </div>
         )}
       </div>
@@ -164,7 +147,7 @@ const ProductCard = ({ product }) => {
 
         {/* title */}
         <h3 className="mt-1 sm:mt-1.5 line-clamp-2 min-h-[2rem] sm:min-h-[2.4rem] text-xs sm:text-[14px] font-bold leading-tight sm:leading-snug text-slate-900 transition-colors group-hover:text-[#1A175A]">
-          <Link to={`/product/${product.slug || product.id}`} className="hover:underline">
+          <Link to={productLink} className="hover:underline">
             {product.name}
           </Link>
         </h3>
@@ -264,28 +247,14 @@ const ProductCard = ({ product }) => {
           </div>
         </div>
 
-        {/* add to cart */}
-        <button
-          type="button"
-          onClick={handleAddToCart}
-          className={`mt-2.5 sm:mt-4 flex w-full items-center justify-center gap-1 sm:gap-1.5 rounded-lg sm:rounded-xl px-1.5 sm:px-2 py-2 sm:py-2.5 text-[11px] sm:text-xs xl:text-[13px] font-bold text-white shadow-md transition-all duration-200 active:scale-[0.98] ${
-            isAdded
-              ? 'bg-emerald-600 shadow-emerald-600/25'
-              : 'bg-[#1A175A] shadow-[#1A175A]/20 hover:bg-[#282479] hover:shadow-lg hover:shadow-[#1A175A]/25'
-          }`}
+        {/* View Product Button */}
+        <Link
+          to={productLink}
+          className="mt-2.5 sm:mt-4 flex w-full items-center justify-center gap-1.5 sm:gap-2 rounded-lg sm:rounded-xl px-2 py-2 sm:py-2.5 text-xs sm:text-[13px] font-bold text-white bg-[#1A175A] shadow-md shadow-[#1A175A]/20 transition-all duration-200 hover:bg-[#282479] hover:shadow-lg hover:shadow-[#1A175A]/25 active:scale-[0.98]"
         >
-          {isAdded ? (
-            <>
-              <Check className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-none" />
-              <span className="truncate">Added <span className="hidden min-[420px]:inline">• Size {selectedSize}</span></span>
-            </>
-          ) : (
-            <>
-              <ShoppingBag className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-none" />
-              <span className="truncate">Add to Cart <span className="hidden min-[420px]:inline">• Size {selectedSize}</span></span>
-            </>
-          )}
-        </button>
+          <Eye className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-none" />
+          <span>View Product</span>
+        </Link>
       </div>
     </article>
   );

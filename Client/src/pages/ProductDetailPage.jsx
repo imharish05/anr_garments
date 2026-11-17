@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link, useSearchParams } from 'react-router-dom';
 import Layout from '../components/Layout';
 import Breadcrumbs from '../components/Breadcrumbs';
 import ProductImage from '../components/ProductImage';
@@ -129,6 +129,7 @@ const SIZE_CHART_DATA = [
 const ProductDetailPage = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { addToCart, addToWishlist, isInWishlist, removeFromWishlist, currentUser, setIsCartOpen } = useCart();
 
   const [product, setProduct] = useState(null);
@@ -137,8 +138,15 @@ const ProductDetailPage = () => {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   // Configuration state
-  const [selectedColor, setSelectedColor] = useState('#1A175A');
-  const [selectedSize, setSelectedSize] = useState('M');
+  const [selectedColor, setSelectedColor] = useState(searchParams.get('color') || '#1A175A');
+  const [selectedSize, setSelectedSize] = useState(searchParams.get('size') || 'M');
+
+  useEffect(() => {
+    const s = searchParams.get('size');
+    if (s) setSelectedSize(s);
+    const c = searchParams.get('color');
+    if (c) setSelectedColor(c);
+  }, [searchParams]);
   const [selectedPocket, setSelectedPocket] = useState('');
   const [quantity, setQuantity] = useState(1);
 
