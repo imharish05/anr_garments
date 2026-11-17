@@ -291,25 +291,25 @@ const seedAll = async () => {
       {
         code: 'WELCOME20',
         description: '20% off on your first order with Twin A Apparels',
-        discountType: 'PERCENTAGE',
-        discountValue: 20,
-        minOrderAmount: 999,
-        maxDiscountAmount: 500,
+        type: 'PERCENT',
+        value: 20,
+        minOrderValue: 999,
+        maxDiscount: 500,
         usageLimit: 1000,
         isActive: true,
-        startDate: new Date(),
-        endDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
+        validFrom: new Date(),
+        validUntil: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
       },
       {
         code: 'TWINA100',
         description: 'Flat ₹100 off on all orders above ₹1499',
-        discountType: 'FLAT',
-        discountValue: 100,
-        minOrderAmount: 1499,
+        type: 'FLAT',
+        value: 100,
+        minOrderValue: 1499,
         usageLimit: 5000,
         isActive: true,
-        startDate: new Date(),
-        endDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
+        validFrom: new Date(),
+        validUntil: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
       }
     ]);
     console.log('✅ Default coupons seeded');
