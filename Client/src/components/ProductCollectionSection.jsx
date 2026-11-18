@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, PackageOpen, RefreshCw } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight, PackageOpen, RefreshCw } from 'lucide-react';
 import { fetchCategoriesTree, fetchProducts, getCategoryPageLink } from '../services/api';
 import ProductCard from './ProductCard';
 import { ProductCardSkeleton } from './SkeletonLoaders';
@@ -26,10 +26,43 @@ const ProductCollectionSection = ({
   const [error, setError] = useState('');
   const [dynamicCtaTo, setDynamicCtaTo] = useState(ctaTo);
 
+  const railRef = useRef(null);
+  const [canPrev, setCanPrev] = useState(false);
+  const [canNext, setCanNext] = useState(false);
+
   const slugsKey = categorySlugs.join(',');
   const idsKey = categoryIds.join(',');
   const patternSource = namePattern ? namePattern.source : '';
   const patternFlags = namePattern ? namePattern.flags : '';
+
+  const updateArrows = useCallback(() => {
+    const el = railRef.current;
+    if (!el) return;
+    const { scrollLeft, scrollWidth, clientWidth } = el;
+    setCanPrev(scrollLeft > 6);
+    setCanNext(scrollLeft < scrollWidth - clientWidth - 6);
+  }, []);
+
+  useEffect(() => {
+    updateArrows();
+    const handleResize = () => updateArrows();
+    window.addEventListener('resize', handleResize);
+    const timer = setTimeout(updateArrows, 150);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(timer);
+    };
+  }, [products, updateArrows]);
+
+  const scrollByDirection = (dir) => {
+    const el = railRef.current;
+    if (!el) return;
+    const firstChild = el.firstElementChild;
+    const cardWidth = firstChild ? firstChild.getBoundingClientRect().width : 280;
+    const gap = 24;
+    const scrollStep = cardWidth + gap;
+    el.scrollBy({ left: dir * scrollStep, behavior: 'smooth' });
+  };
 
   // Dynamically resolve button link to live category page URL
   useEffect(() => {
@@ -68,36 +101,31 @@ const ProductCollectionSection = ({
       const ids = idsKey ? idsKey.split(',').map(Number) : EMPTY_LIST;
       const regex = patternSource ? new RegExp(patternSource, patternFlags) : null;
 
-      let list = [];
-      const primary = slugs[0];
-      if (primary) {
-        try {
-          const direct = await fetchProducts({ category: primary, limit, forceRefresh });
-          if (Array.isArray(direct) && direct.length > 0) {
-            list = direct;
-          }
-        } catch (err) {
-          // If the backend threw a rate limit (429) or server error (5xx), avoid cascading
-          if (err?.status === 429 || (err?.status && err.status >= 500)) {
-            throw err;
-          }
-          // fallback to catalog below
-        }
-      }
+      // Always fetch catalog list (up to 100) so cross-category and namePattern matches are found
+      const fullList = await fetchProducts({ limit: 100, forceRefresh });
 
-      if (!list || list.length === 0) {
-        const fullList = await fetchProducts({ limit: 100, forceRefresh });
-        list = (fullList || []).filter((p) => {
-          if (slugs.includes(p.categorySlug)) return true;
-          if (ids.includes(p.categoryId)) return true;
-          if (regex && (regex.test(p.category || '') || regex.test(p.name || '') || regex.test(p.categorySlug || ''))) return true;
-          return false;
-        });
-      }
+      const matched = (fullList || []).filter((p) => {
+        if (!p) return false;
+        if (slugs.includes(p.categorySlug)) return true;
+        if (ids.includes(p.categoryId)) return true;
+        if (regex && (regex.test(p.category || '') || regex.test(p.name || '') || regex.test(p.categorySlug || ''))) return true;
+        return false;
+      });
 
-      setProducts(list.slice(0, limit));
-      if (list.length > 0 && list[0]?.categorySlug) {
-        setDynamicCtaTo(getCategoryPageLink(list[0].categorySlug));
+      // Filter: Show ONLY products where admin toggled Best Seller OR New Arrival (and product is active)
+      const promoOnly = matched.filter((p) => {
+        const isActive = p.isActive !== false && p.raw?.isActive !== false;
+        if (!isActive) return false;
+        const isBest = p.isBestSeller === true || p.isBestSeller === 'true' || p.isBestSeller === 1 ||
+                       p.raw?.isBestSeller === true || p.raw?.isBestSeller === 'true' || p.raw?.isBestSeller === 1;
+        const isNew = p.isNewArrival === true || p.isNewArrival === 'true' || p.isNewArrival === 1 ||
+                      p.raw?.isNewArrival === true || p.raw?.isNewArrival === 'true' || p.raw?.isNewArrival === 1;
+        return Boolean(isBest || isNew);
+      });
+
+      setProducts(promoOnly);
+      if (promoOnly.length > 0 && promoOnly[0]?.categorySlug) {
+        setDynamicCtaTo(getCategoryPageLink(promoOnly[0].categorySlug));
       }
     } catch (err) {
       setError(err?.message || 'Unable to load products right now.');
@@ -105,7 +133,7 @@ const ProductCollectionSection = ({
     } finally {
       setLoading(false);
     }
-  }, [limit, slugsKey, idsKey, patternSource, patternFlags]);
+  }, [slugsKey, idsKey, patternSource, patternFlags]);
 
   useEffect(() => {
     loadProducts();
@@ -186,6 +214,53 @@ const ProductCollectionSection = ({
             <p className="text-xs text-slate-500 mt-1">
               Check back soon or reach out to our institutional desk for custom orders.
             </p>
+          </div>
+        ) : products.length > 4 ? (
+          <div className="relative group/slider">
+            <div
+              ref={railRef}
+              onScroll={updateArrows}
+              className="flex gap-4 sm:gap-6 overflow-x-auto scroll-smooth py-4 -my-4 px-1 -mx-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory"
+            >
+              {products.map((product) => (
+                <div
+                  key={product.id}
+                  className="shrink-0 w-[calc(80%-10px)] sm:w-[calc(50%-12px)] md:w-[calc(33.333%-16px)] lg:w-[calc(25%-18px)] snap-start"
+                >
+                  <ProductCard product={product} />
+                </div>
+              ))}
+            </div>
+
+            {/* Left Arrow Button */}
+            <button
+              type="button"
+              onClick={() => scrollByDirection(-1)}
+              disabled={!canPrev}
+              aria-label="Previous products"
+              className={`absolute -left-3 sm:-left-5 lg:-left-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/95 backdrop-blur-sm border border-slate-200 text-[#1A175A] shadow-xl flex items-center justify-center transition-all duration-200 ${
+                canPrev
+                  ? 'opacity-100 hover:bg-[#1A175A] hover:text-white hover:scale-105 active:scale-95 cursor-pointer'
+                  : 'opacity-0 pointer-events-none'
+              }`}
+            >
+              <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+            </button>
+
+            {/* Right Arrow Button */}
+            <button
+              type="button"
+              onClick={() => scrollByDirection(1)}
+              disabled={!canNext}
+              aria-label="Next products"
+              className={`absolute -right-3 sm:-right-5 lg:-right-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/95 backdrop-blur-sm border border-slate-200 text-[#1A175A] shadow-xl flex items-center justify-center transition-all duration-200 ${
+                canNext
+                  ? 'opacity-100 hover:bg-[#1A175A] hover:text-white hover:scale-105 active:scale-95 cursor-pointer'
+                  : 'opacity-0 pointer-events-none'
+              }`}
+            >
+              <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+            </button>
           </div>
         ) : (
           <ScrollReveal
