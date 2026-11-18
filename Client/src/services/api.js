@@ -486,6 +486,87 @@ const normalizeProduct = (p) => {
   const mrp = p.mrp ? Number(p.mrp) : p.compareAtPrice ? Number(p.compareAtPrice) : price;
   const computedDiscount = mrp > price && mrp > 0 ? Math.round(((mrp - price) / mrp) * 100) : 0;
 
+  // Extract Top Size and Bottom Size for two-piece hospital sets (Scrub Suits, Patient Pant & Shirt sets)
+  const parseSizeList = (val) => {
+    if (!val) return [];
+    if (Array.isArray(val)) return val.map((s) => String(s).trim()).filter(Boolean);
+    if (typeof val === 'string') {
+      return val.split(',').map((s) => s.trim()).filter(Boolean);
+    }
+    return [String(val).trim()];
+  };
+
+  const SIZE_ORDER = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL'];
+  const sortSizes = (list) => {
+    return [...new Set(list)].sort((a, b) => {
+      const idxA = SIZE_ORDER.indexOf(String(a).trim().toUpperCase());
+      const idxB = SIZE_ORDER.indexOf(String(b).trim().toUpperCase());
+      if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+      if (idxA !== -1) return -1;
+      if (idxB !== -1) return 1;
+      return String(a).localeCompare(String(b));
+    });
+  };
+
+  const attrTopSizeVal = parsedAttributes['Top Size'] ?? parsedAttributes['top size'] ?? parsedAttributes.topSize ?? parsedAttributes.topSizes;
+  const attrBottomSizeVal = parsedAttributes['Bottom Size'] ?? parsedAttributes['bottom size'] ?? parsedAttributes.bottomSize ?? parsedAttributes.bottomSizes;
+
+  const variantTopSizes = [];
+  const variantBottomSizes = [];
+  variants.forEach((v) => {
+    let vAttrs = {};
+    if (typeof v.attributes === 'string') {
+      try { vAttrs = JSON.parse(v.attributes); } catch {}
+    } else if (v.attributes && typeof v.attributes === 'object') {
+      vAttrs = v.attributes;
+    }
+    const ts = vAttrs['Top Size'] ?? vAttrs['top size'] ?? vAttrs.topSize;
+    if (ts && !variantTopSizes.includes(String(ts).trim())) variantTopSizes.push(String(ts).trim());
+    const bs = vAttrs['Bottom Size'] ?? vAttrs['bottom size'] ?? vAttrs.bottomSize;
+    if (bs && !variantBottomSizes.includes(String(bs).trim())) variantBottomSizes.push(String(bs).trim());
+  });
+
+  const parsedTopSizes = parseSizeList(attrTopSizeVal);
+  const parsedBottomSizes = parseSizeList(attrBottomSizeVal);
+
+  const finalTopSizes = parsedTopSizes.length > 0 ? parsedTopSizes : variantTopSizes;
+  const finalBottomSizes = parsedBottomSizes.length > 0 ? parsedBottomSizes : variantBottomSizes;
+
+  const catSlugLower = String(p.category?.slug || p.categorySlug || '').toLowerCase();
+  const nameLower = String(p.name || '').toLowerCase();
+
+  const isExcludedFromSet =
+    catSlugLower.includes('underscrub') ||
+    nameLower.includes('underscrub') ||
+    catSlugLower.includes('apron') ||
+    nameLower.includes('apron') ||
+    catSlugLower.includes('lab-coat') ||
+    nameLower.includes('lab coat') ||
+    catSlugLower.includes('gown') ||
+    (nameLower.includes('gown') && !nameLower.includes('pant'));
+
+  const isSetProduct = !isExcludedFromSet && Boolean(
+    (attrTopSizeVal && attrBottomSizeVal) ||
+    catSlugLower.includes('scrub') ||
+    catSlugLower.includes('patient-pant-shirt') ||
+    nameLower.includes('scrub suit') ||
+    nameLower.includes('scrub set') ||
+    nameLower.includes('two-piece') ||
+    nameLower.includes('pant & shirt') ||
+    nameLower.includes('pant and shirt')
+  );
+
+  const defaultStandardSizes = ['XS', 'S', 'M', 'L', 'XL', '2XL'];
+  const rawBaseSizes = extractedSizes.length > 0
+    ? extractedSizes
+    : (Array.isArray(parsedAttributes.sizes)
+        ? parsedAttributes.sizes
+        : parseSizeList(parsedAttributes.Size || parsedAttributes.size));
+  const baseSizes = rawBaseSizes.length > 0 ? sortSizes(rawBaseSizes) : defaultStandardSizes;
+
+  const topSizes = sortSizes(finalTopSizes.length > 1 ? finalTopSizes : baseSizes);
+  const bottomSizes = sortSizes(finalBottomSizes.length > 1 ? finalBottomSizes : baseSizes);
+
   return {
     id: p.id,
     name: p.name || '',
@@ -512,7 +593,10 @@ const normalizeProduct = (p) => {
     specifications: Array.isArray(specs) ? specs : [],
     stock: p.stock ?? 0,
     sku: p.sku || '',
-    sizes: extractedSizes.length > 0 ? extractedSizes : Array.isArray(parsedAttributes.sizes) ? parsedAttributes.sizes : [],
+    hasTopBottomSizes: isSetProduct,
+    topSizes,
+    bottomSizes,
+    sizes: baseSizes,
     colors: extractedColors,
     pockets: extractedPockets,
     variants: variants.map((v) => ({

@@ -140,10 +140,16 @@ const ProductDetailPage = () => {
   // Configuration state
   const [selectedColor, setSelectedColor] = useState(searchParams.get('color') || '#1A175A');
   const [selectedSize, setSelectedSize] = useState(searchParams.get('size') || 'M');
+  const [selectedTopSize, setSelectedTopSize] = useState(searchParams.get('topSize') || 'M');
+  const [selectedBottomSize, setSelectedBottomSize] = useState(searchParams.get('bottomSize') || 'M');
 
   useEffect(() => {
     const s = searchParams.get('size');
     if (s) setSelectedSize(s);
+    const ts = searchParams.get('topSize');
+    if (ts) setSelectedTopSize(ts);
+    const bs = searchParams.get('bottomSize');
+    if (bs) setSelectedBottomSize(bs);
     const c = searchParams.get('color');
     if (c) setSelectedColor(c);
   }, [searchParams]);
@@ -216,7 +222,15 @@ const ProductDetailPage = () => {
         const firstColor = normalizeColorOption(p.colors?.[0]);
         setSelectedColor(firstColor?.name || 'Navy Blue');
         if (p.sizes && p.sizes.length > 0) {
-          setSelectedSize(p.sizes[0]);
+          setSelectedSize(p.sizes.includes('M') ? 'M' : p.sizes[0]);
+        }
+        if (p.hasTopBottomSizes) {
+          if (p.topSizes && p.topSizes.length > 0) {
+            setSelectedTopSize(p.topSizes.includes('M') ? 'M' : p.topSizes[0]);
+          }
+          if (p.bottomSizes && p.bottomSizes.length > 0) {
+            setSelectedBottomSize(p.bottomSizes.includes('M') ? 'M' : p.bottomSizes[0]);
+          }
         }
         if (p.pockets && p.pockets.length > 0) {
           setSelectedPocket(p.pockets[0]);
@@ -328,7 +342,11 @@ const ProductDetailPage = () => {
       price: embroideryCost
     } : null;
 
-    addToCart(product, selectedColor, selectedSize, quantity, embroideryData, selectedPocket);
+    const effectiveSize = product?.hasTopBottomSizes
+      ? `Top: ${selectedTopSize} | Bottom: ${selectedBottomSize}`
+      : selectedSize;
+
+    addToCart(product, selectedColor, effectiveSize, quantity, embroideryData, selectedPocket);
     setIsAddedRecently(true);
     setTimeout(() => setIsAddedRecently(false), 1600);
   };
@@ -666,39 +684,114 @@ const ProductDetailPage = () => {
                 );
               })()}
 
-              {/* 2. Size Selector + Size Chart Modal Link */}
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-bold uppercase tracking-wider text-slate-600">
-                    Select Size
-                  </label>
-                  <button
-                    type="button"
-                    onClick={() => setShowSizeChart(true)}
-                    className="inline-flex items-center gap-1 text-xs font-bold text-[#1A175A] hover:underline"
-                  >
-                    <Ruler className="w-3.5 h-3.5 text-[#1A175A]" />
-                    <span>View Size Guide</span>
-                  </button>
-                </div>
+              {/* 2. Size Selector (Top Size & Bottom Size for Sets, or Single Size for standard garments) */}
+              {product.hasTopBottomSizes ? (
+                <div className="space-y-4 rounded-2xl bg-slate-50/80 p-3.5 sm:p-4 border border-slate-200">
+                  {/* Top Size Selector */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                        <span className="inline-block w-2 h-2 rounded-full bg-[#1A175A]"></span>
+                        Top Size (Chest / Shirt)
+                        <span className="text-[#1A175A] font-extrabold normal-case ml-1">
+                          • {selectedTopSize}
+                        </span>
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => setShowSizeChart(true)}
+                        className="inline-flex items-center gap-1 text-[11px] font-bold text-[#1A175A] hover:underline"
+                      >
+                        <Ruler className="w-3.5 h-3.5 text-[#1A175A]" />
+                        <span>Size Guide</span>
+                      </button>
+                    </div>
 
-                <div className="grid grid-cols-7 gap-1.5">
-                  {(product.sizes && product.sizes.length > 0 ? product.sizes : SIZES).map(sz => (
-                    <button
-                      key={sz}
-                      type="button"
-                      onClick={() => setSelectedSize(sz)}
-                      className={`py-2 rounded-xl text-xs font-bold transition-all ${
-                        selectedSize === sz
-                          ? 'bg-[#1A175A] text-white shadow-sm'
-                          : 'bg-white border border-slate-200 text-slate-700 hover:border-[#1A175A]'
-                      }`}
-                    >
-                      {sz}
-                    </button>
-                  ))}
+                    <div className="grid grid-cols-6 sm:grid-cols-7 gap-1.5">
+                      {(product.topSizes && product.topSizes.length > 0 ? product.topSizes : SIZES).map(sz => (
+                        <button
+                          key={`top-${sz}`}
+                          type="button"
+                          onClick={() => setSelectedTopSize(sz)}
+                          className={`py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                            selectedTopSize === sz
+                              ? 'bg-[#1A175A] text-white shadow-sm ring-2 ring-[#1A175A]/20'
+                              : 'bg-white border border-slate-200 text-slate-700 hover:border-[#1A175A]'
+                          }`}
+                        >
+                          {sz}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Bottom Size Selector */}
+                  <div className="space-y-2 pt-3 border-t border-slate-200/80">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                        <span className="inline-block w-2 h-2 rounded-full bg-blue-600"></span>
+                        Bottom Size (Waist / Trouser)
+                        <span className="text-blue-700 font-extrabold normal-case ml-1">
+                          • {selectedBottomSize}
+                        </span>
+                      </label>
+                    </div>
+
+                    <div className="grid grid-cols-6 sm:grid-cols-7 gap-1.5">
+                      {(product.bottomSizes && product.bottomSizes.length > 0 ? product.bottomSizes : SIZES).map(sz => (
+                        <button
+                          key={`bottom-${sz}`}
+                          type="button"
+                          onClick={() => setSelectedBottomSize(sz)}
+                          className={`py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                            selectedBottomSize === sz
+                              ? 'bg-[#1A175A] text-white shadow-sm ring-2 ring-[#1A175A]/20'
+                              : 'bg-white border border-slate-200 text-slate-700 hover:border-[#1A175A]'
+                          }`}
+                        >
+                          {sz}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-600">
+                      Select Size
+                      {selectedSize ? (
+                        <span className="ml-2 text-[#1A175A]">• {selectedSize}</span>
+                      ) : null}
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setShowSizeChart(true)}
+                      className="inline-flex items-center gap-1 text-xs font-bold text-[#1A175A] hover:underline"
+                    >
+                      <Ruler className="w-3.5 h-3.5 text-[#1A175A]" />
+                      <span>View Size Guide</span>
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-7 gap-1.5">
+                    {(product.sizes && product.sizes.length > 0 ? product.sizes : SIZES).map(sz => (
+                      <button
+                        key={sz}
+                        type="button"
+                        onClick={() => setSelectedSize(sz)}
+                        className={`py-2 rounded-xl text-xs font-bold transition-all ${
+                          selectedSize === sz
+                            ? 'bg-[#1A175A] text-white shadow-sm'
+                            : 'bg-white border border-slate-200 text-slate-700 hover:border-[#1A175A]'
+                        }`}
+                      >
+                        {sz}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* 3. Pocket & Cut Configuration (Only displayed if configured for this individual product in Admin) */}
               {product.pockets && product.pockets.length > 0 && (
@@ -1408,7 +1501,9 @@ const ProductDetailPage = () => {
           className="flex-1 py-3 px-4 rounded-xl bg-[#1A175A] text-white font-bold text-xs flex items-center justify-center gap-2"
         >
           <ShoppingBag className="w-4 h-4 text-blue-200" />
-          <span>Add to Cart • Size {selectedSize}</span>
+          <span>
+            Add to Cart • {product?.hasTopBottomSizes ? `Top: ${selectedTopSize} / Bottom: ${selectedBottomSize}` : `Size ${selectedSize}`}
+          </span>
         </button>
       </div>
 
