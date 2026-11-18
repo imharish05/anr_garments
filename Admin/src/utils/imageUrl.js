@@ -28,8 +28,13 @@ export const resolveImageUrl = (value, serverUrl = '', pageUrl = '') => {
   return `${base}/${path.replace(/^\/+/, '')}`;
 };
 
+const rawServerUrl = import.meta.env.VITE_SERVER_URL || import.meta.env.VITE_API_URL || '';
+const effectiveServerUrl = !rawServerUrl || rawServerUrl.includes('anr-garments-api.onrender.com')
+  ? 'https://anr-garments-api-n0gf.onrender.com'
+  : rawServerUrl;
+
 export const getImageUrl = (imagePath) => resolveImageUrl(
   imagePath,
-  import.meta.env.VITE_SERVER_URL || import.meta.env.VITE_API_URL || '',
+  effectiveServerUrl,
   typeof window !== 'undefined' ? window.location.href : ''
 );

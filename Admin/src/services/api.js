@@ -26,8 +26,18 @@ const processQueue = (error, token = null) => {
   failedQueue = [];
 };
 
-const serverUrl = (import.meta.env.VITE_SERVER_URL || '').replace(/\/$/, '');
-const rawApiBase = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/$/, '');
+const envServer = (import.meta.env.VITE_SERVER_URL || '').replace(/\/$/, '');
+const envApi = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/$/, '');
+
+const serverUrl =
+  !envServer || envServer.includes('anr-garments-api.onrender.com')
+    ? 'https://anr-garments-api-n0gf.onrender.com'
+    : envServer;
+
+const rawApiBase =
+  !envApi || envApi.includes('anr-garments-api.onrender.com')
+    ? 'https://anr-garments-api-n0gf.onrender.com/api'
+    : envApi;
 
 let baseURL = rawApiBase;
 if (rawApiBase.startsWith('http://') || rawApiBase.startsWith('https://')) {
@@ -36,10 +46,14 @@ if (rawApiBase.startsWith('http://') || rawApiBase.startsWith('https://')) {
   baseURL = `${serverUrl}${rawApiBase.startsWith('/') ? '' : '/'}${rawApiBase}`;
 }
 
-// A deployed storefront must never send API requests to the visitor's device.
+// A deployed admin panel must never send API requests to the visitor's device.
 if (typeof window !== 'undefined' && !isLocalHost(window.location.hostname)) {
-  const configured = new URL(baseURL, window.location.origin);
-  if (isLocalHost(configured.hostname)) baseURL = configured.pathname || '/api';
+  try {
+    const configured = new URL(baseURL, window.location.origin);
+    if (isLocalHost(configured.hostname)) baseURL = 'https://anr-garments-api-n0gf.onrender.com/api';
+  } catch (e) {
+    baseURL = 'https://anr-garments-api-n0gf.onrender.com/api';
+  }
 }
 
 const api = axios.create({ baseURL, timeout: 15000 });
