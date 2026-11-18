@@ -6,14 +6,11 @@ import ProductImage from './ProductImage';
 import { normalizeColorOption } from '../services/api';
 
 const SIZES = ["S", "M", "L", "XL", "2XL"];
-const MAX_COLORS = 5;
 
 const ProductCard = ({ product }) => {
   const { addToWishlist, removeFromWishlist, isInWishlist } = useCart();
   const [selectedColorIdx, setSelectedColorIdx] = useState(0);
-  const [selectedSize, setSelectedSize] = useState("M");
   const isLiked = Boolean(product?.id != null && isInWishlist(product.id));
-  const [showAllColors, setShowAllColors] = useState(false);
 
   // second photo: product.hoverImage, or product.images?.[1]
   const altImage = product.hoverImage || product.images?.[1] || null;
@@ -21,12 +18,11 @@ const ProductCard = ({ product }) => {
   const allColors = (product.colors || []).map(normalizeColorOption).filter(Boolean);
   const safeColorIdx = selectedColorIdx < allColors.length ? selectedColorIdx : 0;
   const activeColor = allColors[safeColorIdx] || { name: 'Navy Blue', hex: '#1A175A', image: '' };
-  const visibleColors = showAllColors ? allColors : allColors.slice(0, MAX_COLORS);
-  const extraColors = showAllColors ? 0 : Math.max(0, allColors.length - MAX_COLORS);
+  const availableSizes = Array.isArray(product.sizes) && product.sizes.length > 0 ? product.sizes : SIZES;
   const savings = product.originalPrice ? product.originalPrice - product.price : 0;
   const displayImage = (safeColorIdx > 0 && activeColor.image) ? activeColor.image : product.image;
 
-  const productLink = `/product/${product.slug || product.id}${selectedSize ? `?size=${selectedSize}` : ''}${activeColor?.hex ? `&color=${encodeURIComponent(activeColor.hex)}` : ''}`;
+  const productLink = `/product/${product.slug || product.id}${activeColor?.hex ? `?color=${encodeURIComponent(activeColor.hex)}` : ''}`;
 
   const handleWishlist = (e) => {
     e.preventDefault();
@@ -169,88 +165,66 @@ const ProductCard = ({ product }) => {
           )}
         </div>
 
-        {/* options */}
-        <div className="mt-2 sm:mt-3 space-y-2 sm:space-y-2.5 border-t border-slate-100 pt-2 sm:pt-3">
-          {/* Colors shown in circles, no color code */}
-          {allColors.length > 0 && (
-            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-              <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                Colour:
-              </span>
-              <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap">
-                {visibleColors.map((colorObj, idx) => {
+        {/* Available Variants Summary: + more colors & + sizes */}
+        <div className="mt-2.5 sm:mt-3 pt-2 sm:pt-2.5 border-t border-slate-100 flex items-center justify-between gap-1.5 flex-wrap">
+          {/* Colors */}
+          <div className="flex items-center gap-1.5 min-w-0">
+            {allColors.length > 0 && (
+              <div className="flex items-center gap-1 flex-shrink-0">
+                {allColors.slice(0, 3).map((colorObj, idx) => {
                   const active = idx === safeColorIdx;
                   return (
                     <button
-                      key={`${colorObj.name}-${colorObj.hex}-${idx}`}
+                      key={`${colorObj.name}-${idx}`}
                       type="button"
-                      onClick={() => setSelectedColorIdx(idx)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setSelectedColorIdx(idx);
+                      }}
                       title={colorObj.name}
-                      aria-label={`Select colour ${colorObj.name}`}
-                      aria-pressed={active}
-                      className={`h-4 w-4 sm:h-5 sm:w-5 rounded-full transition-all duration-150 cursor-pointer ${
+                      aria-label={`Preview ${colorObj.name}`}
+                      className={`h-4 w-4 sm:h-4.5 sm:w-4.5 rounded-full transition-transform cursor-pointer ${
                         active
-                          ? 'bg-white p-[1px] sm:p-[1.5px] border-2 border-[#1A175A] shadow-xs'
-                          : 'border border-slate-300 hover:border-slate-500 hover:scale-105'
+                          ? 'ring-2 ring-[#1A175A] ring-offset-1 scale-110 shadow-xs'
+                          : 'border border-slate-300 hover:scale-110'
                       }`}
-                      style={active ? undefined : { backgroundColor: colorObj.hex }}
-                    >
-                      {active ? (
-                        <span
-                          className="w-full h-full rounded-full block"
-                          style={{
-                            backgroundColor: colorObj.hex,
-                            boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.08)',
-                          }}
-                        />
-                      ) : null}
-                    </button>
+                      style={{ backgroundColor: colorObj.hex }}
+                    />
                   );
                 })}
-                {extraColors > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => setShowAllColors(true)}
-                    aria-label={`Show ${extraColors} more colours`}
-                    className="grid h-4 sm:h-5 px-1.5 sm:px-2 place-items-center rounded-full bg-slate-100 text-[9px] sm:text-[10px] font-bold text-slate-600 hover:bg-[#1A175A] hover:text-white transition-colors"
-                  >
-                    +{extraColors}
-                  </button>
-                )}
               </div>
-            </div>
-          )}
+            )}
+            {allColors.length > 3 ? (
+              <span className="text-[10px] sm:text-[11px] font-bold text-slate-500 truncate">
+                +{allColors.length - 3} more colors
+              </span>
+            ) : allColors.length > 1 ? (
+              <span className="text-[10px] sm:text-[11px] font-bold text-slate-500 truncate">
+                +{allColors.length} colors
+              </span>
+            ) : allColors.length === 1 ? (
+              <span className="text-[10px] sm:text-[11px] font-medium text-slate-400">
+                1 color
+              </span>
+            ) : null}
+          </div>
 
-          {/* Compact Size Selector */}
-          <div className="space-y-1 sm:space-y-1.5">
-            <div className="flex items-center justify-between text-[9px] sm:text-[10px]">
-              <span className="font-bold uppercase tracking-wider text-slate-400">Size</span>
-              <span className="font-semibold text-slate-500">Selected: <strong className="text-[#1A175A]">{selectedSize}</strong></span>
-            </div>
-            <div className="grid grid-cols-5 gap-0.5 sm:gap-1">
-              {SIZES.map((sz) => (
-                <button
-                  key={sz}
-                  type="button"
-                  onClick={() => setSelectedSize(sz)}
-                  aria-pressed={selectedSize === sz}
-                  className={`rounded sm:rounded-md py-0.5 sm:py-1 text-[10px] sm:text-xs font-bold transition-all duration-150 ${
-                    selectedSize === sz
-                      ? 'border border-[#1A175A] bg-[#1A175A] text-white shadow-xs'
-                      : 'border border-slate-200 bg-white text-slate-600 hover:border-[#1A175A] hover:text-[#1A175A]'
-                  }`}
-                >
-                  {sz}
-                </button>
-              ))}
-            </div>
+          {/* Sizes */}
+          <div className="flex items-center flex-shrink-0">
+            <span
+              className="inline-flex items-center px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[10px] sm:text-[11px] font-bold border border-slate-200/80 transition-colors group-hover:border-[#1A175A]/25 group-hover:bg-blue-50 group-hover:text-[#1A175A]"
+              title={`Available sizes: ${availableSizes.join(', ')}`}
+            >
+              +{availableSizes.length} sizes
+            </span>
           </div>
         </div>
 
         {/* View Product Button */}
         <Link
           to={productLink}
-          className="mt-4 sm:mt-5 flex w-full items-center justify-center gap-1.5 sm:gap-2 rounded-lg sm:rounded-xl px-2 py-2 sm:py-2.5 text-xs sm:text-[13px] font-bold text-white bg-[#1A175A] shadow-md shadow-[#1A175A]/20 transition-all duration-200 hover:bg-[#282479] hover:shadow-lg hover:shadow-[#1A175A]/25 active:scale-[0.98]"
+          className="mt-3.5 sm:mt-4 flex w-full items-center justify-center gap-1.5 sm:gap-2 rounded-lg sm:rounded-xl px-2 py-2 sm:py-2.5 text-xs sm:text-[13px] font-bold text-white bg-[#1A175A] shadow-md shadow-[#1A175A]/20 transition-all duration-200 hover:bg-[#282479] hover:shadow-lg hover:shadow-[#1A175A]/25 active:scale-[0.98] mt-auto"
         >
           <Eye className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-none" />
           <span>View Product</span>
