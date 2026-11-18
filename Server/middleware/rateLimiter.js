@@ -26,7 +26,12 @@ const createRateLimiter = ({
     standardHeaders: true,
     legacyHeaders: false,
     keyGenerator,
-    skip,
+    skip: (req) => {
+      // Never rate-limit browser CORS preflight requests
+      if (req.method === 'OPTIONS') return true;
+      if (typeof skip === 'function') return skip(req);
+      return false;
+    },
     handler: (req, res, _next, options) => {
       const resetTime = req.rateLimit?.resetTime;
       const retryAfterSeconds = resetTime
@@ -45,7 +50,7 @@ const createRateLimiter = ({
 
 const generalApiLimiter = createRateLimiter({
   windowMs: 15 * MINUTE,
-  limit: Number(process.env.RATE_LIMIT_GENERAL_MAX) || 600,
+  limit: Number(process.env.RATE_LIMIT_GENERAL_MAX) || 1200,
   message: 'Too many API requests from your IP. Please wait a few minutes and try again.',
   skip: (req) =>
     req.path === '/health' ||

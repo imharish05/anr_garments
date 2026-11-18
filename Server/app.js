@@ -22,9 +22,17 @@ app.use(helmet({ crossOriginResourcePolicy: false, contentSecurityPolicy: false 
 app.use(morgan('dev'));
 
 // ── CORS ─────────────────────────────────────────────────────────────────────
+const parseOrigins = (str) =>
+  (str || '')
+    .split(',')
+    .map((origin) => origin.trim().replace(/\/+$/, ''))
+    .filter(Boolean);
+
 const allowedOrigins = [
-  ...(process.env.CLIENT_URL || '').split(',').map((origin) => origin.trim()).filter(Boolean),
-  ...(process.env.ADMIN_URL || '').split(',').map((origin) => origin.trim()).filter(Boolean),
+  ...parseOrigins(process.env.CLIENT_URL),
+  ...parseOrigins(process.env.ADMIN_URL),
+  'https://anr-garments-client.vercel.app',
+  'https://anr-garments-admin.vercel.app',
   'http://localhost:5173',
   'http://localhost:5174',
   'http://localhost:3000',
@@ -36,7 +44,9 @@ const allowedOrigins = [
 app.use((req, res, next) => {
   const origin = req.headers.origin;
   if (origin) {
+    const isVercel = origin.endsWith('.vercel.app');
     const isAllowed = allowedOrigins.includes(origin) ||
+      isVercel ||
       process.env.NODE_ENV !== 'production';
 
     if (isAllowed) {
@@ -50,7 +60,7 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin, x-session-id');
 
   if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+    return res.status(204).end();
   }
   next();
 });

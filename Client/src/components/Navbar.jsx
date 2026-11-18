@@ -66,6 +66,7 @@ const Navbar = () => {
   );
 
   // Fetch dynamic categories tree from backend Admin API
+  const lastFocusFetchRef = useRef(0);
   const loadCategories = useCallback(async () => {
     try {
       const tree = await fetchCategoriesTree();
@@ -80,10 +81,16 @@ const Navbar = () => {
 
   useEffect(() => {
     loadCategories();
-    // Refetch on window focus so admin changes in other tab reflect instantly
-    window.addEventListener('focus', loadCategories);
+    // Refetch on window focus (throttled to at most once per 60s)
+    const handleWindowFocus = () => {
+      const now = Date.now();
+      if (now - lastFocusFetchRef.current < 60000) return;
+      lastFocusFetchRef.current = now;
+      loadCategories();
+    };
+    window.addEventListener('focus', handleWindowFocus);
     return () => {
-      window.removeEventListener('focus', loadCategories);
+      window.removeEventListener('focus', handleWindowFocus);
     };
   }, [loadCategories]);
 

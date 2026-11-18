@@ -76,7 +76,11 @@ const ProductCollectionSection = ({
           if (Array.isArray(direct) && direct.length > 0) {
             list = direct;
           }
-        } catch {
+        } catch (err) {
+          // If the backend threw a rate limit (429) or server error (5xx), avoid cascading
+          if (err?.status === 429 || (err?.status && err.status >= 500)) {
+            throw err;
+          }
           // fallback to catalog below
         }
       }

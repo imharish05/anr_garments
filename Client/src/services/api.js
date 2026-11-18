@@ -106,6 +106,8 @@ let announcementsPromise = null;
 const bannersPromiseCache = new Map();
 let categoriesCache = null;
 let categoriesPromise = null;
+let colorsCache = null;
+let colorsPromise = null;
 const productsCache = new Map();
 const productsPromiseCache = new Map();
 const settingsCache = new Map();
@@ -186,7 +188,7 @@ export const fetchCategoriesTree = async (forceRefresh = false) => {
   if (!forceRefresh && categoriesCache) return categoriesCache;
   if (!forceRefresh && categoriesPromise) return categoriesPromise;
 
-  categoriesPromise = (async () => {
+  const req = (async () => {
     let rawCats = [];
     try {
       const data = await apiRequest('/categories/tree');
@@ -229,6 +231,7 @@ export const fetchCategoriesTree = async (forceRefresh = false) => {
     categoriesPromise = null;
   });
 
+  categoriesPromise = req;
   return categoriesPromise;
 };
 
@@ -591,27 +594,42 @@ export const validateCouponApi = async (code, orderTotal) => {
   });
 };
 
-export const fetchColorCollections = async () => {
-  const data = await apiRequest('/colors');
-  const list = Array.isArray(data?.colors) ? data.colors : Array.isArray(data) ? data : [];
-  return list
-    .filter((c) => c && c.isActive !== false)
-    .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
-    .map((c) => {
-      const colorFilterUrl = c.name
-        ? `/products?color=${encodeURIComponent(c.name)}`
-        : '/products';
-      const link = c.link && c.link.startsWith('/') ? c.link : colorFilterUrl;
-      return {
-        id: c.id,
-        name: c.name || '',
-        hex: c.hex || '#1A175A',
-        image: getImageUrl(c.image),
-        link,
-        badge: c.badge || '',
-        description: c.description || '',
-      };
+export const fetchColorCollections = async (forceRefresh = false) => {
+  if (!forceRefresh && colorsCache) return colorsCache;
+  if (!forceRefresh && colorsPromise) return colorsPromise;
+
+  colorsPromise = apiRequest('/colors')
+    .then((data) => {
+      const list = Array.isArray(data?.colors) ? data.colors : Array.isArray(data) ? data : [];
+      const mapped = list
+        .filter((c) => c && c.isActive !== false)
+        .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+        .map((c) => {
+          const colorFilterUrl = c.name
+            ? `/products?color=${encodeURIComponent(c.name)}`
+            : '/products';
+          const link = c.link && c.link.startsWith('/') ? c.link : colorFilterUrl;
+          return {
+            id: c.id,
+            name: c.name || '',
+            hex: c.hex || '#1A175A',
+            image: getImageUrl(c.image),
+            link,
+            badge: c.badge || '',
+            description: c.description || '',
+          };
+        });
+      colorsCache = mapped;
+      setTimeout(() => {
+        colorsCache = null;
+      }, CACHE_TTL_MS);
+      return mapped;
+    })
+    .finally(() => {
+      colorsPromise = null;
     });
+
+  return colorsPromise;
 };
 
 export const fetchPublicReviews = async (limit = 6) => {
