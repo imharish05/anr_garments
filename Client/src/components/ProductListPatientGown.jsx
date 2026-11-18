@@ -15,7 +15,7 @@ const ProductListPatientGown = () => (
     id="patient-gown-collection"
     bgClass="bg-[#F8F9FE]"
     eyebrow="Inpatient & OT Recovery"
-    title="Patient Gowns for Inpatients & OT"
+    title="Patient Gowns"
     subtitle="Hygiene-compliant hospital tie-back, surgical, and maternity gowns engineered for maximum patient dignity and frequent high-temp sterilization."
     ctaText="View all patient gowns"
     ctaTo="/products/patient-gown"

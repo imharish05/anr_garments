@@ -36,7 +36,7 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <article className="group relative flex h-full flex-col rounded-xl sm:rounded-2xl bg-white p-2 sm:p-3 shadow-sm ring-1 ring-slate-900/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#1A175A]/10">
+    <article className="group relative flex h-full flex-col rounded-xl sm:rounded-2xl bg-white p-2.5 sm:p-3 shadow-sm ring-1 ring-slate-900/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#1A175A]/10">
       {/* ---------- Image (clicking opens Product Detail Page) ---------- */}
       <div className="relative aspect-[4/5] overflow-hidden rounded-lg sm:rounded-xl bg-white">
         <Link
@@ -126,7 +126,7 @@ const ProductCard = ({ product }) => {
       </div>
 
       {/* ---------- Details ---------- */}
-      <div className="flex flex-1 flex-col pt-2.5 sm:pt-3.5 pb-0.5 sm:pb-1">
+      <div className="flex flex-1 flex-col pt-2.5 sm:pt-3.5 pb-1 sm:pb-1.5">
         {/* category + rating */}
         <div className="flex items-center justify-between gap-1.5 sm:gap-2">
           <span className="truncate text-[9px] sm:text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">
@@ -222,13 +222,15 @@ const ProductCard = ({ product }) => {
         </div>
 
         {/* View Product Button */}
-        <Link
-          to={productLink}
-          className="mt-3.5 sm:mt-4 flex w-full items-center justify-center gap-1.5 sm:gap-2 rounded-lg sm:rounded-xl px-2 py-2 sm:py-2.5 text-xs sm:text-[13px] font-bold text-white bg-[#1A175A] shadow-md shadow-[#1A175A]/20 transition-all duration-200 hover:bg-[#282479] hover:shadow-lg hover:shadow-[#1A175A]/25 active:scale-[0.98] mt-auto"
-        >
-          <Eye className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-none" />
-          <span>View Product</span>
-        </Link>
+        <div className="mt-auto pt-3 sm:pt-3.5">
+          <Link
+            to={productLink}
+            className="flex w-full items-center justify-center gap-1.5 sm:gap-2 rounded-lg sm:rounded-xl px-2 py-2 sm:py-2.5 text-xs sm:text-[13px] font-bold text-white bg-[#1A175A] shadow-md shadow-[#1A175A]/20 transition-all duration-200 hover:bg-[#282479] hover:shadow-lg hover:shadow-[#1A175A]/25 active:scale-[0.98]"
+          >
+            <Eye className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-none" />
+            <span>View Product</span>
+          </Link>
+        </div>
       </div>
     </article>
   );
