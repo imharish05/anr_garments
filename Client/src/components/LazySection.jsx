@@ -52,7 +52,7 @@ const LazySection = ({
   children,
   fallback,
   minHeight = 320,
-  rootMargin = '280px 0px',
+  rootMargin = '600px 0px',
   eager = false,
 }) => {
   const effectiveAnchor = anchorId || id;

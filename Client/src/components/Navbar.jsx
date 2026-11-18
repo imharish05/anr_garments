@@ -28,7 +28,7 @@ import {
   Building2
 } from 'lucide-react';
 
-const Logo = ({ className = "h-8 sm:h-10 lg:h-12" }) => (
+const Logo = ({ className = "h-10 sm:h-12 lg:h-14" }) => (
   <Link to="/" className="flex items-center flex-shrink-0">
     <img src={anrLogo} alt="ANR Hospital Garments" className={`${className} w-auto object-contain rounded`} />
   </Link>
@@ -606,7 +606,7 @@ const Navbar = () => {
         <aside className={`absolute left-0 top-0 h-full w-[85vw] max-w-sm bg-[#120F3E] text-white shadow-2xl flex flex-col transition-transform duration-300 ease-out overscroll-contain ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
           {/* 1. Header: Logo + Close Button */}
           <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/10 bg-[#1A175A]">
-            <Logo className="h-8 sm:h-9" />
+            <Logo className="h-9 sm:h-10" />
             <button
               type="button"
               onClick={() => setMobileMenuOpen(false)}

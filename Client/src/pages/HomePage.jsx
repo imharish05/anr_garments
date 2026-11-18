@@ -7,7 +7,8 @@ import LazyCartDrawer from '../components/LazyCartDrawer';
 import ProductListClassic from '../components/ProductListClassic';
 import ProductListLabCoats from '../components/ProductListLabCoats';
 import ProductListEcoflex from '../components/ProductListEcoflex';
-import ProductListPatientWear from '../components/ProductListPatientWear';
+import ProductListPatientGown from '../components/ProductListPatientGown';
+import ProductListPatientPantShirt from '../components/ProductListPatientPantShirt';
 import { ProductCollectionSkeleton } from '../components/SkeletonLoaders';
 
 const ShopByCategory = lazy(() => import('../components/ShopByCategory'));
@@ -39,6 +40,7 @@ const HomePage = () => {
         <LazySection
           anchorId="scrubs-collection"
           minHeight={640}
+          rootMargin="600px 0px"
           fallback={<ProductCollectionSkeleton bgClass="bg-white" />}
         >
           <ProductListClassic />
@@ -47,6 +49,7 @@ const HomePage = () => {
         <LazySection
           anchorId="aprons-collection"
           minHeight={640}
+          rootMargin="600px 0px"
           fallback={<ProductCollectionSkeleton bgClass="bg-[#F8F9FE]" />}
         >
           <ProductListLabCoats />
@@ -55,17 +58,28 @@ const HomePage = () => {
         <LazySection
           anchorId="underscrubs-collection"
           minHeight={640}
+          rootMargin="600px 0px"
           fallback={<ProductCollectionSkeleton bgClass="bg-white" />}
         >
           <ProductListEcoflex />
         </LazySection>
 
         <LazySection
-          anchorId="patient-wear-collection"
+          anchorId="patient-gown-collection"
           minHeight={640}
+          rootMargin="600px 0px"
           fallback={<ProductCollectionSkeleton bgClass="bg-[#F8F9FE]" />}
         >
-          <ProductListPatientWear />
+          <ProductListPatientGown />
+        </LazySection>
+
+        <LazySection
+          anchorId="patient-pant-shirt-collection"
+          minHeight={640}
+          rootMargin="600px 0px"
+          fallback={<ProductCollectionSkeleton bgClass="bg-white" />}
+        >
+          <ProductListPatientPantShirt />
         </LazySection>
 
         {/* <LazySection anchorId="offers" minHeight={420}>
