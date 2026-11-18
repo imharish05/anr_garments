@@ -23,7 +23,7 @@ Create a Blueprint from this repository using `render.yaml`, or create a Node we
 - `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`
 - `JWT_SECRET`: a long, random secret (Render generates one in the blueprint)
 
-Add other integration secrets only when using those features, such as `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, and email settings. After deploy, note the Render service URL, e.g. `https://anr-garments-api.onrender.com`.
+Add other integration secrets only when using those features, such as `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, and email settings. After deploy, note the Render service URL, e.g. `https://anr-garments-api-n0gf.onrender.com`.
 
 ## 3. Vercel storefront
 

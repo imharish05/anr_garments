@@ -1,6 +1,15 @@
-const RAW_BASE = import.meta.env.VITE_API_BASE_URL || '/api';
+const RAW_ENV_BASE = import.meta.env.VITE_API_BASE_URL || '';
+const RAW_BASE =
+  !RAW_ENV_BASE || RAW_ENV_BASE.includes('anr-garments-api.onrender.com')
+    ? 'https://anr-garments-api-n0gf.onrender.com/api'
+    : RAW_ENV_BASE;
 const API_BASE_URL = RAW_BASE.replace(/\/$/, '');
-const SERVER_URL = import.meta.env.VITE_SERVER_URL || '';
+
+const RAW_ENV_SERVER = import.meta.env.VITE_SERVER_URL || '';
+const SERVER_URL =
+  !RAW_ENV_SERVER || RAW_ENV_SERVER.includes('anr-garments-api.onrender.com')
+    ? 'https://anr-garments-api-n0gf.onrender.com'
+    : RAW_ENV_SERVER;
 
 const SESSION_STORAGE_KEY = 'anr_session_id';
 
