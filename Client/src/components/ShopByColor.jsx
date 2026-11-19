@@ -250,7 +250,7 @@ const ShopByColor = () => {
 
             <div key={selected.name} className="animate-[colorFade_0.45s_ease-out]">
               <h3 className="mt-4 whitespace-nowrap text-[clamp(1rem,2.4vw,1.75rem)] font-black tracking-tight text-[#1A175A] leading-tight">
-                Scrubs <span className="text-blue-600">•</span> Lab coats <span className="text-blue-600">•</span> Underscrubs
+                Scrubs <span className="text-blue-600">•</span> Underscrubs
               </h3>
 
               <p className="mt-4 text-base sm:text-lg font-semibold text-slate-600 max-w-md mx-auto lg:mx-0">
