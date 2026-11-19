@@ -135,12 +135,11 @@ const CategoryRail = ({ tree, counts, activeCategory, activeSubSlug, loading }) 
                   key={s.slug || 'all'}
                   to={s.slug ? getSubcategoryPageLink(activeCategory.slug, s.slug) : getCategoryPageLink(activeCategory.slug)}
                   aria-current={active ? 'page' : undefined}
-                  className={`min-h-10 shrink-0 inline-flex items-center gap-1.5 rounded-full px-4 text-sm font-medium whitespace-nowrap transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1A175A] ${
+                  className={`min-h-10 shrink-0 inline-flex items-center rounded-full px-4 text-sm font-medium whitespace-nowrap transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1A175A] ${
                     active ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                   }`}
                 >
                   {s.name}
-                  <span className={`tabular-nums ${active ? 'text-white/70' : 'text-slate-400'}`}>{s.count}</span>
                 </Link>
               );
             })}
