@@ -245,7 +245,7 @@ const ShopByColor = () => {
                 <span className="text-slate-300"> / {String(total).padStart(2, '0')}</span>
               </span>
               <span className="h-px w-10 bg-slate-300" />
-              <span>Selected colour</span>
+              {/* <span>Selected colour</span> */}
             </div>
 
             <div key={selected.name} className="animate-[colorFade_0.45s_ease-out]">
