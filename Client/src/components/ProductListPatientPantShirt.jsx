@@ -11,6 +11,7 @@ const PATIENT_PANT_SHIRT_PATTERN = /pant.*shirt|two-piece|patient.*uniform|strip
 const PATIENT_PANT_SHIRT_EXCLUDE_PATTERN = /gown|\bscrub|apron|lab\s*coat/i;
 const PATIENT_PANT_SHIRT_EXCLUDE_SLUGS = [
   'scrub-suits',
+  'scrub-suits-for-women',
   'aprons-lab-coats',
   'aprons',
   'underscrubs',

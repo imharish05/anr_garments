@@ -85,13 +85,17 @@ const ProductCollectionSection = ({
         const regex = patternSource ? new RegExp(patternSource, patternFlags) : null;
         const exRegex = excludePatternSource ? new RegExp(excludePatternSource, excludePatternFlags) : null;
 
+        const lowerSlugs = slugs.map((s) => String(s || '').toLowerCase().trim());
+        const lowerExSlugs = exSlugs.map((s) => String(s || '').toLowerCase().trim());
+
         const matched = tree.find((c) => {
           if (!c) return false;
+          const cSlug = String(c.slug || '').toLowerCase().trim();
           if (exIds.includes(c.id)) return false;
-          if (exSlugs.includes(c.slug)) return false;
+          if (lowerExSlugs.includes(cSlug)) return false;
           if (exRegex && (exRegex.test(c.name || '') || exRegex.test(c.slug || ''))) return false;
 
-          if (slugs.includes(c.slug)) return true;
+          if (lowerSlugs.includes(cSlug)) return true;
           if (ids.includes(c.id)) return true;
           if (regex && (regex.test(c.name || '') || regex.test(c.slug || ''))) return true;
           return false;
@@ -122,18 +126,22 @@ const ProductCollectionSection = ({
       // Always fetch catalog list (up to 100) so cross-category and namePattern matches are found
       const fullList = await fetchProducts({ limit: 100, forceRefresh });
 
+      const lowerSlugs = slugs.map((s) => String(s || '').toLowerCase().trim());
+      const lowerExSlugs = exSlugs.map((s) => String(s || '').toLowerCase().trim());
+
       const matched = (fullList || []).filter((p) => {
         if (!p) return false;
+        const pCatSlug = String(p.categorySlug || '').toLowerCase().trim();
 
         // Strict exclusions take absolute priority
         if (exIds.includes(p.categoryId)) return false;
-        if (exSlugs.includes(p.categorySlug)) return false;
+        if (lowerExSlugs.includes(pCatSlug)) return false;
         if (exRegex && (exRegex.test(p.category || '') || exRegex.test(p.name || '') || exRegex.test(p.categorySlug || ''))) {
           return false;
         }
 
         // Positive match by slug or id
-        if (slugs.includes(p.categorySlug)) return true;
+        if (lowerSlugs.includes(pCatSlug)) return true;
         if (ids.includes(p.categoryId)) return true;
         // Positive match by regex pattern
         if (regex && (regex.test(p.category || '') || regex.test(p.name || '') || regex.test(p.categorySlug || ''))) {
@@ -142,10 +150,13 @@ const ProductCollectionSection = ({
         return false;
       });
 
-      // Filter: Show ONLY products where admin toggled Best Seller OR New Arrival (and product is active)
-      const promoOnly = matched.filter((p) => {
-        const isActive = p.isActive !== false && p.raw?.isActive !== false;
-        if (!isActive) return false;
+      // Active products in this collection
+      const activeProducts = matched.filter((p) => {
+        return p.isActive !== false && p.raw?.isActive !== false;
+      });
+
+      // Prioritize products marked as Best Seller OR New Arrival, followed by remaining active products
+      const promoProducts = activeProducts.filter((p) => {
         const isBest = p.isBestSeller === true || p.isBestSeller === 'true' || p.isBestSeller === 1 ||
                        p.raw?.isBestSeller === true || p.raw?.isBestSeller === 'true' || p.raw?.isBestSeller === 1;
         const isNew = p.isNewArrival === true || p.isNewArrival === 'true' || p.isNewArrival === 1 ||
@@ -153,9 +164,12 @@ const ProductCollectionSection = ({
         return Boolean(isBest || isNew);
       });
 
-      setProducts(promoOnly);
-      if (promoOnly.length > 0 && promoOnly[0]?.categorySlug) {
-        setDynamicCtaTo(getCategoryPageLink(promoOnly[0].categorySlug));
+      const nonPromoProducts = activeProducts.filter((p) => !promoProducts.some((promo) => promo.id === p.id));
+      const displayedProducts = promoProducts.length > 0 ? [...promoProducts, ...nonPromoProducts] : activeProducts;
+
+      setProducts(displayedProducts);
+      if (displayedProducts.length > 0 && displayedProducts[0]?.categorySlug) {
+        setDynamicCtaTo(getCategoryPageLink(displayedProducts[0].categorySlug));
       }
     } catch (err) {
       setError(err?.message || 'Unable to load products right now.');

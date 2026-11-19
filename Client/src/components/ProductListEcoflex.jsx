@@ -7,6 +7,7 @@ const UNDERSCRUB_PATTERN = /underscrub/i;
 const UNDERSCRUB_EXCLUDE_PATTERN = /\bscrub\s*(?:suit|set)|apron|lab\s*coat|gown|pant.*shirt/i;
 const UNDERSCRUB_EXCLUDE_SLUGS = [
   'scrub-suits',
+  'scrub-suits-for-women',
   'aprons-lab-coats',
   'aprons',
   'patient-gown',

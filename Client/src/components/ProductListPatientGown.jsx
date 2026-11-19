@@ -12,6 +12,7 @@ const PATIENT_GOWN_PATTERN = /patient\s*gown|tie-back|maternity\s*gown|surgical\
 const PATIENT_GOWN_EXCLUDE_PATTERN = /pant.*shirt|two-piece|\bscrub|apron|lab\s*coat/i;
 const PATIENT_GOWN_EXCLUDE_SLUGS = [
   'scrub-suits',
+  'scrub-suits-for-women',
   'aprons-lab-coats',
   'aprons',
   'underscrubs',

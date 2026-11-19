@@ -8,7 +8,7 @@ const SCRUB_SLUGS = [
   'scrub-suits-for-men',
   'scrub-suits-for-women',
 ];
-const SCRUB_IDS = [14];
+const SCRUB_IDS = [14, 15];
 // Resilient match for any scrub category/product name (e.g. Scrubs, Scrub Suits, OT Scrubs, Hospital Scrubs)
 const SCRUB_PATTERN = /\bscrubs?\b/i;
 // Strictly exclude underscrubs, lab aprons/coats, caps, gowns, patient wear
@@ -21,7 +21,7 @@ const SCRUB_EXCLUDE_SLUGS = [
   'patient-gown',
   'patient-pant-shirt',
 ];
-const SCRUB_EXCLUDE_IDS = [15, 16, 18, 19, 20, 21];
+const SCRUB_EXCLUDE_IDS = [16, 18, 19, 20, 21];
 
 const ProductListClassic = () => (
   <ProductCollectionSection

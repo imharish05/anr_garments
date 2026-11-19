@@ -2,17 +2,18 @@ import React from 'react';
 import ProductCollectionSection from './ProductCollectionSection';
 
 const APRON_SLUGS = ['aprons', 'aprons-lab-coats', 'aprons-for-men-women'];
-const APRON_IDS = [15, 20];
+const APRON_IDS = [20];
 const APRON_PATTERN = /apron|lab\s*coat/i;
 const APRON_EXCLUDE_PATTERN = /\bscrub|gown|pant.*shirt/i;
 const APRON_EXCLUDE_SLUGS = [
   'scrub-suits',
+  'scrub-suits-for-women',
   'underscrubs',
   'patient-gown',
   'patient-pant-shirt',
   'scrub-caps',
 ];
-const APRON_EXCLUDE_IDS = [14, 16, 18, 19, 21];
+const APRON_EXCLUDE_IDS = [14, 15, 16, 18, 19, 21];
 
 const ProductListLabCoats = () => (
   <ProductCollectionSection
