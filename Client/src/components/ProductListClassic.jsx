@@ -1,9 +1,27 @@
 import React from 'react';
 import ProductCollectionSection from './ProductCollectionSection';
 
-const SCRUB_SLUGS = ['scrub-suits', 'scrubs', 'scrub-suits-for-men-women'];
+const SCRUB_SLUGS = [
+  'scrub-suits',
+  'scrubs',
+  'scrub-suits-for-men-women',
+  'scrub-suits-for-men',
+  'scrub-suits-for-women',
+];
 const SCRUB_IDS = [14];
-const SCRUB_PATTERN = /scrub/i;
+// Resilient match for scrub suits/sets only
+const SCRUB_PATTERN = /\bscrub\s*(?:suit|set)s?\b/i;
+// Strictly exclude underscrubs, lab aprons/coats, caps, gowns, patient wear
+const SCRUB_EXCLUDE_PATTERN = /underscrub|apron|lab\s*coat|cap|gown|pant.*shirt/i;
+const SCRUB_EXCLUDE_SLUGS = [
+  'underscrubs',
+  'aprons-lab-coats',
+  'aprons',
+  'scrub-caps',
+  'patient-gown',
+  'patient-pant-shirt',
+];
+const SCRUB_EXCLUDE_IDS = [15, 16, 18, 19, 20, 21];
 
 const ProductListClassic = () => (
   <ProductCollectionSection
@@ -17,6 +35,9 @@ const ProductListClassic = () => (
     categorySlugs={SCRUB_SLUGS}
     categoryIds={SCRUB_IDS}
     namePattern={SCRUB_PATTERN}
+    excludeSlugs={SCRUB_EXCLUDE_SLUGS}
+    excludeIds={SCRUB_EXCLUDE_IDS}
+    excludePattern={SCRUB_EXCLUDE_PATTERN}
   />
 );
 

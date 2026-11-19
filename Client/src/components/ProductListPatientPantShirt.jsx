@@ -8,6 +8,16 @@ const PATIENT_PANT_SHIRT_SLUGS = [
 ];
 const PATIENT_PANT_SHIRT_IDS = [19];
 const PATIENT_PANT_SHIRT_PATTERN = /pant.*shirt|two-piece|patient.*uniform|striped.*ward/i;
+const PATIENT_PANT_SHIRT_EXCLUDE_PATTERN = /gown|\bscrub|apron|lab\s*coat/i;
+const PATIENT_PANT_SHIRT_EXCLUDE_SLUGS = [
+  'scrub-suits',
+  'aprons-lab-coats',
+  'aprons',
+  'underscrubs',
+  'patient-gown',
+  'scrub-caps',
+];
+const PATIENT_PANT_SHIRT_EXCLUDE_IDS = [14, 15, 16, 18, 20, 21];
 
 const ProductListPatientPantShirt = () => (
   <ProductCollectionSection
@@ -21,6 +31,9 @@ const ProductListPatientPantShirt = () => (
     categorySlugs={PATIENT_PANT_SHIRT_SLUGS}
     categoryIds={PATIENT_PANT_SHIRT_IDS}
     namePattern={PATIENT_PANT_SHIRT_PATTERN}
+    excludeSlugs={PATIENT_PANT_SHIRT_EXCLUDE_SLUGS}
+    excludeIds={PATIENT_PANT_SHIRT_EXCLUDE_IDS}
+    excludePattern={PATIENT_PANT_SHIRT_EXCLUDE_PATTERN}
   />
 );
 

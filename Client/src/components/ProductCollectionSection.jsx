@@ -18,7 +18,10 @@ const ProductCollectionSection = ({
   ctaTo = '/bulk-order',
   categorySlugs = EMPTY_LIST,
   categoryIds = EMPTY_LIST,
+  excludeSlugs = EMPTY_LIST,
+  excludeIds = EMPTY_LIST,
   namePattern,
+  excludePattern,
   limit = 12,
 }) => {
   const [products, setProducts] = useState([]);
@@ -32,8 +35,12 @@ const ProductCollectionSection = ({
 
   const slugsKey = categorySlugs.join(',');
   const idsKey = categoryIds.join(',');
+  const excludeSlugsKey = excludeSlugs.join(',');
+  const excludeIdsKey = excludeIds.join(',');
   const patternSource = namePattern ? namePattern.source : '';
   const patternFlags = namePattern ? namePattern.flags : '';
+  const excludePatternSource = excludePattern ? excludePattern.source : '';
+  const excludePatternFlags = excludePattern ? excludePattern.flags : '';
 
   const updateArrows = useCallback(() => {
     const el = railRef.current;
@@ -73,9 +80,17 @@ const ProductCollectionSection = ({
         if (!Array.isArray(tree) || tree.length === 0) return;
         const slugs = slugsKey ? slugsKey.split(',') : EMPTY_LIST;
         const ids = idsKey ? idsKey.split(',').map(Number) : EMPTY_LIST;
+        const exSlugs = excludeSlugsKey ? excludeSlugsKey.split(',') : EMPTY_LIST;
+        const exIds = excludeIdsKey ? excludeIdsKey.split(',').map(Number) : EMPTY_LIST;
         const regex = patternSource ? new RegExp(patternSource, patternFlags) : null;
+        const exRegex = excludePatternSource ? new RegExp(excludePatternSource, excludePatternFlags) : null;
 
         const matched = tree.find((c) => {
+          if (!c) return false;
+          if (exIds.includes(c.id)) return false;
+          if (exSlugs.includes(c.slug)) return false;
+          if (exRegex && (exRegex.test(c.name || '') || exRegex.test(c.slug || ''))) return false;
+
           if (slugs.includes(c.slug)) return true;
           if (ids.includes(c.id)) return true;
           if (regex && (regex.test(c.name || '') || regex.test(c.slug || ''))) return true;
@@ -91,7 +106,7 @@ const ProductCollectionSection = ({
     };
     resolveLink();
     return () => { isMounted = false; };
-  }, [slugsKey, idsKey, patternSource, patternFlags, ctaTo]);
+  }, [slugsKey, idsKey, excludeSlugsKey, excludeIdsKey, patternSource, patternFlags, excludePatternSource, excludePatternFlags, ctaTo]);
 
   const loadProducts = useCallback(async (forceRefresh = false) => {
     setLoading(true);
@@ -99,16 +114,31 @@ const ProductCollectionSection = ({
     try {
       const slugs = slugsKey ? slugsKey.split(',') : EMPTY_LIST;
       const ids = idsKey ? idsKey.split(',').map(Number) : EMPTY_LIST;
+      const exSlugs = excludeSlugsKey ? excludeSlugsKey.split(',') : EMPTY_LIST;
+      const exIds = excludeIdsKey ? excludeIdsKey.split(',').map(Number) : EMPTY_LIST;
       const regex = patternSource ? new RegExp(patternSource, patternFlags) : null;
+      const exRegex = excludePatternSource ? new RegExp(excludePatternSource, excludePatternFlags) : null;
 
       // Always fetch catalog list (up to 100) so cross-category and namePattern matches are found
       const fullList = await fetchProducts({ limit: 100, forceRefresh });
 
       const matched = (fullList || []).filter((p) => {
         if (!p) return false;
+
+        // Strict exclusions take absolute priority
+        if (exIds.includes(p.categoryId)) return false;
+        if (exSlugs.includes(p.categorySlug)) return false;
+        if (exRegex && (exRegex.test(p.category || '') || exRegex.test(p.name || '') || exRegex.test(p.categorySlug || ''))) {
+          return false;
+        }
+
+        // Positive match by slug or id
         if (slugs.includes(p.categorySlug)) return true;
         if (ids.includes(p.categoryId)) return true;
-        if (regex && (regex.test(p.category || '') || regex.test(p.name || '') || regex.test(p.categorySlug || ''))) return true;
+        // Positive match by regex pattern
+        if (regex && (regex.test(p.category || '') || regex.test(p.name || '') || regex.test(p.categorySlug || ''))) {
+          return true;
+        }
         return false;
       });
 
@@ -133,7 +163,7 @@ const ProductCollectionSection = ({
     } finally {
       setLoading(false);
     }
-  }, [slugsKey, idsKey, patternSource, patternFlags]);
+  }, [slugsKey, idsKey, excludeSlugsKey, excludeIdsKey, patternSource, patternFlags, excludePatternSource, excludePatternFlags]);
 
   useEffect(() => {
     loadProducts();
