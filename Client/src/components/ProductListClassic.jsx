@@ -9,8 +9,8 @@ const SCRUB_SLUGS = [
   'scrub-suits-for-women',
 ];
 const SCRUB_IDS = [14];
-// Resilient match for scrub suits/sets only
-const SCRUB_PATTERN = /\bscrub\s*(?:suit|set)s?\b/i;
+// Resilient match for any scrub category/product name (e.g. Scrubs, Scrub Suits, OT Scrubs, Hospital Scrubs)
+const SCRUB_PATTERN = /\bscrubs?\b/i;
 // Strictly exclude underscrubs, lab aprons/coats, caps, gowns, patient wear
 const SCRUB_EXCLUDE_PATTERN = /underscrub|apron|lab\s*coat|cap|gown|pant.*shirt/i;
 const SCRUB_EXCLUDE_SLUGS = [
